@@ -1,0 +1,57 @@
+% ==================================================================
+% YangTex · 编译产物，请勿直接编辑（改动会在下次保存时被覆盖）
+% 由 Markdown 源 main.md 自动生成
+% 请编辑同目录下的 main.md / main.mdtex：那才是主文档，
+% 用的是 Markdown 语法；本文件只交给 TeX 引擎编译。
+% ==================================================================
+\documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{corollary}[theorem]{推论}
+\title{未命名文档}
+\author{}
+\date{\today}
+\begin{document}
+\maketitle
+
+\% ================================================================== \% YangTex · 编译产物，请勿直接编辑（改动会在下次保存时被覆盖） \% 由 Markdown 源 main.md 自动生成 \% 请编辑同目录下的 main.md / main.mdtex：那才是主文档， \% 用的是 Markdown 语法；本文件只交给 TeX 引擎编译。 \% ================================================================== \textbackslash{}documentclass[UTF8,a4paper,11pt,fontset=fandol]\{ctexart\} \textbackslash{}usepackage\{amsmath\} \textbackslash{}usepackage\{amssymb\} \textbackslash{}usepackage\{mathtools\} \textbackslash{}usepackage\{amsthm\} \textbackslash{}usepackage\{graphicx\} \textbackslash{}usepackage\{xcolor\} \textbackslash{}usepackage\{enumitem\} \textbackslash{}usepackage\{geometry\} \textbackslash{}usepackage\{hyperref\} \textbackslash{}geometry\{margin=2.5cm\} \textbackslash{}newtheorem\{theorem\}\{定理\}[section] \textbackslash{}newtheorem\{lemma\}[theorem]\{引理\} \textbackslash{}newtheorem\{definition\}[theorem]\{定义\} \textbackslash{}newtheorem\{proposition\}[theorem]\{命题\} \textbackslash{}newtheorem\{corollary\}[theorem]\{推论\} \textbackslash{}title\{课堂笔记 · 偏微分方程\} \textbackslash{}author\{杨建伟\} \textbackslash{}date\{\textbackslash{}today\} \textbackslash{}begin\{document\} \textbackslash{}maketitle
+
+\textbackslash{}section\{本次课要点\}
+
+今天讨论 \textbackslash{}textbf\{Sobolev 空间\} 中的先验估计。核心记号：区域 $\Omega \subset \mathbb{R}^n$， 未知函数 $u \in H^1_0(\Omega)$，右端项 $f \in L^2(\Omega)$。
+
+\textbackslash{}subsection\{三个关键步骤\}
+
+\textbackslash{}begin\{enumerate\} \textbackslash{}item 对方程两边乘以 $u$ 并在 $\Omega$ 上积分 \textbackslash{}item 分部积分消去压力项，得到 $\|\nabla u\|_{L^2}^2$ \textbackslash{}item 用 \textbackslash{}textit\{Gronwall 不等式\} 得到一致有界性 \textbackslash{}end\{enumerate\}
+
+\textbackslash{}subsection\{常用不等式\}
+
+\textbackslash{}begin\{center\} \textbackslash{}begin\{tabular\}\{l\textbar{}l\textbar{}l\} \textbackslash{}hline 名称 \& 形式 \& 适用条件 \textbackslash{}\textbackslash{} \textbackslash{}hline Poincare \& $\|u\|_{L^2} \le C_P \|\nabla u\|_{L^2}$ \& $u \in H^1_0$ \textbackslash{}\textbackslash{} Cauchy \& $|(f,u)| \le \|f\| \|u\|$ \& 任意 \textbackslash{}\textbackslash{} \textbackslash{}hline \textbackslash{}end\{tabular\} \textbackslash{}end\{center\}
+
+\textbackslash{}begin\{quote\} 注意：常数 $C$ 在不同行可以不同，但必须与 $u$ 无关。 \textbackslash{}end\{quote\}
+
+\textbackslash{}subsection\{待补充\}
+
+\textbackslash{}begin\{itemize\} \textbackslash{}item [ ] 查证 $n \ge 3$ 时 Sobolev 嵌入的临界指数 \textbackslash{}item [ ] 把离散格式也写一遍 \textbackslash{}item [ ] 整理成讲义第 4 节 \textbackslash{}end\{itemize\}
+
+\textbackslash{}[ \textbackslash{}frac\{d\}\{dt\}\textbackslash{}\textbar{}u(t)\textbackslash{}\textbar{}\_\{L\textasciicircum{}2\}\textasciicircum{}2 + 2\textbackslash{}nu\textbackslash{}\textbar{}\textbackslash{}nabla u(t)\textbackslash{}\textbar{}\_\{L\textasciicircum{}2\}\textasciicircum{}2 = 2(f,u) \textbackslash{}]
+
+\textbackslash{}par\textbackslash{}noindent\textbackslash{}rule\{\textbackslash{}textwidth\}\{0.4pt\}\textbackslash{}par
+
+本笔记由 YangTex 的 Markdown 模板生成；编辑器里继续用 \textbackslash{}textbf\{Markdown 语法\} 修改，保存即自动重新编译。
+
+\textbackslash{}end\{document\}
+
+\end{document}

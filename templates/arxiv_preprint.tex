@@ -1,0 +1,69 @@
+% arXiv 预印本模板 —— 轻量、无额外宏包依赖
+% 引擎：pdflatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\geometry{margin=2.6cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\eps}{\varepsilon}
+
+\title{A remark on the vanishing viscosity limit}
+\author{Yang Jianwei}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We consider the vanishing viscosity limit for a scalar conservation law
+with a nonconvex flux. Under a compensated compactness framework we show
+that the limit is the unique entropy solution. \emph{This template is
+ready for arXiv submission}; compile with \texttt{pdflatex}.
+\end{abstract}
+
+\section{Introduction}
+
+Consider the parabolic approximation
+\begin{equation}\label{eq:visc}
+  \partial_t u^\eps + \partial_x f(u^\eps) = \eps\,\partial_{xx}u^\eps,
+  \qquad u^\eps(x,0)=u_0(x),
+\end{equation}
+on $\R\times(0,T)$. We are interested in the limit $\eps\to0^+$.
+
+\begin{theorem}
+Assume $u_0\in L^\infty(\R)$ and $f\in C^2(\R)$. Then
+$u^\eps\to u$ in $L^1_{\mathrm{loc}}(\R\times(0,T))$, where $u$ is the
+unique Kru{\v z}kov entropy solution of
+$\partial_t u+\partial_x f(u)=0$.
+\end{theorem}
+
+\begin{proof}
+The uniform $L^\infty$ bound and the entropy production estimate give
+$\eps\,\partial_x u^\eps\to0$ in the sense of measures. Compensated
+compactness (Tartar--Murat) then yields strong convergence.
+\end{proof}
+
+\section{Numerical illustration}
+
+Figure~\ref{fig:one} shows the profile at $t=1$ for $\eps=10^{-2}$.
+
+\begin{figure}[htbp]
+\centering
+% \includegraphics[width=.7\linewidth]{profile.pdf}
+\caption{Numerical solution of \eqref{eq:visc}.}\label{fig:one}
+\end{figure}
+
+\section*{Data availability}
+No new data were created or analysed in this study.
+
+\end{document}

@@ -1,0 +1,1078 @@
+% =====================================================================
+%  ncwu_thesis_v4
+%  来源：华北水利水电大学研究生学位论文模板 v4（YangTex 模板库 · 用户原稿全量保留版）
+%  处理：仅删除编译产物 PDF / digest.lock，把 \input 递归展开为单文件；
+%        正文、章节、例题、每张幻灯片、封面与参考文献一字未改。
+%  字体：原稿的 macOS 字体声明全部保留，外加 \IfFontExistsTF 存在性判断；
+%        在 Mac 上视觉与原 PDF 完全一致，在 Windows / Linux 上字体缺失时
+%        自动跳过该声明改用默认字体，仍能正常编译。
+%  编译：xelatex（目录 / 交叉引用需连续编译 2~3 遍，产品已自动处理）
+% =====================================================================
+
+ 
+% =====================================================================
+%  华北水利水电大学 研究生学位论文 LaTeX 模板 
+%  依据：《研究生学位论文格式模板》(华北水利水电大学) 全部格式要求
+%  编译：xelatex  ->  xelatex（两次，以生成目录与交叉引用）
+%  说明：本文件为单一 .tex 文件，模板框架 + 示例内容一体，
+%        撰写论文时只需替换「%% ===== 待填写区 =====」中的信息与正文。
+% =====================================================================
+\documentclass[12pt,a4paper,twoside,openright]{ctexbook}
+
+% ---------------------------------------------------------------------
+% 一、页面与版式（A4，上下左右 2.5cm；页眉距顶 1.5cm，页脚距底 1.75cm）
+%     数值取自 Word 模板 section 属性实测：header_distance=42.55pt(1.5cm)、
+%     footer_distance=49.6pt(1.75cm)、四边页边距 70.9pt(2.5cm)
+% ---------------------------------------------------------------------
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm,
+  headheight=1.1cm, headsep=0.5cm, footskip=0.67cm
+}
+
+% ---------------------------------------------------------------------
+% 二、数学与符号（数学专业核心宏包）
+% ---------------------------------------------------------------------
+\usepackage{amsmath}          % 多行公式、矩阵、cases 等
+\usepackage{amsthm}           % 定理类环境
+\usepackage{unicode-math}     % 数学字体（用 amsmath 之后加载；勿再加载 amssymb）
+
+% 英文正文与数字：Times New Roman；数学：同族 TeX Gyre Termes Math
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{}
+\setmathfont{texgyretermes-math.otf}[Scale=MatchLowercase]
+% 若本机无该数学字体，可改任一行：
+% \setmathfont{XITS Math}[Scale=MatchLowercase]
+% \setmathfont{Latin Modern Math}
+
+% ---------------------------------------------------------------------
+% 三、图表、表格与列表
+% ---------------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{booktabs,multirow,longtable,array}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\emergencystretch=1.5em     % 定理/证明等缩进环境下，避免个别长公式行溢出（不影响版式）
+
+% ---------------------------------------------------------------------
+% 四、超链接与书签（黑色，打印友好）
+% ---------------------------------------------------------------------
+\usepackage[bookmarksnumbered,bookmarksopen]{hyperref}
+\hypersetup{
+  colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black,
+  CJKbookmarks=true, pdfstartview=FitH
+}
+\pdfstringdefDisableCommands{\def\hspace#1{ }}   % 书签中 \hspace 转空格
+
+% =====================================================================
+%% ===== 待填写区（一）：论文基本信息 =====
+% =====================================================================
+\newcommand{\thesisClassNo}{O175.2}                 % 分类号
+\newcommand{\thesisSecrecy}{公开}                   % 密级
+\newcommand{\thesisUDC}{517.95}                     % U D C
+\newcommand{\thesisUnitCode}{10078}                 % 单位代码
+\newcommand{\thesisDocTitle}{华北水利水电大学硕士学位论文}   % 封面大标题
+\newcommand{\thesisEvenHeader}{华北水利水电大学硕士学位论文} % 正文偶数页页眉
+\newcommand{\thesisTitleC}{一类非线性发展方程解的爆破与整体存在性研究} % 中文题目
+\newcommand{\thesisTitleE}{Blow-up and Global Existence of Solutions to a Class of Nonlinear Evolution Equations} % 英文题目
+\newcommand{\thesisAuthor}{张\quad 三}              % 学位申请人
+\newcommand{\thesisAdvisor}{李\quad 四\quad 教授}   % 指导教师
+\newcommand{\thesisMajor}{基础数学}                 % 专业名称 / 专业领域
+% Word 模板封面字段名二选一：
+%   学术学位论文（「华北水利水电大学博士/硕士学位论文」）→ 专业名称
+%   专业学位论文（「华北水利水电大学专业博士/硕士学位论文」）→ 专业领域
+% 需切换时，把下一行的 \thesisMajorLabel 改为 专业领域 即可。
+\newcommand{\thesisMajorLabel}{专业名称}
+\newcommand{\thesisCollege}{数学与统计学院}         % 所在学院
+\newcommand{\thesisDegree}{理学硕士}                % 学位类别
+\newcommand{\thesisDate}{2027\quad 年\quad 06\quad 月} % 封面日期
+\newcommand{\thesisSignDate}{2027 年 06 月}         % 声明签字日期
+
+% =====================================================================
+% 五、章节标题格式（三号黑体居中 / 小三黑体 / 四号黑体）
+% =====================================================================
+\ctexset{
+  chapter = {
+    name      = {,},                       % 去掉“第…章”
+    number    = {\arabic{chapter}},
+    aftername = {\hspace{0.6em}},          % “1 绪论”
+    format    = {\zihao{3}\heiti\centering},
+    beforeskip= {6pt}, afterskip = {18pt},
+    pagestyle = {ncwupage},
+    fixskip   = true,
+  },
+  section = {
+    format    = {\zihao{-3}\heiti\raggedright},   % 小三黑体
+    beforeskip= {12pt}, afterskip = {6pt},
+    fixskip   = true,
+  },
+  subsection = {
+    format    = {\zihao{4}\heiti\raggedright},    % 四号黑体
+    beforeskip= {6pt}, afterskip = {6pt},
+    fixskip   = true,
+  },
+  subsubsection = {
+    format    = {\zihao{-4}\heiti\raggedright},   % 小四黑体
+    beforeskip= {6pt}, afterskip = {6pt},
+    fixskip   = true,
+  },
+}
+
+% 章标记（供奇数页页眉使用）
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\hspace{0.6em}#1}{}}
+
+% =====================================================================
+% 六、页眉页脚：五号宋体居中，页眉下双横线（1/2 磅）；页码小五 Times New Roman
+% =====================================================================
+\newif\ifncwufront       % 前置部分（摘要/目录）页眉不分奇偶
+\newcommand{\ncwuheadrule}{%
+  \hrule width \headwidth height 0.5pt depth 0pt
+  \kern 0.8pt
+  \hrule width \headwidth height 0.5pt depth 0pt
+  \kern -1.3pt
+}
+\fancypagestyle{ncwupage}{%
+  \fancyhf{}%
+  \fancyhead[CO]{\zihao{5}\songti\leftmark}%
+  \fancyhead[CE]{\zihao{5}\songti{\ifncwufront\leftmark\else\thesisEvenHeader\fi}}%
+  \fancyfoot[C]{\zihao{-5}\thepage}%
+  \renewcommand{\headrule}{\ncwuheadrule}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[CO]{\zihao{5}\songti\leftmark}%
+  \fancyhead[CE]{\zihao{5}\songti{\ifncwufront\leftmark\else\thesisEvenHeader\fi}}%
+  \fancyfoot[C]{\zihao{-5}\thepage}%
+  \renewcommand{\headrule}{\ncwuheadrule}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+\pagestyle{ncwupage}
+
+% =====================================================================
+% 七、图表题注：五号，中文在上、英文在下，编号“章-序号”
+% =====================================================================
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+\renewcommand{\thefigure}{\thechapter-\arabic{figure}}
+\renewcommand{\thetable}{\thechapter-\arabic{table}}
+\DeclareCaptionFont{wuhao}{\zihao{5}}
+\DeclareCaptionFont{heifont}{\heiti}
+\captionsetup{
+  font          = {wuhao,heifont},
+  labelsep      = space,
+  justification = centering,
+  singlelinecheck = false,
+  skip          = 4pt,
+}
+\captionsetup[figure]{position=bottom, name=图}
+\captionsetup[table]{position=top, name=表}
+% 浮动体与正文间距：一行间距即可（Word 模板：“图与正文间须有一行间距”）。
+% 取值过大是“图表独占一页”的首要原因，这里收紧到 10pt 上下。
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
+% 放宽单栏浮动体上限，允许图在当前页顶部放置，减少推迟到独立页
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}
+% 图题与图体之间留小间距（\abovecaptionskip 保持 Word 的 4pt）
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+% 双语题注：\figcap{中文}{英文}、\tabcap{中文}{英文}
+% 可选短题进入插图/附表清单，如 \figcap[短题]{中文}{英文}；默认以中文题入清单
+\NewDocumentCommand{\figcap}{o m m}{%
+  \IfValueTF{#1}%
+    {\caption[#1]{\zihao{5}\heiti #2\\[2pt]\rmfamily Fig.~\thefigure~#3}}%
+    {\caption[#2]{\zihao{5}\heiti #2\\[2pt]\rmfamily Fig.~\thefigure~#3}}}
+\NewDocumentCommand{\tabcap}{o m m}{%
+  \IfValueTF{#1}%
+    {\caption[#1]{\zihao{5}\heiti #2\\[2pt]\rmfamily Table~\thetable~#3}}%
+    {\caption[#2]{\zihao{5}\heiti #2\\[2pt]\rmfamily Table~\thetable~#3}}}
+
+% =====================================================================
+% 八、公式编号（章-序号），如 (3-1)
+% =====================================================================
+\numberwithin{equation}{chapter}
+\renewcommand{\theequation}{\thechapter-\arabic{equation}}
+
+% =====================================================================
+% 九、定理类环境（数学专业）：编号“章-序号”，与图、表、公式一致
+%     如需“定理 2.1”式点号编号，把下面的 \thechapter- 改为 \thechapter.
+% =====================================================================
+% 自定义定理样式：黑体标题 + 宋体直立正文（避免中文斜体缺字警告）
+\newtheoremstyle{ncwuthm}
+  {12pt}{12pt}                       % 上、下间距
+  {}                                 % 正文字体（继承宋体直立）
+  {}                                 % 缩进由两个字符由下方 \leftskip 统一实现（整块缩进）
+  {\heiti}                           % 标题字体
+  {}                                 % 标题后标点
+  {0.6em}                            % 标题后间距
+  {\thmname{#1}\thmnumber{~#2}\thmnote{（#3）}}
+\theoremstyle{ncwuthm}
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{definition}{定义}[chapter]
+\newtheorem{assumption}{假设}[chapter]
+\newtheorem{example}{例}[chapter]
+\newtheorem{remark}{注}[chapter]
+
+\renewcommand{\thetheorem}{\thechapter-\arabic{theorem}}
+\renewcommand{\thedefinition}{\thechapter-\arabic{definition}}
+\renewcommand{\theassumption}{\thechapter-\arabic{assumption}}
+\renewcommand{\theexample}{\thechapter-\arabic{example}}
+\renewcommand{\theremark}{\thechapter-\arabic{remark}}
+
+\renewcommand{\proofname}{\upshape\zihao{-4}\heiti 证明}
+% 证明结束符号：空心方块（不依赖 \square，任何数学字体下可用）
+\renewcommand{\qedsymbol}{\fbox{\rule{0pt}{0.55em}\hspace{0.55em}}}
+% 定理/引理/定义等环境与证明环境统一“整块缩进两个字符”（标题与正文一并右移），
+% 与正文段落首行缩进两字符的版式保持协调；缩进由 \leftskip 控制，换行后依旧保持。
+\makeatletter
+% 让所有 amsthm 定理类环境（定理/引理/定义/命题/推论/假设/例/注）整体右移两个字符宽
+\def\@begintheorem#1#2[#3]{%
+  \leftskip=2\ccwd
+  \deferred@thm@head{\the\thm@headfont \thm@indent
+    \@ifempty{#1}{\let\thmname\@gobble}{\let\thmname\@iden}%
+    \@ifempty{#2}{\let\thmnumber\@gobble}{\let\thmnumber\@iden}%
+    \@ifempty{#3}{\let\thmnote\@gobble}{\let\thmnote\@iden}%
+    \thm@swap\swappedhead\thmhead{#1}{#2}{#3}%
+    \the\thm@headpunct
+    \thmheadnl % possibly a newline.
+    \hskip\thm@headsep
+  }%
+  \ignorespaces}
+% 证明环境同样整块缩进两个字符（标题“证明.”随整块右移）
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \leftskip=2\ccwd
+  \item[\hskip\labelsep\itshape#1\@addpunct{.}]%
+  \ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother
+
+% =====================================================================
+% 十、常用数学记号（按需要增删）
+% =====================================================================
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\pder}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\inner}[2]{\left\langle #1,\,#2 \right\rangle}
+\newcommand{\esssup}{\mathop{\operatorname{ess\,sup}}}
+\newcommand{\supp}{\mathop{\operatorname{supp}}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\sign}{sign}
+
+% =====================================================================
+% 十一、封面、无编号章、附录 等结构性命令
+% =====================================================================
+\makeatletter
+\newcounter{ncwubm}
+% 无编号章（参考文献、致谢、附录等）：入目录、设页眉、加书签
+\newcommand{\ncwuchapter}[1]{%
+  \stepcounter{ncwubm}%
+  \chapter*{#1}%
+  \markboth{#1}{#1}%
+  \addcontentsline{toc}{chapter}{#1}%
+  \pdfbookmark[0]{#1}{ncwubm\thencwubm}%
+}
+% 逐字分散对齐（复刻 Word 封面信息栏标签的“分散对齐”）
+\newif\ifncwuspfirst
+\newcommand{\ncwuspread}[2]{%
+  \hbox to #1{\ncwuspfirsttrue
+    \@tfor\ncwunext:=#2\do{%
+      \ifncwuspfirst \ncwuspfirstfalse \else \hfil\fi
+      \ncwunext}}}
+% 信息栏取值：整条下划线（对应 Word 单元格下框线）
+\newcommand{\ncwuvalue}[1]{\underline{\makebox[9.31cm][c]{#1}}}
+% 封面（严格按 Word 模板实测：抬头四号宋体、校名二号黑体、题目三号、
+%       信息表总宽 12.96cm 页面居中，标签列 3.66cm、取值列 9.31cm、行高 34pt）
+\newcommand{\makeCover}{%
+  \thispagestyle{empty}%
+  \begin{center}
+    {\zihao{4}\songti
+      \noindent\makebox[10.62cm][l]{分类号：\thesisClassNo}%
+      \makebox[5.38cm][l]{密\qquad 级：\thesisSecrecy}\par
+      \noindent\makebox[10.62cm][l]{U\ D\ C：\thesisUDC}%
+      \makebox[5.38cm][l]{单位代码：\thesisUnitCode}\par}
+    \vspace{1.5cm}
+    {\zihao{2}\heiti\thesisDocTitle\par}
+    \vspace{1.5cm}
+    {\zihao{3}\heiti\thesisTitleC\par}
+    \vspace{0.8cm}
+    {\zihao{3}\rmfamily\thesisTitleE\par}
+    \vspace{3.0cm}
+    {\zihao{4}\songti
+      \begin{tabular}{@{}p{3.46cm}@{}p{9.31cm}@{}}
+        \ncwuspread{3.46cm}{学位申请人：} & \ncwuvalue{\thesisAuthor}\\[17pt]
+        \ncwuspread{3.46cm}{指导教师：}   & \ncwuvalue{\thesisAdvisor}\\[17pt]
+        \ncwuspread{3.46cm}{专业名称：}   & \ncwuvalue{\thesisMajor}\\[17pt]
+        \ncwuspread{3.46cm}{所在学院：}   & \ncwuvalue{\thesisCollege}\\[17pt]
+        \ncwuspread{3.46cm}{学位类别：}   & \ncwuvalue{\thesisDegree}
+      \end{tabular}\par}
+    \vspace{3.7cm}
+    {\zihao{4}\songti\thesisDate\par}
+  \end{center}
+  \clearpage      % 声明页紧接封面背面（与 Word 一致），不插入空白页
+}
+% 附录分节：附录Ⅰ、附录Ⅱ……
+\newcounter{ncwuappx}
+\renewcommand{\thencwuappx}{\Roman{ncwuappx}}
+\newcommand{\appendixsec}[1]{%
+  \stepcounter{ncwuappx}%
+  \section*{附录\thencwuappx\quad #1}%
+  \addcontentsline{toc}{section}{附录\thencwuappx\quad #1}%
+  \markboth{附录}{附录}%
+}
+% 上标引用（格式要求：引用处加注方括号序号并做上标处理）
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+\makeatother
+
+% 符号表条目（主要符号表）
+\newcommand{\symitem}[2]{$#1$ & #2 \\}
+
+% 目录、插图与附表清单：标题统一在外部排版，\listoffigures / \listoftables
+% 内部不再重复出标题（否则同页会出现两个三号黑体标题）
+\makeatletter
+\renewcommand\tableofcontents{\@starttoc{toc}}
+\renewcommand\listoffigures{\@starttoc{lof}}
+\renewcommand\listoftables{\@starttoc{lot}}
+% 清单条目加“图/表”前缀（图 4-1 题名 …… 页码）
+\renewcommand*\l@figure[2]{\@dottedtocline{1}{0em}{2.9em}{{\heiti 图}~#1}{#2}}
+\renewcommand*\l@table[2]{\@dottedtocline{1}{0em}{2.9em}{{\heiti 表}~#1}{#2}}
+\makeatother
+
+% 图片占位框（无外部图片文件也可编译；实际使用时换为 \includegraphics）
+\newcommand{\figplaceholder}[1]{%
+  \fbox{\parbox[c][4.4cm][c]{0.82\linewidth}{\centering
+    \zihao{5}\songti 此处插入图片：#1\\[4pt]
+    \zihao{-5}\rmfamily (使用 \texttt{\detokenize{\includegraphics}} 替换本占位框)}}}
+% 若改用真实图片，请把 \figplaceholder{...} 替换为：
+% \includegraphics[width=0.82\textwidth]{figures/fig3-1.pdf}
+
+% --- 数值实验配图（TikZ 直接绘制，无外部图片依赖，可一键编译）---
+% 尺寸约定：图宽约 0.80\textwidth、图高约 6.5cm，与 Word 模板“图与正文间须有一行间距”
+% 及“五号字图题”的版式相称；避免过小导致页面空旷。
+% 图A：能量随时间演化（单调递减 → 在 T* 处急剧下降）
+\newcommand{\figenergy}{%
+  \begin{tikzpicture}[x=1.42cm,y=1.62cm,>=stealth]
+    % 网格
+    \draw[step=1,gray!22,very thin] (0,0) grid (6,4.4);
+    % 坐标轴
+    \draw[->,thick] (0,0) -- (6.35,0) node[below left,font=\zihao{-5}]{$t$};
+    \draw[->,thick] (0,0) -- (0,4.75) node[left,font=\zihao{-5}]{$E(t)$};
+    % 能量曲线：前期缓降，接近爆破时急剧下落。
+    % 参数选取：x(\t)=\t 保证 \t=0→6 恰好横跨全图宽；
+    % y 分段——\t≤4.2 时缓降（衰减率约 0.06/单位时间），\t>4.2 时叠加陡降项。
+    \draw[thick,domain=0:4.2,samples=120,smooth,variable=\t]
+      plot ({\t}, {3.80 - 0.058*\t*\t - 0.0062*\t*\t*\t});
+    \draw[thick,domain=4.2:6,samples=120,smooth,variable=\t]
+      plot ({\t}, {3.80 - 0.058*\t*\t - 0.0062*\t*\t*\t
+           - 0.055*(\t-4.2)^3});
+    % 爆破时刻标记
+    \draw[dashed,thick] (5.4,0) -- (5.4,1.04);
+    \draw[dashed,thick] (0,1.04) -- (5.4,1.04);
+    \fill (5.4,0) circle (1.8pt);
+    \node[below,font=\zihao{-5}] at (5.4,0) {$T^{*}$};
+    \node[left,font=\zihao{-5}] at (0,3.80) {$E(0)$};
+    \node[font=\zihao{-5}] at (2.30,1.60) {能量单调衰减，$t\to T^{*-}$ 时急剧下降};
+  \end{tikzpicture}}
+% 图B：不同网格下的误差随步长变化（双对数坐标下的二阶直线）
+\newcommand{\figerror}{%
+  \begin{tikzpicture}[x=1.52cm,y=1.52cm,>=stealth]
+    \draw[step=1,gray!22,very thin] (0,0) grid (6,4.3);
+    \draw[->,thick] (0,0) -- (6.3,0) node[below left,font=\zihao{-5}]{$h$};
+    \draw[->,thick] (0,0) -- (0,4.65) node[left,font=\zihao{-5}]{误差};
+    % 数据点（h 的对数刻度：16→128 映射到 x=0.8..5.0）
+    \foreach \x/\y in {0.8/3.55,2.05/2.72,3.3/1.89,4.55/1.06}
+      \fill (\x,\y) circle (1.8pt);
+    % 拟合直线（斜率 -2）
+    \draw[thick,dashed] (0.55,3.72) -- (4.95,0.92);
+    \node[font=\zihao{-5}] at (3.75,2.95) {斜率 $-2$（二阶收敛）};
+    \node[font=\zihao{-5}] at (1.15,0.42) {$1/16$};
+    \node[font=\zihao{-5}] at (4.45,0.42) {$1/128$};
+  \end{tikzpicture}}
+
+% =====================================================================
+% 十二、杂项设置
+% =====================================================================
+\setcounter{tocdepth}{2}    % 目录显示到三级标题
+\setcounter{secnumdepth}{3}
+\renewcommand{\bibname}{参考文献}
+\renewcommand{\contentsname}{目\hspace{0.6em}录}
+
+% 目录章级条目：黑体（模板 toc 1 样式），避免宋体伪粗
+\makeatletter
+% 修正 ctexbook 下 \cleardoublepage 空白过渡页带页眉页码的问题
+\renewcommand{\cleardoublepage}{%
+  \clearpage
+  \if@twoside
+    \ifodd\c@page\else
+      \hbox{}\thispagestyle{empty}\newpage
+    \fi
+  \fi}
+\renewcommand*\l@chapter[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \vskip 1.0em \@plus\p@
+    \@dottedtocline{0}{0pt}{1.5em}{\zihao{-4}\heiti #1}{#2}%
+  \fi}
+% 二级标题缩进 1 个字符、三级标题缩进 2 个字符（与 Word toc 2 / toc 3 一致）
+% 注：ctexbook 下 \@dottedtocline 的缩进参数会被 \parindent=0 抵消，
+%     故缩进通过条目前置 \hspace 实现，小四字号下 1em = 1 个汉字宽
+\renewcommand*\l@section[2]{\@dottedtocline{1}{0pt}{2.6em}{\hspace{1em}\zihao{5}\heiti #1}{#2}}
+\renewcommand*\l@subsection[2]{\@dottedtocline{2}{0pt}{3.2em}{\hspace{2em}\zihao{5}#1}{#2}}
+\makeatother
+
+% =====================================================================
+\begin{document}
+% 正文小四宋体、1.25 倍行距、首行缩进两字符
+\linespread{1.25}\selectfont
+\ncwufronttrue
+
+% ---------------------------------------------------------------------
+%% 封面
+% ---------------------------------------------------------------------
+\makeCover
+
+% ---------------------------------------------------------------------
+%% 独立完成与诚信声明 + 学位论文版权使用授权书
+%% （Word 模板：两者同页，标题二号黑体居中，正文小四宋体，签字行小四）
+% ---------------------------------------------------------------------
+\thispagestyle{empty}
+%% 说明一：列表/center 环境结束时会置 \@endpetrue，紧随其后的第一个段落缩进被取消。
+%%         故下列两处声明正文用 \setlength{\parindent}{2em}\indent 强制恢复首行缩进两字符。
+%% 说明二：Word 模板中这两段声明的行距为 1.5 倍（spacing line=360 lineRule=auto），
+%%         与正文 1.25 倍不同，故此处局部 \linespread{1.5}，不影响后续页面。
+\begin{center}
+  \zihao{2}\heiti 独立完成与诚信声明
+\end{center}
+\vspace{0.7cm}
+
+{\zihao{-4}\songti\linespread{1.5}\selectfont
+\setlength{\parindent}{2em}\indent
+本人郑重声明：所提交的学位论文，是本人在指导教师的指导下，独立进行研究工作所取得的研究成果并撰写完成的。没有剽窃、抄袭等违反学术道德、学术规范的侵权行为。文中除已经标注引用的内容外，本学位论文中不包含其他人或集体已经发表或撰写过的研究成果，也不包含为获得华北水利水电大学或其它教育机构的学位或证书所使用过的材料。对本文的研究做出重要贡献的个人和集体，均已在文中作了明确的说明并表示了谢意。本人完全意识到本声明的法律后果由本人承担。\par}
+
+\vspace{1.0cm}
+\noindent{\zihao{-4}\songti
+\begin{tabular}{@{}p{6.9cm}@{}p{7.4cm}@{}}
+学位论文作者签名： & 保证人（导师）签名：\\[1.3em]
+签字日期： & 签字日期：\\
+\end{tabular}}
+
+\vspace{\fill}
+\begin{center}
+  \zihao{2}\heiti 学位论文版权使用授权书
+\end{center}
+\vspace{0.7cm}
+
+{\zihao{-4}\songti\linespread{1.5}\selectfont
+\setlength{\parindent}{2em}\indent
+本人完全了解华北水利水电大学有关保管、使用学位论文的规定。特授权华北水利水电大学可以将学位论文的全部或部分内容公开和编入有关数据库提供检索，并采用影印、缩印或扫描等复制手段复制、保存、汇编以供查阅和借阅。同意学校向国家有关部门或机构送交论文原件或复印件和电子文档。（涉密的学位论文在解密后应遵守此规定）\par}
+
+\vspace{1.0cm}
+\noindent{\zihao{-4}\songti
+\begin{tabular}{@{}p{6.9cm}@{}p{7.4cm}@{}}
+学位论文作者签名： & 导师签名：\\[1.3em]
+签字日期： & 签字日期：\\
+\end{tabular}}
+
+\vspace{\fill}
+\clearpage
+
+% ---------------------------------------------------------------------
+%% 中文摘要（页码由此起，大写罗马数字 Ⅰ, Ⅱ, Ⅲ …）
+% ---------------------------------------------------------------------
+\pagenumbering{Roman}
+\setcounter{page}{1}
+
+\begin{center}
+  {\zihao{3}\heiti\thesisTitleC\par}
+  \vspace{0.8cm}
+  {\zihao{3}\heiti 摘\hspace{0.6em}要\par}
+\end{center}
+\markboth{摘\hspace{0.6em}要}{摘\hspace{0.6em}要}
+\addcontentsline{toc}{chapter}{摘\hspace{0.6em}要}
+\pdfbookmark[0]{摘要}{bm:cabstract}
+\vspace{0.4cm}
+
+%% ===== 待填写区（二）：中文摘要正文（硕士不少于 600 字，博士不少于 2000 字）=====
+\zihao{-4}\songti
+本文研究一类具有非线性源项的发展方程初边值问题解的定性性质，重点讨论解的整体存在性与有限时刻爆破的判别准则。\par
+
+首先，利用 Galerkin 逼近与能量估计，证明了问题在 $H^1_0(\Omega)$ 框架下局部弱解的存在唯一性，并借助 Gronwall 不等式建立了先验估计；其次，通过构造位势井（potential well）并分析初始能量 $E(0)$ 的符号，给出了解整体存在与有限时刻爆破的门槛条件，即当 $E(0)<0$ 时解必在有限时刻 $T^*$ 爆破，而当 $E(0)$ 低于位势井深度且初值位于稳定集内时解整体存在；最后，针对二维情形设计了保持能量耗散结构的有限差分格式，数值实验验证了理论收敛阶，所得误差阶与理论分析一致。\par
+
+本文的主要创新点在于：将位势井方法与改进的 Gagliardo--Nirenberg 插值不等式结合，得到了爆破时刻的上界估计，并通过数值算例给出了该上界的可靠性检验。研究成果可望为同类非线性发展方程的定性研究提供可推广的分析框架。\par
+
+\vspace{0.6cm}
+\noindent {\zihao{-4}\heiti 关键词：}\zihao{-4}\songti 非线性发展方程；位势井；爆破；整体存在性；有限差分格式
+
+\clearpage
+
+% ---------------------------------------------------------------------
+%% 英文摘要
+% ---------------------------------------------------------------------
+\begin{center}
+  {\zihao{3}\bfseries\thesisTitleE\par}
+  \vspace{0.8cm}
+  {\zihao{3}\bfseries ABSTRACT\par}
+\end{center}
+\markboth{ABSTRACT}{ABSTRACT}
+\addcontentsline{toc}{chapter}{ABSTRACT}
+\pdfbookmark[0]{ABSTRACT}{bm:eabstract}
+\vspace{0.4cm}
+
+%% ===== 待填写区（三）：英文摘要正文（与中文摘要内容一致）=====
+\zihao{-4}\songti
+This thesis is concerned with the qualitative properties of solutions to the initial-boundary value problem for a class of evolution equations with nonlinear source terms, and focuses on the criteria for global existence and finite-time blow-up. \par
+
+First, by means of the Galerkin approximation and energy estimates, the existence and uniqueness of local weak solutions in the framework of $H^1_0(\Omega)$ are established, and a priori estimates are derived via Gronwall's inequality. Second, by constructing the potential well and analyzing the sign of the initial energy $E(0)$, a threshold is obtained: the solution blows up in finite time $T^*$ provided $E(0)<0$, while it exists globally when $E(0)$ is below the depth of the potential well and the initial data lie in the stable set. Finally, a finite difference scheme preserving the energy dissipation structure is designed for the two-dimensional case; numerical experiments confirm the theoretical convergence order. \par
+
+\vspace{0.6cm}
+\noindent {\zihao{-4}\bfseries Keywords:}\normalfont\zihao{-4}\songti Nonlinear evolution equations; Potential well; Blow-up; Global existence; Finite difference scheme
+
+\clearpage
+
+% ---------------------------------------------------------------------
+%% 目录
+% ---------------------------------------------------------------------
+\begin{center}
+  {\zihao{3}\heiti\contentsname\par}
+\end{center}
+\markboth{\contentsname}{\contentsname}
+\addcontentsline{toc}{chapter}{\contentsname}
+\pdfbookmark[0]{目录}{bm:toc}
+\vspace{0.3cm}
+\zihao{-4}
+\tableofcontents
+\thispagestyle{ncwupage}
+\clearpage
+
+% ---------------------------------------------------------------------
+%% 插图与附表清单（如无可整段删除）
+% ---------------------------------------------------------------------
+\begin{center}
+  {\zihao{3}\heiti 插图与附表清单\par}
+\end{center}
+\markboth{插图与附表清单}{插图与附表清单}
+\addcontentsline{toc}{chapter}{插图与附表清单}
+\pdfbookmark[0]{插图与附表清单}{bm:lof}
+\vspace{0.3cm}
+\zihao{-4}
+% 分组小标题（四号黑体），Word 模板对应“插图和附表清单（如有）”一项，
+% 这里拆成“插图清单 / 附表清单”两组，标题仅出现一次
+{\zihao{4}\heiti 插图清单\par}
+\vspace{0.2cm}
+\listoffigures
+\vspace{0.6cm}
+{\zihao{4}\heiti 附表清单\par}
+\vspace{0.2cm}
+\listoftables
+\thispagestyle{ncwupage}
+\clearpage
+
+% ---------------------------------------------------------------------
+%% 主要符号表（缩写和符号清单）
+% ---------------------------------------------------------------------
+\ncwuchapter{主要符号表}
+\zihao{-4}\songti
+\begin{center}
+  \begin{longtable}{@{}p{3.4cm}p{11.6cm}@{}}
+    \toprule
+    \heiti 符号 & \heiti 含义 \\
+    \midrule
+    \endfirsthead
+    \toprule
+    \heiti 符号 & \heiti 含义 \\
+    \midrule
+    \endhead
+    \symitem{\Omega}{\ 有界区域，$\Omega\subset\R^n$，边界 $\partial\Omega$ 充分光滑}
+    \symitem{|\Omega|}{\ 区域 $\Omega$ 的 Lebesgue 测度}
+    \symitem{L^p(\Omega)}{\ Lebesgue 空间，范数记为 $\norm{\cdot}_{L^p}$}
+    \symitem{H^1_0(\Omega)}{\ Sobolev 空间 $W^{1,2}_0(\Omega)$}
+    \symitem{\norm{\cdot}}{\ 范数，$\norm{u}_{H^1_0}=\norm{\nabla u}_{L^2}$}
+    \symitem{\inner{\cdot}{\cdot}}{\ 内积，$\inner{u}{v}=\int_\Omega uv\,\dif x$}
+    \symitem{u_t}{\ $u$ 对时间 $t$ 的偏导数 $\partial u/\partial t$}
+    \symitem{\Delta u}{\ Laplace 算子，$\Delta u=\sum_{i=1}^n \partial^2 u/\partial x_i^2$}
+    \symitem{E(t)}{\ 总能量，$E(t)=\frac12\norm{\nabla u}_{L^2}^2-\frac1p\norm{u}_{L^p}^p$}
+    \symitem{T^*}{\ 解的爆破时刻}
+    \symitem{C}{\ 与解无关的正常数，不同处可取值不同}
+    \bottomrule
+  \end{longtable}
+\end{center}
+
+\cleardoublepage
+
+% =====================================================================
+%% 正文：页码改用阿拉伯数字（1, 2, 3 …），页眉奇数页为章标题
+% =====================================================================
+\cleardoublepage
+\ncwufrontfalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ---------------------------------------------------------------------
+\chapter{绪论}
+% ---------------------------------------------------------------------
+\section{研究背景与意义}
+非线性发展方程广泛出现于流体力学、非线性光学与反应扩散过程之中，其中解的爆破（blow-up）与整体存在性（global existence）是定性研究的核心问题之一\upcite{ref1,ref2}。自 Fujita 关于半线性热方程的开创性工作以来，位势井方法成为判别解整体存在与有限时刻爆破的经典工具\upcite{ref3}。
+
+本章给出研究背景、国内外研究现状以及本文的主要工作与结构安排。
+
+\section{国内外研究现状}
+关于非线性抛物型方程解的爆破行为，已有大量研究成果。文献\upcite{ref4}利用能量方法给出了爆破时刻的上界估计；文献\upcite{ref5}讨论了临界指数情形下的爆破速率。数值方面，保持能量耗散结构的差分格式在文献\upcite{ref6}中被系统研究。
+
+\section{本文的主要工作}
+本文的工作概括如下：
+
+\begin{enumerate}[label=(\arabic*)]
+  \item 在 $H^1_0(\Omega)$ 框架下建立局部弱解的存在唯一性；
+  \item 利用位势井与改进的插值不等式，给出整体存在与有限时刻爆破的判别准则；
+  \item 设计能量稳定的有限差分格式，并数值验证理论收敛阶。
+\end{enumerate}
+
+\section{本文的结构安排}
+本文共五章。第 \ref{chap:pre} 章给出预备知识与常用不等式；第 \ref{chap:main} 章建立主要定理并给出证明；第 \ref{chap:num} 章给出数值算例；第 \ref{chap:con} 章总结全文并展望未来研究。
+
+% ---------------------------------------------------------------------
+\chapter{预备知识}
+\label{chap:pre}
+% ---------------------------------------------------------------------
+\section{函数空间与常用不等式}
+设 $\Omega\subset\R^n$ 为具有 Lipschitz 边界的有界区域。记 $H^1_0(\Omega)$ 为 $C^\infty_0(\Omega)$ 在 $H^1$ 范数下的闭包，其范数由
+\begin{equation}
+  \norm{u}_{H^1_0} := \norm{\nabla u}_{L^2(\Omega)}
+  = \left( \int_\Omega \abs{\nabla u}^2 \,\dif x \right)^{1/2}
+  \label{eq:norm}
+\end{equation}
+给出。
+
+\begin{definition}[弱解]
+设 $u_0\in H^1_0(\Omega)$，$T>0$。若 $u\in L^\infty\bigl(0,T;H^1_0(\Omega)\bigr)$ 且 $u_t\in L^2\bigl(0,T;L^2(\Omega)\bigr)$ 满足对任意 $\varphi\in C^\infty_0(\Omega\times[0,T))$ 有
+\begin{equation}
+  \int_0^T\!\!\int_\Omega \bigl( u_t\varphi + \nabla u\cdot\nabla\varphi \bigr)\,\dif x\dif t
+  = \int_0^T\!\!\int_\Omega f(u)\,\varphi\,\dif x\dif t ,
+  \label{eq:weak}
+\end{equation}
+且 $u(\cdot,0)=u_0$，则称 $u$ 为问题 \eqref{eq:model} 在 $[0,T]$ 上的弱解。
+\end{definition}
+
+\begin{lemma}[Gronwall 不等式]
+设非负函数 $y(t)\in C([0,T])$ 满足
+\begin{equation}
+  y(t) \leq C_0 + \int_0^t \bigl( a\,y(s) + b \bigr) \,\dif s ,
+  \qquad t\in[0,T],
+  \label{eq:gronwall}
+\end{equation}
+其中 $a,b,C_0\geq 0$ 为常数，则
+\begin{equation}
+  y(t) \leq \left( C_0 + bT \right) e^{aT}, \qquad t\in[0,T].
+  \label{eq:gronwall-res}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+令 $z(t)=C_0+\int_0^t (ay(s)+b)\,\dif s$，则 $z'(t)=ay(t)+b\leq az(t)+b$。两边同乘 $e^{-at}$ 得 $(z e^{-at})'\leq b e^{-at}$，从 $0$ 到 $t$ 积分即有 $z(t)\leq (C_0+bT)e^{at}$，再由 $y(t)\leq z(t)$ 与 $t\leq T$ 即得 \eqref{eq:gronwall-res}。
+\end{proof}
+
+\section{位势井与稳定集}
+\begin{definition}[位势井]
+对 $u\in H^1_0(\Omega)$，定义泛函
+\begin{equation}
+  J(u) = \frac12 \norm{\nabla u}_{L^2}^2 - \frac1p \norm{u}_{L^p}^p ,
+  \qquad
+  I(u) = \norm{\nabla u}_{L^2}^2 - \norm{u}_{L^p}^p ,
+  \label{eq:JI}
+\end{equation}
+其中 $2<p<\infty$（当 $n\geq 3$ 时 $p<\frac{2n}{n-2}$）。称
+\begin{equation}
+  d := \inf\bigl\{\, J(u) : u\in H^1_0(\Omega)\setminus\{0\},\ I(u)=0 \,\bigr\}
+  \label{eq:welldepth}
+\end{equation}
+为位势井深度，稳定集与不稳定集分别定义为
+\begin{equation}
+  W = \{\,u\in H^1_0(\Omega): J(u)<d,\ I(u)>0\,\},\qquad
+  V = \{\,u\in H^1_0(\Omega): J(u)<d,\ I(u)<0\,\}.
+  \label{eq:WV}
+\end{equation}
+\end{definition}
+
+ 
+% ---------------------------------------------------------------------
+\chapter{主要结果及其证明}
+\label{chap:main}
+% ---------------------------------------------------------------------
+\section{问题的提出}
+考虑如下非线性抛物型方程的初边值问题：
+\begin{equation}
+  \begin{cases}
+    u_t - \Delta u = \abs{u}^{p-2}u, & (x,t)\in \Omega\times(0,T],\\[4pt]
+    u(x,t) = 0,                      & (x,t)\in \partial\Omega\times(0,T],\\[4pt]
+    u(x,0) = u_0(x),                 & x\in \Omega,
+  \end{cases}
+  \label{eq:model}
+\end{equation}
+其中 $2<p<\infty$，$u_0\in H^1_0(\Omega)$。问题 \eqref{eq:model} 的总能量定义为
+\begin{equation}
+  E(t) = \frac12 \norm{\nabla u(t)}_{L^2}^2 - \frac1p \norm{u(t)}_{L^p}^p ,
+  \qquad t\geq 0 .
+  \label{eq:energy}
+\end{equation}
+
+\subsection{局部存在唯一性}
+\begin{theorem}[局部存在唯一性]
+设 $u_0\in H^1_0(\Omega)$，且 $2<p<\frac{2n}{n-2}$（$n\geq 3$）。则存在 $T_0>0$，使得问题 \eqref{eq:model} 在 $[0,T_0]$ 上存在唯一弱解
+\begin{equation}
+  u \in C\bigl([0,T_0];H^1_0(\Omega)\bigr)\cap L^2\bigl(0,T_0;H^2(\Omega)\bigr) ,
+  \qquad u_t\in L^2\bigl(0,T_0;L^2(\Omega)\bigr) .
+  \label{eq:reg}
+\end{equation}
+\label{thm:local}
+\end{theorem}
+
+\begin{proof}
+取 $H^1_0(\Omega)$ 的一组基 $\{w_k\}_{k\geq 1}$，构造 Galerkin 逼近
+$u_m(t)=\sum_{k=1}^m g_{km}(t)w_k$，使其满足有限维常微分方程组。由 \eqref{eq:energy} 与 Hölder 不等式可得能量恒等式
+\begin{equation}
+  E(t) + \int_0^t \norm{u_t(s)}_{L^2}^2 \,\dif s = E(0),
+  \qquad 0\leq t\leq T_0 ,
+  \label{eq:energy-id}
+\end{equation}
+从而得到 $\{u_m\}$ 在 $L^\infty(0,T_0;H^1_0)\cap H^1(0,T_0;L^2)$ 中的一致有界性。由 Aubin--Lions 紧性定理可取子列强收敛，再结合单调性方法通过极限即得存在性；唯一性由 $L^2$ 能量估计与引理 \ref{eq:gronwall} 直接得到。
+\end{proof}
+
+\subsection{爆破与整体存在的判别}
+\begin{theorem}[有限时刻爆破]
+设 $u_0\in H^1_0(\Omega)$ 且 $E(0)<0$，则问题 \eqref{eq:model} 的解在有限时刻 $T^*<\infty$ 爆破，即
+\begin{equation}
+  \lim_{t\to T^{*-}} \norm{\nabla u(t)}_{L^2}^2 = +\infty .
+  \label{eq:blowup}
+\end{equation}
+\label{thm:blowup}
+\end{theorem}
+
+\begin{proof}
+记 $M(t)=\frac12\norm{u(t)}_{L^2}^2$。对方程 \eqref{eq:model} 两边与 $u$ 作 $L^2$ 内积，得
+\begin{equation}
+  M'(t) = -\norm{\nabla u}_{L^2}^2 + \norm{u}_{L^p}^p
+        = -\Bigl( \norm{\nabla u}_{L^2}^2 - \norm{u}_{L^p}^p \Bigr) .
+  \label{eq:Mprime}
+\end{equation}
+由 $E(0)<0$ 及能量恒等式 \eqref{eq:energy-id} 知 $E(t)\leq E(0)<0$，从而
+\begin{equation}
+  \norm{u}_{L^p}^p
+  > \frac{p}{2}\norm{\nabla u}_{L^2}^2
+  > \norm{\nabla u}_{L^2}^2 ,
+  \label{eq:cmp}
+\end{equation}
+代入 \eqref{eq:Mprime} 得 $M'(t)>0$。再由 Hölder 不等式与 \eqref{eq:cmp} 可推出
+\begin{equation}
+  M'(t) \geq C\,\bigl(M(t)\bigr)^{p/2}, \qquad p>2 ,
+  \label{eq:ode}
+\end{equation}
+其中常数 $C>0$ 仅依赖于 $p$ 与 $\abs{\Omega}$。对 \eqref{eq:ode} 分离变量并积分，得
+\begin{equation}
+  M(t) \geq \left( M(0)^{-(p-2)/2} - \frac{p-2}{2}Ct \right)^{-2/(p-2)} ,
+  \label{eq:Mlower}
+\end{equation}
+故取 $T^*=\dfrac{2M(0)^{-(p-2)/2}}{(p-2)C}$ 时右端发散，即 \eqref{eq:blowup} 成立。
+\end{proof}
+
+\begin{corollary}
+\label{cor:blowup-upper}
+在定理 \ref{thm:blowup} 的条件下，爆破时刻满足上界估计
+\begin{equation}
+  T^* \leq \frac{2}{(p-2)C}\left(\frac12\norm{u_0}_{L^2}^2\right)^{-(p-2)/2} .
+  \label{eq:Tupper}
+\end{equation}
+\end{corollary}
+
+\begin{theorem}[整体存在性]
+设 $u_0\in W$，且 $E(0)<d$，则问题 \eqref{eq:model} 的解整体存在，并满足
+\begin{equation}
+  \norm{\nabla u(t)}_{L^2}^2 \leq \frac{2p}{p-2}\,E(0),
+  \qquad t\geq 0 .
+  \label{eq:global-est}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+由稳定集 $W$ 的不变性（$I(u(t))>0$，$\forall t\geq 0$）及能量恒等式 \eqref{eq:energy-id}，有
+\begin{equation}
+  \frac12\norm{\nabla u}_{L^2}^2
+  = E(t) + \frac1p\norm{u}_{L^p}^p
+  \leq E(0) + \frac1p \norm{\nabla u}_{L^2}^2 ,
+  \label{eq:est1}
+\end{equation}
+整理即得 \eqref{eq:global-est}，再由延拓准则知解可延拓至 $[0,\infty)$。
+\end{proof}
+
+\begin{example}[一维算例]
+取 $\Omega=(0,\pi)$，$p=3$，$u_0(x)=2\sin x$。此时
+\begin{equation}
+  E(0) = \frac12\int_0^\pi \abs{\nabla u_0}^2\,\dif x - \frac13\int_0^\pi \abs{u_0}^3\,\dif x
+       = \frac{\pi}{2} - \frac{16}{9} < 0 ,
+  \label{eq:ex1}
+\end{equation}
+故由定理 \ref{thm:blowup} 知解在有限时刻爆破。
+\end{example}
+
+长公式换行示例如下，转行位置在等号“$=$”处，且上下式在等号处对齐：
+\begin{align}
+  \norm{u}_{L^p}^p
+  &= \int_\Omega \abs{u}^p \,\dif x
+   = \int_\Omega \abs{u}^{p-2}\cdot u^2 \,\dif x \notag\\
+  &\leq \left( \int_\Omega \abs{u}^{(p-2)\cdot\frac{p}{p-2}} \,\dif x \right)^{\frac{p-2}{p}}
+     \left( \int_\Omega \abs{u}^{2\cdot\frac{p}{2}} \,\dif x \right)^{\frac{2}{p}} \notag\\
+  &= \norm{u}_{L^p}^{p-2}\,\norm{u}_{L^p}^2
+   = \norm{u}_{L^p}^p .
+  \label{eq:holder}
+\end{align}
+式中：$u$ 为问题 \eqref{eq:model} 的解，$p$ 为非线性项的指数，$\abs{\Omega}$ 表示区域 $\Omega$ 的测度。
+
+% ---------------------------------------------------------------------
+\chapter{数值算例}
+\label{chap:num}
+% ---------------------------------------------------------------------
+% 说明：本章示例内容分为“算法实现—误差分析—稳定性检验”三节，
+%       使图与表、正文自然混排，避免出现单图独占整页的版式。
+% ---------------------------------------------------------------------
+\section{差分格式与算法实现}
+对区域 $\Omega=(0,1)$ 作一致剖分 $x_j=jh$，$j=0,1,\dots,N$，$h=1/N$；时间层 $t_k=k\tau$，$k=0,1,\dots,M$，$\tau=T/M$。记 $U_j^k$ 为节点 $(x_j,t_k)$ 处的数值解。为保持格式的能量耗散结构，对非线性项采用相邻两个时间层的算术平均，得到如下半隐式差分格式：
+\begin{equation}
+  \frac{U_j^{k+1}-U_j^k}{\tau}
+  - \frac{U_{j+1}^{k+1}-2U_j^{k+1}+U_{j-1}^{k+1}}{h^2}
+  = \frac{\abs{U_j^{k+1}}^{p-2} + \abs{U_j^{k}}^{p-2}}{2}\,
+    \frac{U_j^{k+1}+U_j^k}{2} .
+  \label{eq:scheme}
+\end{equation}
+式中：$U_j^k$ 为节点 $(x_j,t_k)$ 处的数值解，$h$ 为空间步长，$\tau$ 为时间步长，$j=1,\dots,N-1$。
+
+\subsection{边界条件与初始离散}
+边界条件 $u(x,t)=0$ 直接以 $U_0^k=U_N^k=0$ 代入；初值取 $U_j^0$ 为 $u_0(x)$ 在节点处的插值。对式 \eqref{eq:scheme} 乘以 $\tau h\,U_j^{k+1}$ 并对 $j$ 求和，整理得离散能量恒等式
+\begin{equation}
+  \bigl\|U^{k+1}\bigr\|^{2} + 2\tau\Bigl(
+    \bigl\|U^{k+1}-U^{k}\bigr\|^{2}
+    +\frac{h^{2}}{2}\bigl\|D_x U^{k+1}-D_x U^{k}\bigr\|^{2}\Bigr)
+  + \frac{\tau}{p}\Bigl\|U^{k+1}\Bigr\|_{p}^{p}
+  = \bigl\|U^{k}\bigr\|^{2} + \frac{\tau}{p}\bigl\|U^{k}\bigr\|_{p}^{p} + O(\tau^{2}).
+  \label{eq:discrete-energy}
+\end{equation}
+式 \eqref{eq:discrete-energy} 中左端第二、三项均非负，故离散能量 $E_h^k$ 关于 $k$ 单调不增，这与连续情形的能量恒等式 \eqref{eq:energy-id} 相吻合，说明格式在时间方向是无条件稳定的。
+
+\subsection{非线性方程组的求解}
+式 \eqref{eq:scheme} 关于 $U^{k+1}$ 为非线性方程组。记其残量函数为 $\mathcal{R}(U^{k+1})$，采用 Newton 迭代求解：
+\begin{equation}
+  J\bigl(\delta U^{(m)}\bigr)\,\delta U^{(m)}=-R\bigl(U^{(m)}\bigr),\qquad
+  U^{(m+1)}=U^{(m)}+\delta U^{(m)},
+  \label{eq:newton}
+\end{equation}
+式中：$J$ 为 $\mathcal{R}$ 关于未知量的 Jacobian 矩阵。迭代初值取上一时间层的数值解 $U^{(0)}=U^{k}$，并施加上一节得到的 $L^{2}$ 能量估计作为先验约束，以保证 Newton 迭代的收敛性。迭代终止条件取
+\begin{equation}
+  \norm{R\bigl(U^{(m)}\bigr)}_{\infty}<10^{-10}.
+  \label{eq:newton-tol}
+\end{equation}
+每一步时间推进所需的 Newton 迭代次数记为 $m(k)$，全部算例中 $m(k)\leq 4$，且随 $k$ 增大而趋于稳定，说明时间步长 $\tau$ 的选取是合理的。
+
+\section{空间误差与收敛阶}
+取 $\Omega=(0,1)$，$u_0(x)=\sin(\pi x)$，$p=3$，$T=0.5$。取 $\tau=h^{2}$ 以保证时间误差不掩盖空间误差。不同网格下的误差与观测收敛阶见表 \ref{tab:error}。
+
+\begin{table}[htbp]
+  \centering
+  \zihao{5}
+  \tabcap{不同网格下的误差与收敛阶}{Errors and convergence orders on different meshes}
+  \begin{tabular}{ccccc}
+    \toprule
+    $N$ & $h$      & $L^2$ 误差      & $H^1$ 误差      & 收敛阶 \\
+    \midrule
+    16  & 1/16     & 2.4135e-03      & 1.8204e-02      & ---    \\
+    32  & 1/32     & 6.0217e-04      & 4.5498e-03      & 2.00   \\
+    64  & 1/64     & 1.5049e-04      & 1.1371e-03      & 2.00   \\
+    128 & 1/128    & 3.7618e-05      & 2.8426e-04      & 2.00   \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:error}
+\end{table}
+
+表中收敛阶按 $\mathrm{ord}=\log_2(e_{2N}/e_{4N})$ 计算。由表 \ref{tab:error} 可见，$L^{2}$ 与 $H^{1}$ 误差均稳定呈现二阶收敛，与理论分析一致；误差随 $h$ 的变化关系见图 \ref{fig:error}。
+
+\begin{figure}[htbp]
+  \centering
+  \figerror
+  \figcap{误差随空间步长的变化关系}{Dependence of the error on the spatial step size}
+  \label{fig:error}
+\end{figure}
+
+在双对数坐标下，误差曲线近似为一条斜率为 $-2$ 的直线，这表明格式在空间方向具有二阶收敛精度，且不存在明显的振荡现象。
+
+\section{爆破时刻上界的检验}
+推论 \ref{cor:blowup-upper} 给出的上界估计
+\begin{equation}
+  T^* \leq \frac{2}{(p-2)C}\left(\frac12\norm{u_0}_{L^2}^2\right)^{-(p-2)/2}
+  \label{eq:Tupper-num}
+\end{equation}
+式中：常数 $C$ 仅依赖于 $p$ 与 $\abs{\Omega}$。数值上判定 $t_k$ 时刻发生爆破的标准为
+\begin{equation}
+  \norm{U^{k}}_{\infty}\geq \frac{1}{p-1}\norm{u_0}_{L^{2}}^{\,2-p},
+  \label{eq:blowup-crit}
+\end{equation}
+式中：$\norm{U^{k}}_{\infty}$ 为第 $k$ 时间层数值解的最大模。
+
+取 $N=256$，$\tau=10^{-4}$，其余参数同前。不同非线性指数 $p$ 下爆破时刻的理论上界与数值结果见表 \ref{tab:blowtime}。
+
+\begin{table}[htbp]
+  \centering
+  \zihao{5}
+  \tabcap{不同 $p$ 下爆破时刻的理论上界与数值结果}{Theoretical upper bounds and numerical blow-up times for different exponents $p$}
+  \begin{tabular}{cccc}
+    \toprule
+    $p$ & 理论上界 $T^{*}_{\mathrm{ub}}$ & 数值爆破时刻 $T^{*}_{\mathrm{num}}$ & 相对误差 \\
+    \midrule
+    3 & 0.412 & 0.376 & 8.7\% \\
+    4 & 0.583 & 0.541 & 7.2\% \\
+    6 & 0.904 & 0.852 & 5.8\% \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:blowtime}
+\end{table}
+
+由表 \ref{tab:blowtime} 可见，数值爆破时刻始终小于理论上界 \eqref{eq:Tupper-num}，与推论 \ref{cor:blowup-upper} 的结论一致；且随 $p$ 增大相对误差由 $8.7\%$ 递减至 $5.8\%$，说明该上界估计在较大 $p$ 情形更为紧凑。
+
+\section{能量演化}
+数值解的能量演化见图 \ref{fig:energy}。由离散能量恒等式 \eqref{eq:discrete-energy} 与图 \ref{fig:energy} 可见，离散能量 $E_h^k$ 随时间单调不增，且在 $t\to T^{*-}$ 时急剧下降，这与连续解在有限时刻爆破的定性行为 \eqref{eq:blowup} 相互印证。
+
+\begin{figure}[htbp]
+  \centering
+  \figenergy
+  \figcap{能量随时间的演化}{Evolution of the energy with respect to time}
+  \label{fig:energy}
+\end{figure}
+
+作为补充，图 \ref{fig:profile} 给出了 $p=3$ 时数值解 $U^k$ 在三个不同时刻的空间分布。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[x=1.48cm,y=1.15cm,>=stealth]
+    \draw[step=1,gray!22,very thin] (0,0) grid (6,3.2);
+    \draw[->,thick] (0,0) -- (6.3,0) node[below left,font=\zihao{-5}]{$x$};
+    \draw[->,thick] (0,0) -- (0,3.5) node[left,font=\zihao{-5}]{$U^k(x)$};
+    % 三条曲线：峰值随时间下降、边界始终为零
+    \draw[thick,domain=0:6,samples=100,smooth] plot (\x,{2.55*sin(90*\x)});
+    \draw[thick,dashed,domain=0:6,samples=100,smooth] plot (\x,{1.85*sin(90*\x)});
+    \draw[thick,dotted,domain=0:6,samples=100,smooth] plot (\x,{1.15*sin(90*\x)});
+    \node[font=\zihao{-5}] at (4.35,2.80) {$k=120$};
+    \node[font=\zihao{-5}] at (5.05,2.10) {$k=240$};
+    \node[font=\zihao{-5}] at (5.45,1.40) {$k=360$};
+  \end{tikzpicture}
+  \figcap{不同时刻数值解的空间分布}{Spatial profiles of the numerical solution at different times}
+  \label{fig:profile}
+\end{figure}
+
+由图 \ref{fig:profile} 可见，解在边界处恒为零，符合Dirichlet 边界条件；解的峰值随时间单调下降且位置向区域中部集中，表明爆破过程首先在解的极大值处发生，这一现象与位势井理论对稳定集 $W$ 中初值演化的描述一致。
+
+% ---------------------------------------------------------------------
+\chapter{结论与展望}
+\label{chap:con}
+% ---------------------------------------------------------------------
+\section{主要结论}
+本文针对非线性发展方程 \eqref{eq:model}，建立了局部弱解的存在唯一性，并利用位势井方法给出了解整体存在与有限时刻爆破的判别准则：当 $E(0)<0$ 时解必在有限时刻爆破；当 $E(0)<d$ 且 $u_0\in W$ 时解整体存在。
+
+\section{研究展望}
+后续研究可从以下方向展开：临界指数 $p=\frac{2n}{n-2}$ 情形下的爆破速率估计；带非局部源项的发展方程；以及高维情形下自适应网格算法的构造与分析。
+
+% =====================================================================
+%% 参考文献（GB/T 7714—2015 顺序编码制，9 种文献类型示例）
+%% 要求：硕士不少于 50 篇（英文一般不少于 15 篇）；博士不少于 100 篇
+%% 说明：thebibliography 自动生成“参考文献”章标题并加入目录
+% =====================================================================
+\clearpage
+\markboth{参考文献}{参考文献}
+\pdfbookmark[0]{参考文献}{bm:bib}
+\zihao{5}\songti
+\begin{thebibliography}{99}
+\bibitem{ref1} 陈恕行. 现代偏微分方程导论[M]. 2版. 北京: 科学出版社, 2018: 45-78.
+\bibitem{ref2} 伍卓群, 尹景学, 王春朋. 非线性扩散方程[M]. 长春: 吉林大学出版社, 1996: 112-140.
+\bibitem{ref3} Payne L E, Sattinger D H. Saddle points and instability of nonlinear hyperbolic equations[J]. Israel Journal of Mathematics, 1975, 22(3): 273-303.
+\bibitem{ref4} Levine H A. The role of critical exponents in blowup theorems[J]. SIAM Review, 1990, 32(2): 262-288.
+\bibitem{ref5} Giga Y, Kohn R V. Asymptotically self-similar blow-up of semilinear heat equations[J]. Communications on Pure and Applied Mathematics, 1985, 38(3): 297-319.
+\bibitem{ref6} 张恭庆, 林源渠. 泛函分析讲义: 上册[M]. 北京: 北京大学出版社, 2006: 88-120.
+\bibitem{ref7} Adams R A, Fournier J J F. Sobolev Spaces[M]. 2nd ed. New York: Academic Press, 2003: 60-95.
+\bibitem{ref8} Evans L C. Partial Differential Equations[M]. 2nd ed. Providence: American Mathematical Society, 2010: 342-370.
+\bibitem{ref9} 刘亚成. 一类非线性发展方程的初边值问题[C]. 全国非线性偏微分方程学术研讨会论文集. 北京: 中国数学会, 2015: 23-30.
+\bibitem{ref10} 王术. Sobolev 空间与偏微分方程引论[D]. 北京: 中国科学院数学研究所, 2002: 33-56.
+\bibitem{ref11} 国家自然科学基金委员会. 数学物理方程学科发展战略研究报告[R]. 北京: 科学出版社, 2019: 12-25.
+\bibitem{ref12} 中华人民共和国国家质量监督检验检疫总局. 信息与文献 参考文献著录规则: GB/T 7714—2015[S]. 北京: 中国标准出版社, 2015.
+\bibitem{ref13} 王元. 数学研究的现状与展望[N]. 光明日报, 2020-05-18(9).
+\bibitem{ref14} 教育部. 学位与研究生教育发展报告[EB/OL]. (2021-03-05)[2026-04-10]. http://www.moe.gov.cn/.
+\bibitem{ref15} Ladyzhenskaya O A. A dynamical system generated by the Navier-Stokes equations[J]. Journal of Soviet Mathematics, 1975, 3(4): 458-479.
+\end{thebibliography}
+
+% =====================================================================
+%% 攻读学位期间参加的科研项目及发表的学术论文
+% =====================================================================
+\clearpage
+\ncwuchapter{攻读学位期间参加的科研项目及发表的学术论文}
+\zihao{-4}\songti
+
+\noindent{\heiti 参加项目情况：}
+\begin{enumerate}[label={\arabic*.}, itemsep=0pt]
+  \item 国家自然科学基金面上项目“非线性发展方程的定性理论”(No. 12071123)，主要参与人；
+  \item 河南省科技攻关项目“偏微分方程数值算法研究”(No. 212102210123)，参与人。
+\end{enumerate}
+
+\vspace{0.6cm}
+\noindent{\heiti 发表论文情况：}
+\begin{enumerate}[label={\arabic*.}, itemsep=0pt]
+  \item Zhang San, Li Si. Blow-up criteria for a class of nonlinear evolution equations[J]. Journal of Mathematical Analysis and Applications, 2025, 538(2): 128456.
+  \item 张三, 李四. 一类非线性抛物方程的位势井方法[J]. 数学物理学报, 2025, 45(3): 721-736.
+\end{enumerate}
+
+% =====================================================================
+%% 致谢
+% =====================================================================
+\clearpage
+\ncwuchapter{致\hspace{0.6em}谢}
+\zihao{-4}\songti
+本论文是在导师的悉心指导下完成的。从选题、论证到定稿，导师严谨的治学态度与敏锐的学术洞察力使我受益良多，在此谨致以最诚挚的谢意。
+
+感谢数学与统计学院的各位老师在课程学习与讨论班中给予的指导；感谢课题组同学在数值实验方面提供的帮助；感谢家人在学业期间的理解与支持。
+
+感谢评审专家与答辩委员会提出的宝贵意见。
+
+% =====================================================================
+%% 附录（序号用 Ⅰ, Ⅱ, Ⅲ …；无附录时可整段删除）
+% =====================================================================
+\clearpage
+\ncwuchapter{附\hspace{0.6em}录}
+
+\appendixsec{定理 \ref{thm:local} 证明中的先验估计}
+下面补充 Galerkin 逼近的先验估计细节。由 \eqref{eq:energy-id} 与 Sobolev 嵌入 $H^1_0(\Omega)\hookrightarrow L^p(\Omega)$ 可得
+\begin{equation}
+  \frac12\norm{\nabla u_m(t)}_{L^2}^2
+  \leq E(0) + \frac1p\,C_S^p\,\norm{\nabla u_m(t)}_{L^2}^p ,
+  \label{eq:appx-est}
+\end{equation}
+其中 $C_S$ 为 Sobolev 嵌入常数。结合 \eqref{eq:gronwall} 即可得到 $\{u_m\}$ 的一致有界性，进而由紧性方法完成证明。
+
+\appendixsec{数值实验程序说明}
+数值实验基于 MATLAB R2023b 实现，核心求解器采用 Newton 迭代求解非线性代数方程组，迭代初值取上一时间层的数值解，收敛判据为残量小于 $10^{-10}$。
+
+\end{document}

@@ -1,0 +1,142 @@
+% 中文数学论文模板 —— ctexart + Fandol 字体（跨平台，无需系统字体配置）
+% 引擎：xelatex
+% 若想改用本机字体，可把 fontset=fandol 换成 fontset=windows（Windows）
+% 或 fontset=mac（macOS），也可 \setCJKmainfont{宋体}。
+\documentclass[12pt,a4paper,UTF8,fontset=fandol]{ctexart}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\geometry{left=2.8cm,right=2.6cm,top=2.8cm,bottom=2.6cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue}
+
+\ctexset{
+  section = {format = \centering\Large\bfseries},
+  subsection = {format = \large\bfseries}
+}
+
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{定义}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{注}
+\renewcommand{\proofname}{\bf 证明}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\paOm}{\partial\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\DeclareMathOperator{\divg}{div}
+
+\title{一类非线性椭圆方程弱解的正则性}
+\author{杨建伟}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent 本文研究有界区域上一类具 $p$-增长条件的非线性椭圆方程弱解的
+正则性。通过建立一个改进的 Caccioppoli 型不等式并结合 Moser 迭代，
+我们证明了弱解的局部有界性与 Hölder 连续性。所得结果推广了经典的
+De Giorgi--Nash--Moser 理论。
+
+\smallskip
+\noindent\textbf{关键词：}非线性椭圆方程；弱解；正则性；Moser 迭代
+
+\smallskip
+\noindent\textbf{中图分类号：}O175.25 \quad \textbf{文献标识码：}A
+\end{abstract}
+
+\section{引言与主要结果}
+
+设 $\Om\subset\R^n$（$n\ge2$）为有界 Lipschitz 区域。考虑 Dirichlet 问题
+\begin{equation}\label{eq:1}
+  -\divg\bigl(A(x,\nabla u)\bigr)=f(x) \quad \text{于 } \Om,
+  \qquad u=0 \quad \text{于 } \paOm .
+\end{equation}
+其中 $A:\Om\times\R^n\to\R^n$ 满足如下结构性条件：存在
+$0<\lambda\le\Lambda<\infty$ 使得对几乎处处的 $x\in\Om$ 与任意
+$\xi\in\R^n$，
+\begin{equation}\label{eq:structure}
+  A(x,\xi)\cdot\xi \ge \lambda|\xi|^p, \qquad
+  |A(x,\xi)| \le \Lambda|\xi|^{p-1}.
+\end{equation}
+
+\begin{definition}\label{def:weak}
+称 $u\in W^{1,p}_0(\Om)$ 为方程 \eqref{eq:1} 的弱解，若对任意
+$\varphi\in W^{1,p}_0(\Om)$ 有
+\begin{equation}
+  \int_{\Om}A(x,\nabla u)\cdot\nabla\varphi\,\dd x
+  = \int_{\Om} f\varphi\,\dd x .
+\end{equation}
+\end{definition}
+
+\begin{theorem}[主要定理]\label{thm:main}
+设 $1<p<n$，$f\in L^q(\Om)$ 且 $q>n/p$。若 $u$ 是 \eqref{eq:1} 的
+弱解并满足 \eqref{eq:structure}，则 $u\in L^\infty_{\mathrm{loc}}(\Om)$，
+且存在 $\alpha\in(0,1)$ 使得对任意 $\Om'\Subset\Om$，
+$u\in C^{0,\alpha}(\Om')$。
+\end{theorem}
+
+\section{预备知识}
+
+我们回顾两个基本工具。首先是 Poincaré 不等式：对 $u\in W^{1,p}_0(\Om)$，
+\begin{equation}\label{eq:poincare}
+  \|u\|_{L^p(\Om)} \le C(\Om,n,p)\,\|\nabla u\|_{L^p(\Om)} .
+\end{equation}
+其次是 Sobolev 嵌入 $W^{1,p}_0(\Om)\hookrightarrow L^{p^*}(\Om)$，
+其中 $p^*=np/(n-p)$。
+
+\begin{lemma}[Caccioppoli 不等式]\label{lem:cacc}
+设 $B_{2r}(x_0)\Subset\Om$，$k\in\R$。则
+\begin{equation}
+  \int_{A_{k,r}}|\nabla u|^p\,\dd x
+  \le \frac{C}{r^p}\int_{A_{k,2r}}(u-k)^p\,\dd x
+      + C\int_{A_{k,2r}}|f|^{p'}\,\dd x ,
+\end{equation}
+其中 $A_{k,\rho}=B_\rho(x_0)\cap\{u>k\}$。
+\end{lemma}
+
+\begin{proof}
+在弱解定义式中取检验函数 $\varphi=\eta^p(u-k)_+$，
+其中 $\eta\in C_c^\infty(B_{2r})$ 为截断函数。利用 \eqref{eq:structure}
+及 Young 不等式即可吸收梯度项，得到结论。
+\end{proof}
+
+\section{定理 \ref{thm:main} 的证明}
+
+\begin{proof}
+由引理 \ref{lem:cacc} 出发，对水平集测度作 De Giorgi 型递推。
+令 $k_j=k_0(2-2^{-j})$，$r_j=r+2^{-j}r$，记
+$Y_j=\int_{A_{k_j,r_j}}(u-k_j)^p\,\dd x$。
+由 Sobolev 嵌入与引理 \ref{lem:cacc} 可得递推关系
+$Y_{j+1}\le C b^j Y_j^{1+\delta}$（$b>1,\ \delta>0$）。
+取 $k_0$ 足够大使 $Y_0$ 充分小，则 $Y_j\to0$，从而
+$\sup_{B_r}u\le 2k_0$，即局部有界性。再结合标准的振荡衰减估计
+即得 Hölder 连续性。
+\end{proof}
+
+\begin{remark}
+条件 $q>n/p$ 是本质的；当 $q=n/p$ 时存在反例说明弱解可能无界。
+\end{remark}
+
+\section{结论}
+
+本文在自然的结构性假设下建立了非线性椭圆方程弱解的局部正则性，
+所用方法不依赖方程的变分结构，因而可推广到更一般的单调算子情形。
+
+\bigskip
+经典背景与相关结果可参见~\cite{GT,LU}。
+
+\begin{thebibliography}{99}
+\bibitem{GT} Gilbarg D., Trudinger N.~S. 二阶椭圆型偏微分方程（第二版）[M].
+北京：世界图书出版公司, 2015.
+\bibitem{LU} Ladyzhenskaya O.~A., Ural'tseva N.~N. Linear and Quasilinear
+Elliptic Equations [M]. New York: Academic Press, 1968.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,1464 @@
+{
+  "welcome.tex": {
+    "name": "欢迎使用 YangTex",
+    "category": "入门与通用",
+    "engine": "xelatex",
+    "description": "默认示例文档：中英文混排、AMS 数学环境、双向同步演示",
+    "lang": "中 / 英",
+    "requires": [
+      "ctexart.cls",
+      "amsmath.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "YangTex 欢迎文档",
+    "tags": [
+      "入门",
+      "欢迎词"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "ams_article.tex": {
+    "name": "AMS 期刊论文 (amsart)",
+    "category": "AMS 美国数学会",
+    "engine": "pdflatex",
+    "description": "Transactions / Proc. AMS 等期刊标准格式，含定理环境与 AMS 元数据",
+    "lang": "英文",
+    "requires": [
+      "amsart.cls",
+      "amssymb.sty",
+      "amsthm.sty"
+    ],
+    "publisher": "AMS",
+    "journal": "Transactions / Proceedings of the AMS",
+    "tags": [
+      "期刊",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsart.cls",
+    "fallback": true
+  },
+  "ams_proceedings.tex": {
+    "name": "AMS 会议文集 (amsproc)",
+    "category": "AMS 美国数学会",
+    "engine": "pdflatex",
+    "description": "会议论文集 / Contemporary Mathematics 格式",
+    "lang": "英文",
+    "requires": [
+      "amsproc.cls"
+    ],
+    "publisher": "AMS",
+    "journal": "Proceedings of the AMS",
+    "tags": [
+      "会议论文集",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsproc.cls",
+    "fallback": true
+  },
+  "ams_book.tex": {
+    "name": "AMS 专著章节 (amsbook)",
+    "category": "AMS 美国数学会",
+    "engine": "pdflatex",
+    "description": "Mathematical Surveys and Monographs 风格的长篇章节",
+    "lang": "英文",
+    "requires": [
+      "amsbook.cls"
+    ],
+    "publisher": "AMS",
+    "journal": "AMS Book / Monograph",
+    "tags": [
+      "专著",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsbook.cls",
+    "fallback": true
+  },
+  "pde_paper.tex": {
+    "name": "PDE 论文通用模板",
+    "category": "预印本与通用",
+    "engine": "pdflatex",
+    "description": "为偏微分方程写作预置：Sobolev 空间、能量估计、定理/引理环境与常用宏",
+    "lang": "英文",
+    "requires": [
+      "amsmath.sty",
+      "amssymb.sty",
+      "amsthm.sty",
+      "mathtools.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "PDE 通用论文",
+    "tags": [
+      "PDE",
+      "通用"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "arxiv_preprint.tex": {
+    "name": "arXiv 预印本",
+    "category": "预印本与通用",
+    "engine": "pdflatex",
+    "description": "提交 arXiv 的轻量 article 模板，含 hyperref 与交叉引用",
+    "lang": "英文",
+    "requires": [
+      "hyperref.sty",
+      "amsmath.sty"
+    ],
+    "publisher": "arXiv",
+    "journal": "arXiv math.AP 预印本",
+    "tags": [
+      "预印本",
+      "英文"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "elsarticle.tex": {
+    "name": "Elsevier 期刊 (elsarticle)",
+    "category": "Elsevier 数学期刊",
+    "engine": "pdflatex",
+    "description": "J. Differential Equations、JMAA 等 Elsevier 数学期刊格式",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "publisher": "Elsevier",
+    "journal": "Journal of Differential Equations",
+    "tags": [
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls",
+    "fallback": true
+  },
+  "ieee_tran.tex": {
+    "name": "IEEE 期刊 (IEEEtran)",
+    "category": "IEEE 与交叉学科",
+    "engine": "pdflatex",
+    "description": "IEEE Transactions 双栏格式",
+    "lang": "英文",
+    "requires": [
+      "IEEEtran.cls"
+    ],
+    "publisher": "IEEE",
+    "journal": "IEEE Transactions on Automatic Control",
+    "tags": [
+      "双栏",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "IEEEtran.cls",
+    "fallback": true
+  },
+  "siam_article.tex": {
+    "name": "SIAM 期刊 (siamart)",
+    "category": "SIAM 工业与应用数学会",
+    "engine": "pdflatex",
+    "description": "SIAM J. Math. Anal. / SIMAX 格式；未装官方类时自动预览排版，安装后自动启用正式格式",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "fallback": true,
+    "publisher": "SIAM",
+    "journal": "SIAM J. Math. Anal. / SIMAX",
+    "tags": [
+      "应用数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "springer_journal.tex": {
+    "name": "Springer 期刊 (svjour3)",
+    "category": "Springer 数学期刊",
+    "engine": "pdflatex",
+    "description": "J. Evol. Equ. 等 Springer 数学期刊；未装官方类时自动预览排版，安装后自动启用正式格式",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "fallback": true,
+    "publisher": "Springer",
+    "journal": "Journal of Evolution Equations",
+    "tags": [
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "aims_article.tex": {
+    "name": "AIMS 期刊 (aimsart)",
+    "category": "AIMS 与其他英文期刊",
+    "engine": "pdflatex",
+    "description": "AIMS Mathematics / DCDS 等；未装官方类时自动预览排版，安装后自动启用正式格式",
+    "lang": "英文",
+    "requires": [
+      "aimsart.cls"
+    ],
+    "fallback": true,
+    "publisher": "AIMS",
+    "journal": "AIMS Mathematics / DCDS",
+    "tags": [
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "aimsart.cls",
+    "class_url": "https://www.aimsciences.org/era/text_file_preparation"
+  },
+  "ctex_article.tex": {
+    "name": "中文数学论文 (ctexart)",
+    "category": "中文写作",
+    "engine": "xelatex",
+    "description": "中文期刊 / 学位论文主体，Fandol 字体跨平台可用",
+    "lang": "中文",
+    "requires": [
+      "ctexart.cls",
+      "amsmath.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "中文数学论文通用",
+    "tags": [
+      "中文",
+      "通用"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "ctex_bilingual.tex": {
+    "name": "中英双语论文",
+    "category": "中文写作",
+    "engine": "xelatex",
+    "description": "中文正文 + 英文标题摘要关键词，适合国内学报投稿",
+    "lang": "中 / 英",
+    "requires": [
+      "ctexart.cls",
+      "xeCJK.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "中英文混排",
+    "tags": [
+      "中文",
+      "中英混排"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "beamer_talk.tex": {
+    "name": "学术报告 Beamer（中文）",
+    "category": "报告与讲义",
+    "engine": "xelatex",
+    "description": "组会 / 会议报告，含定理、公式与分栏，中文可直接编译",
+    "lang": "中 / 英",
+    "requires": [
+      "beamer.cls",
+      "ctex.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "学术报告 Beamer",
+    "tags": [
+      "幻灯片",
+      "中文"
+    ],
+    "official": false,
+    "doc_class": "beamer.cls"
+  },
+  "lecture_notes.tex": {
+    "name": "课程讲义 / 笔记",
+    "category": "报告与讲义",
+    "engine": "xelatex",
+    "description": "研究生课程讲义，含定义-定理-证明结构与习题",
+    "lang": "中 / 英",
+    "requires": [
+      "ctexart.cls",
+      "amsthm.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "课程讲义",
+    "tags": [
+      "讲义",
+      "中文"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "blank_minimal.tex": {
+    "name": "最小空白文档",
+    "category": "入门与通用",
+    "engine": "xelatex",
+    "description": "干净起点，中英文都可写，导言区仅含常用数学宏包",
+    "lang": "中 / 英",
+    "requires": [
+      "ctexart.cls",
+      "amsmath.sty"
+    ],
+    "publisher": "YangTex",
+    "journal": "空白最小文档",
+    "tags": [
+      "入门",
+      "空白"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "md_lecture_note.md": {
+    "name": "Markdown 课堂笔记",
+    "category": "Markdown 模板",
+    "engine": "xelatex",
+    "description": "标题 / 列表 / 表格 / 引用 / 数学，纯 Markdown 写笔记，套用即得到可编译 LaTeX",
+    "lang": "中文",
+    "kind": "markdown",
+    "publisher": "YangTex",
+    "journal": "Markdown 课堂笔记",
+    "tags": [
+      "Markdown",
+      "笔记"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "md_meeting_minutes.md": {
+    "name": "Markdown 组会纪要",
+    "category": "Markdown 模板",
+    "engine": "xelatex",
+    "description": "议程、结论表、负责人与待办清单，适合每周组会记录",
+    "lang": "中文",
+    "kind": "markdown",
+    "publisher": "YangTex",
+    "journal": "Markdown 会议记录",
+    "tags": [
+      "Markdown",
+      "会议"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "md_literature_card.md": {
+    "name": "Markdown 文献精读卡",
+    "category": "Markdown 模板",
+    "engine": "xelatex",
+    "description": "文献信息 / 一句话结论 / 核心估计 / 可复用引理 / 自己的问题",
+    "lang": "中文",
+    "kind": "markdown",
+    "publisher": "YangTex",
+    "journal": "Markdown 文献卡片",
+    "tags": [
+      "Markdown",
+      "文献"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "md_research_report.md": {
+    "name": "Markdown 英文研究报告",
+    "category": "Markdown 模板",
+    "engine": "pdflatex",
+    "description": "英文短文结构：Abstract / Setup / Notation / Result / Next steps",
+    "lang": "英文",
+    "kind": "markdown",
+    "publisher": "YangTex",
+    "journal": "Markdown 研究报告",
+    "tags": [
+      "Markdown",
+      "报告"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "mixed_pde_note.mdtex": {
+    "name": "混排 · PDE 能量估计笔记",
+    "category": "Markdown / LaTeX 混排",
+    "engine": "xelatex",
+    "description": "Markdown 写结构，:::latex 区写定理、证明与 align 公式",
+    "lang": "中文",
+    "kind": "mixed",
+    "publisher": "YangTex",
+    "journal": "PDE 混排笔记",
+    "tags": [
+      "混排",
+      "PDE"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "mixed_seminar.mdtex": {
+    "name": "混排 · 组会报告",
+    "category": "Markdown / LaTeX 混排",
+    "engine": "xelatex",
+    "description": "提纲 / 估计链条 / 结果表用 Markdown，方程与引理用 LaTeX",
+    "lang": "中文",
+    "kind": "mixed",
+    "publisher": "YangTex",
+    "journal": "讨论班混排讲稿",
+    "tags": [
+      "混排",
+      "讲义"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "mixed_homework.mdtex": {
+    "name": "混排 · 习题解答",
+    "category": "Markdown / LaTeX 混排",
+    "engine": "xelatex",
+    "description": "题号与说明用 Markdown，proof / align / 表格用 LaTeX",
+    "lang": "中文",
+    "kind": "mixed",
+    "publisher": "YangTex",
+    "journal": "混排作业",
+    "tags": [
+      "混排",
+      "作业"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "mixed_paper_draft.mdtex": {
+    "name": "混排 · 论文初稿",
+    "category": "Markdown / LaTeX 混排",
+    "engine": "xelatex",
+    "description": "摘要、分节、讨论用 Markdown 起草，定理与公式保持 LaTeX",
+    "lang": "中文",
+    "kind": "mixed",
+    "publisher": "YangTex",
+    "journal": "混排论文初稿",
+    "tags": [
+      "混排",
+      "论文"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "jams_article.tex": {
+    "name": "JAMS 期刊论文",
+    "category": "AMS 美国数学会",
+    "publisher": "AMS",
+    "journal": "Journal of the American Mathematical Society",
+    "engine": "pdflatex",
+    "description": "JAMS 官方 amsart 排版，含 AMS 主题分类与关键词。",
+    "lang": "英文",
+    "requires": [
+      "amsart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "旗舰期刊",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsart.cls"
+  },
+  "tran_ams.tex": {
+    "name": "Trans. AMS 论文",
+    "category": "AMS 美国数学会",
+    "publisher": "AMS",
+    "journal": "Transactions of the American Mathematical Society",
+    "engine": "pdflatex",
+    "description": "AMS 汇刊长文格式，定理环境编号按节。",
+    "lang": "英文",
+    "requires": [
+      "amsart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "长篇论文",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsart.cls"
+  },
+  "bull_ams.tex": {
+    "name": "Bull. AMS 综述",
+    "category": "AMS 美国数学会",
+    "publisher": "AMS",
+    "journal": "Bulletin of the American Mathematical Society",
+    "engine": "pdflatex",
+    "description": "AMS 通报综述/Book Review 通用格式。",
+    "lang": "英文",
+    "requires": [
+      "amsart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "综述",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsart.cls"
+  },
+  "mcom_article.tex": {
+    "name": "Math. Comp. 论文",
+    "category": "AMS 美国数学会",
+    "publisher": "AMS",
+    "journal": "Mathematics of Computation",
+    "engine": "pdflatex",
+    "description": "计算数学期刊投稿格式，适合算法与误差分析。",
+    "lang": "英文",
+    "requires": [
+      "amsart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "计算数学",
+      "数值分析",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsart.cls"
+  },
+  "ams_survey.tex": {
+    "name": "AMS 专题综述",
+    "category": "AMS 美国数学会",
+    "publisher": "AMS",
+    "journal": "AMS Colloquium Publications / Surveys",
+    "engine": "pdflatex",
+    "description": "AMS 专著/专题综述结构，含章节层级。",
+    "lang": "英文",
+    "requires": [
+      "amsbook.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "专著",
+      "综述",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "amsbook.cls"
+  },
+  "siam_sima.tex": {
+    "name": "SIAM J. Appl. Math.",
+    "category": "SIAM 工业与应用数学会",
+    "publisher": "SIAM",
+    "journal": "SIAM Journal on Applied Mathematics",
+    "engine": "pdflatex",
+    "description": "SIAM 应用数学期刊，含 \\headers / keywords / AMS 分类。",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "应用数学",
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "siam_sinum.tex": {
+    "name": "SIAM J. Numer. Anal.",
+    "category": "SIAM 工业与应用数学会",
+    "publisher": "SIAM",
+    "journal": "SIAM Journal on Numerical Analysis",
+    "engine": "pdflatex",
+    "description": "SINUM 数值分析投稿格式，误差估计与收敛阶。",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "数值分析",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "siam_simax.tex": {
+    "name": "SIAM J. Matrix Anal.",
+    "category": "SIAM 工业与应用数学会",
+    "publisher": "SIAM",
+    "journal": "SIAM Journal on Matrix Analysis and Applications",
+    "engine": "pdflatex",
+    "description": "SIMAX 矩阵分析与线性代数应用。",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "矩阵分析",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "siam_siopt.tex": {
+    "name": "SIAM J. Optim.",
+    "category": "SIAM 工业与应用数学会",
+    "publisher": "SIAM",
+    "journal": "SIAM Journal on Optimization",
+    "engine": "pdflatex",
+    "description": "SIOPT 优化理论与算法。",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "最优化",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "siam_sisc.tex": {
+    "name": "SIAM J. Sci. Comput.",
+    "category": "SIAM 工业与应用数学会",
+    "publisher": "SIAM",
+    "journal": "SIAM Journal on Scientific Computing",
+    "engine": "pdflatex",
+    "description": "SISC 科学计算与数值算法。",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "科学计算",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "siam_review.tex": {
+    "name": "SIAM Review",
+    "category": "SIAM 工业与应用数学会",
+    "publisher": "SIAM",
+    "journal": "SIAM Review",
+    "engine": "pdflatex",
+    "description": "SIAM Review 综述与教育栏目格式。",
+    "lang": "英文",
+    "requires": [
+      "siamart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "综述",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "siamart.cls",
+    "class_url": "https://epubs.siam.org/journal-authors"
+  },
+  "inventiones.tex": {
+    "name": "Inventiones Math.",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Inventiones Mathematicae",
+    "engine": "pdflatex",
+    "description": "Inventiones 官方 svjour3 排版。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "顶级期刊",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "math_annalen.tex": {
+    "name": "Math. Annalen",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Mathematische Annalen",
+    "engine": "pdflatex",
+    "description": "Mathematische Annalen 官方投稿格式。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "math_zeitschrift.tex": {
+    "name": "Math. Zeitschrift",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Mathematische Zeitschrift",
+    "engine": "pdflatex",
+    "description": "Mathematische Zeitschrift 官方投稿格式。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "cmp_article.tex": {
+    "name": "Comm. Math. Phys.",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Communications in Mathematical Physics",
+    "engine": "pdflatex",
+    "description": "CMP 数学物理期刊格式。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "数学物理",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "calc_var_pde.tex": {
+    "name": "Calc. Var. PDE",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Calculus of Variations and Partial Differential Equations",
+    "engine": "pdflatex",
+    "description": "变分法与偏微分方程期刊格式。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "变分法",
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "arch_rational_mech.tex": {
+    "name": "Arch. Ration. Mech. Anal.",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Archive for Rational Mechanics and Analysis",
+    "engine": "pdflatex",
+    "description": "理性力学与分析档案期刊格式。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "连续介质力学",
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "acta_mathematica.tex": {
+    "name": "Acta Mathematica",
+    "category": "Springer 数学期刊",
+    "publisher": "Springer",
+    "journal": "Acta Mathematica",
+    "engine": "pdflatex",
+    "description": "Acta Mathematica 官方投稿格式。",
+    "lang": "英文",
+    "requires": [
+      "svjour3.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "顶级期刊",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "svjour3.cls",
+    "class_url": "https://www.springernature.com/gp/authors/campaigns/latex-authoring"
+  },
+  "jde_article.tex": {
+    "name": "J. Differential Equations",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Journal of Differential Equations",
+    "engine": "pdflatex",
+    "description": "JDE 官方 elsarticle，\\journal 指定期刊名。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "jfa_article.tex": {
+    "name": "J. Functional Analysis",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Journal of Functional Analysis",
+    "engine": "pdflatex",
+    "description": "JFA 泛函分析期刊投稿格式。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "泛函分析",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "advances_math.tex": {
+    "name": "Advances in Mathematics",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Advances in Mathematics",
+    "engine": "pdflatex",
+    "description": "Advances in Mathematics 官方投稿格式。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "顶级期刊",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "jnt_article.tex": {
+    "name": "J. Number Theory",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Journal of Number Theory",
+    "engine": "pdflatex",
+    "description": "数论期刊投稿格式。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "数论",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "topology_appl.tex": {
+    "name": "Topology and its Applications",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Topology and its Applications",
+    "engine": "pdflatex",
+    "description": "拓扑学及其应用期刊格式。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "拓扑学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "jmaa_article.tex": {
+    "name": "J. Math. Anal. Appl.",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Journal of Mathematical Analysis and Applications",
+    "engine": "pdflatex",
+    "description": "JMAA 数学分析与应用期刊格式。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "数学分析",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "aml_article.tex": {
+    "name": "Appl. Math. Letters",
+    "category": "Elsevier 数学期刊",
+    "publisher": "Elsevier",
+    "journal": "Applied Mathematics Letters",
+    "engine": "pdflatex",
+    "description": "AML 短篇快报格式，篇幅紧凑。",
+    "lang": "英文",
+    "requires": [
+      "elsarticle.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "快报",
+      "短篇",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "elsarticle.cls"
+  },
+  "ieee_it.tex": {
+    "name": "IEEE Trans. Inform. Theory",
+    "category": "IEEE 与交叉学科",
+    "publisher": "IEEE",
+    "journal": "IEEE Transactions on Information Theory",
+    "engine": "pdflatex",
+    "description": "IEEE 信息论汇刊双栏官方格式。",
+    "lang": "英文",
+    "requires": [
+      "IEEEtran.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "信息论",
+      "双栏",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "IEEEtran.cls"
+  },
+  "lncs_math.tex": {
+    "name": "Springer LNCS 论文",
+    "category": "IEEE 与交叉学科",
+    "publisher": "Springer",
+    "journal": "Lecture Notes in Computer Science",
+    "engine": "pdflatex",
+    "description": "LNCS 官方 llncs 类，适合计算数学会议论文。",
+    "lang": "英文",
+    "requires": [
+      "llncs.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "会议论文集",
+      "交叉学科",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "llncs.cls"
+  },
+  "aims_math.tex": {
+    "name": "AIMS Mathematics",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "AIMS",
+    "journal": "AIMS Mathematics",
+    "engine": "pdflatex",
+    "description": "AIMS Mathematics 官方 AIMS.cls / aimsart 格式。",
+    "lang": "英文",
+    "requires": [
+      "aimsart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "PDE",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "aimsart.cls",
+    "class_url": "https://www.aimsciences.org/era/text_file_preparation"
+  },
+  "dcds_article.tex": {
+    "name": "DCDS 动力系统",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "AIMS",
+    "journal": "Discrete and Continuous Dynamical Systems",
+    "engine": "pdflatex",
+    "description": "DCDS 离散与连续动力系统期刊格式。",
+    "lang": "英文",
+    "requires": [
+      "aimsart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "动力系统",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "aimsart.cls",
+    "class_url": "https://www.aimsciences.org/era/text_file_preparation"
+  },
+  "jems_article.tex": {
+    "name": "J. Eur. Math. Soc.",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "EMS",
+    "journal": "Journal of the European Mathematical Society",
+    "engine": "pdflatex",
+    "description": "JEMS 投稿格式（本机通常需官方类，缺省降级预览）。",
+    "lang": "英文",
+    "requires": [
+      "jems.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "欧洲数学会",
+      "纯数学",
+      "英文"
+    ],
+    "official": true,
+    "doc_class": "jems.cls",
+    "class_url": "https://ems.press/journals/jems"
+  },
+  "annals_math.tex": {
+    "name": "Annals of Mathematics",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "Princeton",
+    "journal": "Annals of Mathematics",
+    "engine": "pdflatex",
+    "description": "按 Annals 投稿规范整理的 amsart 底稿（期刊未提供公开类）。",
+    "lang": "英文",
+    "requires": [],
+    "kind": "tex",
+    "fallback": false,
+    "tags": [
+      "顶级期刊",
+      "纯数学",
+      "英文"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "duke_math.tex": {
+    "name": "Duke Math. J.",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "Duke",
+    "journal": "Duke Mathematical Journal",
+    "engine": "pdflatex",
+    "description": "按 Duke Math. J. 规范整理的 amsart 底稿。",
+    "lang": "英文",
+    "requires": [],
+    "kind": "tex",
+    "fallback": false,
+    "tags": [
+      "纯数学",
+      "英文"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "imrn_article.tex": {
+    "name": "IMRN",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "Oxford",
+    "journal": "International Mathematics Research Notices",
+    "engine": "pdflatex",
+    "description": "IMRN 投稿规范底稿（amsart 基础排版）。",
+    "lang": "英文",
+    "requires": [],
+    "kind": "tex",
+    "fallback": false,
+    "tags": [
+      "快报",
+      "英文"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "bull_lms.tex": {
+    "name": "Bull. London Math. Soc.",
+    "category": "AIMS 与其他英文期刊",
+    "publisher": "LMS",
+    "journal": "Bulletin of the London Mathematical Society",
+    "engine": "pdflatex",
+    "description": "LMS 通报投稿规范底稿。",
+    "lang": "英文",
+    "requires": [],
+    "kind": "tex",
+    "fallback": false,
+    "tags": [
+      "伦敦数学会",
+      "英文"
+    ],
+    "official": false,
+    "doc_class": ""
+  },
+  "cn_sci_math.tex": {
+    "name": "中国科学：数学",
+    "category": "中文数学期刊",
+    "publisher": "中文期刊",
+    "journal": "中国科学：数学 (SCIENCE CHINA Mathematics)",
+    "engine": "xelatex",
+    "description": "按《中国科学：数学》排版规范整理的 ctex 中文模板。",
+    "lang": "中文",
+    "requires": [
+      "ctexart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "中文",
+      "PDE",
+      "期刊规范"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "acta_math_sinica.tex": {
+    "name": "数学学报",
+    "category": "中文数学期刊",
+    "publisher": "中文期刊",
+    "journal": "数学学报 (Acta Mathematica Sinica)",
+    "engine": "xelatex",
+    "description": "按《数学学报》中文版规范整理的 ctex 模板。",
+    "lang": "中文",
+    "requires": [
+      "ctexart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "中文",
+      "纯数学",
+      "期刊规范"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "appl_math_sinica.tex": {
+    "name": "应用数学学报",
+    "category": "中文数学期刊",
+    "publisher": "中文期刊",
+    "journal": "应用数学学报 (Acta Mathematicae Applicatae Sinica)",
+    "engine": "xelatex",
+    "description": "按《应用数学学报》规范整理的 ctex 中文模板。",
+    "lang": "中文",
+    "requires": [
+      "ctexart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "中文",
+      "应用数学",
+      "期刊规范"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "jcam_article.tex": {
+    "name": "计算数学",
+    "category": "中文数学期刊",
+    "publisher": "中文期刊",
+    "journal": "计算数学 (Journal of Computational Mathematics)",
+    "engine": "xelatex",
+    "description": "按《计算数学》规范整理的 ctex 中文模板。",
+    "lang": "中文",
+    "requires": [
+      "ctexart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "中文",
+      "计算数学",
+      "期刊规范"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "chinese_annals_math.tex": {
+    "name": "数学年刊",
+    "category": "中文数学期刊",
+    "publisher": "中文期刊",
+    "journal": "数学年刊 (Chinese Annals of Mathematics)",
+    "engine": "xelatex",
+    "description": "按《数学年刊》规范整理的 ctex 中文模板。",
+    "lang": "中文",
+    "requires": [
+      "ctexart.cls"
+    ],
+    "kind": "tex",
+    "fallback": true,
+    "tags": [
+      "中文",
+      "纯数学",
+      "期刊规范"
+    ],
+    "official": false,
+    "doc_class": "ctexart.cls"
+  },
+  "ncwu_linear_algebra_book.tex": {
+    "name": "华水 · 水墨青线性代数讲义 (ctexbook)",
+    "category": "中文教材与讲义",
+    "publisher": "华北水利水电大学",
+    "journal": "课程讲义系列 · 线性代数",
+    "engine": "xelatex",
+    "description": "【原稿全量 4736 行】水墨青配色、单双栏混排、章首导览与要点框、边注与 TikZ 封面；适合中文教材与长篇讲义",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 4736,
+    "requires": [
+      "ctexbook.cls",
+      "tcolorbox.sty",
+      "tikz.sty",
+      "pgfplots.sty",
+      "unicode-math.sty",
+      "listings.sty",
+      "emptypage.sty",
+      "marginnote.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "教材",
+      "讲义",
+      "水墨青",
+      "ctexbook"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "ctexbook.cls",
+    "origin": "线性代数讲义 2026—2027 学年新版（15 文件 / 四千余行）"
+  },
+  "ncwu_calc_notes_color.tex": {
+    "name": "华水 · 彩色高数课堂笔记 (article)",
+    "category": "中文教材与讲义",
+    "publisher": "华北水利水电大学",
+    "journal": "高等数学课堂笔记",
+    "engine": "xelatex",
+    "description": "【原稿全量 1311 行】12 种彩色 tcolorbox（定义 / 定理 / 例题 / 提示 / 警示 / 小结）、渐变封面与彩色圆点列表；适合课堂笔记",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 1311,
+    "requires": [
+      "ctex.sty",
+      "tcolorbox.sty",
+      "tikz.sty",
+      "pgfplots.sty",
+      "unicode-math.sty",
+      "pagecolor.sty",
+      "eso-pic.sty",
+      "dashrule.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "讲义",
+      "彩色笔记",
+      "tcolorbox",
+      "article"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "article.cls",
+    "origin": "高等数学课堂笔记 main0729.tex + gdsxbj.tex"
+  },
+  "ncwu_calc_notes_humor.tex": {
+    "name": "华水 · 趣味高数讲义 (article)",
+    "category": "中文教材与讲义",
+    "publisher": "华北水利水电大学",
+    "journal": "高等数学课堂笔记（幽默加料版）",
+    "engine": "xelatex",
+    "description": "【原稿全量 988 行】15 色活泼配色、幽默段子框、公式高亮框、FontAwesome 图标与米白纸色背景；适合趣味讲义",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 988,
+    "requires": [
+      "ctex.sty",
+      "fontawesome5.sty",
+      "tcolorbox.sty",
+      "tikz.sty",
+      "pgfplots.sty",
+      "colortbl.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "讲义",
+      "趣味",
+      "高亮框",
+      "article"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "article.cls",
+    "origin": "高等数学课堂笔记（幽默加料版）main.tex + gdsxjy0817.tex"
+  },
+  "ncwu_beamer_cloud.tex": {
+    "name": "华水 · 云淡风轻数学课件 (ctexbeamer)",
+    "category": "教学课件与答辩",
+    "publisher": "华北水利水电大学",
+    "journal": "实变函数与泛函分析课件",
+    "engine": "xelatex",
+    "description": "【原稿全量 3465 行】云白底色、晴空蓝与暖沙金点缀、自定义中文定理环境、章节过渡页与进度条；适合数学课件",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 3465,
+    "requires": [
+      "ctexbeamer.cls",
+      "tikz.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "课件",
+      "Beamer",
+      "云淡风轻",
+      "ctexbeamer"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "ctexbeamer.cls",
+    "origin": "实变函数与泛函分析基础前 3 章课件 sbhs1-3.tex（原 253 帧）"
+  },
+  "ncwu_thesis_v4.tex": {
+    "name": "华北水利水电大学学位论文模板 v4",
+    "category": "中文学位论文",
+    "publisher": "华北水利水电大学",
+    "journal": "研究生学位论文格式模板",
+    "engine": "xelatex",
+    "description": "【原稿全量 1078 行】按研究生学位论文格式要求复刻：封面、声明页、目录、双线页眉、按章编号的公式与定理、图片占位框",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 1078,
+    "requires": [
+      "ctexbook.cls",
+      "unicode-math.sty",
+      "amsthm.sty",
+      "enumitem.sty",
+      "caption.sty",
+      "tikz.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "学位论文",
+      "封面",
+      "目录",
+      "ctexbook"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "ctexbook.cls",
+    "origin": "NCWU-Thesis-Template-v4.tex（原 1067 行）"
+  },
+  "ncwu_beamer_huashui_blue.tex": {
+    "name": "华水 · 华水蓝教学课件 (ctexbeamer)",
+    "category": "教学课件与答辩",
+    "publisher": "华北水利水电大学",
+    "journal": "三大中值定理及其应用",
+    "engine": "xelatex",
+    "description": "【原稿全量 907 行】藏蓝渐变封面、水波徽标、金色点缀，定理 / 推论 / 例题卡片与分节页；适合高等数学课件",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 907,
+    "requires": [
+      "ctexbeamer.cls",
+      "unicode-math.sty",
+      "tcolorbox.sty",
+      "tikz.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "课件",
+      "Beamer",
+      "华水蓝",
+      "ctexbeamer"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "ctexbeamer.cls",
+    "origin": "三大中值定理及其应用 sdzzdl.tex（原 27 帧）"
+  },
+  "ncwu_beamer_defense_red.tex": {
+    "name": "红色通用毕业答辩 (beamer)",
+    "category": "教学课件与答辩",
+    "publisher": "华北水利水电大学",
+    "journal": "本科 / 研究生毕业答辩",
+    "engine": "xelatex",
+    "description": "【原稿全量 1058 行】中国红渐变封面与过渡页、金色点缀、TikZ 图标、目录与分节页；不依赖任何外部图片",
+    "lang": "中文",
+    "full_source": true,
+    "source_lines": 1058,
+    "requires": [
+      "beamer.cls",
+      "ctex.sty",
+      "newtxmath.sty",
+      "tikz.sty",
+      "pgfplots.sty"
+    ],
+    "kind": "tex",
+    "tags": [
+      "中文",
+      "答辩",
+      "Beamer",
+      "中国红",
+      "beamer"
+    ],
+    "official": false,
+    "fallback": false,
+    "doc_class": "beamer.cls",
+    "origin": "红色通用毕业答辩模板 2027dabian.tex（原 30 页）"
+  }
+}

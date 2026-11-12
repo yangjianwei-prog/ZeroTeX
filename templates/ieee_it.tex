@@ -1,0 +1,75 @@
+% === IEEE Transactions on Information Theory === 官方投稿模板（YangTex 内置）
+% 官方类：IEEEtran.cls | 引擎：pdflatex | 分类：IEEE 与交叉学科
+% 官方类缺失时自动降级为 article 预览排版，仍可正常编译与双向逐行同步。
+\IfFileExists{IEEEtran.cls}{%
+  \documentclass[journal,11pt]{IEEEtran}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\providecommand{\journal}[1]{}
+\providecommand{\journalname}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\headers}[2]{}
+\providecommand{\shorttitle}[1]{}
+\providecommand{\subjclass}[2][]{}
+\providecommand{\IEEEmembership}[1]{}
+\providecommand{\affiliation}[1]{}
+\providecommand{\address}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\smartqed}{}
+\providecommand{\at}{, }
+\providecommand{\eps}{\varepsilon}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{A Large Deviation Principle for Stochastic Navier-Stokes Equations}
+\author{Yang Jianwei}
+\date{}
+\begin{document}
+\maketitle
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official class file \texttt{IEEEtran.cls} was not found on this machine, so the
+document uses a generic article layout. Put the class file into
+\texttt{YangTex/templates/classes/} (or install it with \texttt{tlmgr}),
+then recompile to obtain the real journal layout.}}
+\bigskip
+\fi
+\begin{abstract}
+We establish a Freidlin-Wentzell type large deviation principle for solutions of the two-dimensional stochastic Navier-Stokes equations with small multiplicative noise.
+\end{abstract}
+\paragraph{Keywords} large deviations; stochastic Navier-Stokes; variational representation; rate function
+
+\section{Introduction}
+Consider the stochastic Navier-Stokes system on the two-dimensional torus $\mathbb{T}^2$ driven by a small noise $\sqrt{\eps}\,G(u)\,\dd W$.
+For the classical background and related results, see~\cite{Evans,Brezis}.
+
+\begin{theorem}
+As $\eps\to0$, the family $\{u^\eps\}$ satisfies a large deviation principle in $C([0,T];H)$ with rate function $I(f)=\frac12\inf\{\|h\|_{L^2}^2:\ f=\mathcal{G}(h)\}$.
+\end{theorem}
+
+\begin{proof}
+The weak convergence approach reduces the problem to compactness of the controlled skeleton equation and a variational representation.
+\end{proof}
+
+\section{Main estimates}
+\begin{equation}
+\dd u^\eps +\bigl(\nu A u^\eps+B(u^\eps)\bigr)\dd t =\sqrt{\eps}\,G(u^\eps)\,\dd W,
+\end{equation}
+The rate function is shown to be lower semicontinuous with compact level sets.
+
+\section{Concluding remarks}
+The method extends to more general domains and boundary conditions; a detailed
+treatment will appear elsewhere.
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L.~C. Evans, \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

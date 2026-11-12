@@ -1,0 +1,20 @@
+% 最小空白文档 —— 中英文都能直接写
+% 引擎：xelatex
+\documentclass[11pt,a4paper,UTF8,fontset=fandol]{ctexart}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newtheorem{theorem}{定理}
+
+\begin{document}
+
+在这里开始写作。中文与 English 可以直接混排，数学公式例如
+\begin{equation}\label{eq:first}
+  -\Delta u = f \quad \text{in } \Om\subset\R^n .
+\end{equation}
+
+\end{document}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>YangTex</string>
+	<key>CFBundleExecutable</key>
+	<string>YangTex</string>
+	<key>CFBundleIconFile</key>
+	<string>YangTex.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>cn.edu.ncwu.yangtex</string>
+	<key>CFBundleName</key>
+	<string>YangTex</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleSignature</key>
+	<string>YTEX</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.13</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>YangTex - lightweight local LaTeX studio</string>
+</dict>
+</plist>

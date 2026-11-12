@@ -1,0 +1,75 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\title{Long-Time Behavior of a Damped Wave Equation with Variable Coefficients}
+\author{Yang Jianwei}
+\date{}
+\begin{document}
+\maketitle
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official class file \texttt{aimsart.cls} was not found on this machine, so the
+document uses a generic article layout. Put the class file into
+\texttt{YangTex/templates/classes/} (or install it with \texttt{tlmgr}),
+then recompile to obtain the real journal layout.}}
+\bigskip
+\fi
+\begin{abstract}
+We study 111111111111111$\beta$ 1111111111111111111111111111rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrthe asymptotic behavior of solutions to a linearly damped wave equation with spatially varying coefficients and derive polynomial decay rates.
+\end{abstract}
+\paragraph{Keywords} damped wave equation; energy decay; variable coefficients; observability
+
+\section{Introduction}
+On a bounded domain $\Om\subset\R^n$ consider $u_{tt}-\mathrm{div}(a(x)\nabla u)+b(x)u_t=0$ with Dirichlet boundary data.
+For the classical background and related results, see~\cite{Evans,Brezis}.
+
+\begin{theorem}
+If the damping region satisfies the geometric control condition, then $E(t)\le C(1+t)^{-1}\,E(0)$ for all $t\ge0$.
+\end{theorem}
+
+\begin{proof}
+A resolvent estimate combined with a multiplier identity yields the polynomial decay via the semigroup interpolation argument.
+\end{proof}
+
+\section{Main estimates}
+\begin{equation}
+E(t)=\frac12\int_\Om\Bigl(|u_t|^2+a(x)|\nabla u|^2\Bigr)\,\dd x,
+\end{equation}
+Without the geometric control condition only logarithmic decay can be expected.
+
+\section{Concluding remarks}
+The method extends to more general domains and boundary conditions; a detailed
+treatment will appear elsewhere.
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L.~C. Evans, \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,85 @@
+% -*- coding: utf-8 -*-
+% 欢迎使用 YangTex —— 中英文实时编译示例
+% 编译引擎：xelatex（中文请始终使用 xelatex / lualatex）
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.6cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{definition}[theorem]{定义}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\DeclareMathOperator{\divg}{div}
+
+\title{\textbf{欢迎使用 YangTex}\\[4pt]
+       \large 轻量 \quad 实时 \quad 中英文 \quad 精确双向同步}
+\author{杨建伟 \quad 数学与统计学院}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent YangTex 是一个本地运行的轻量级 \LaTeX{} 写作环境：输入即编译，中英文混排开箱即用，
+内置 AMS 等数学期刊模板，并通过 SyncTeX 实现源码与 PDF 之间的\textbf{逐行双向定位}。
+本页即是实时编译的成品，试着在左侧修改任意一行，右侧会立即更新。
+\end{abstract}
+
+\section{开始写作}
+
+把光标放在这一行，右侧预览会自动滚动到对应位置；单击右侧 PDF 的任意文字，
+左侧编辑器就会跳回精确的源码行。这就是双向同步（SyncTeX）。
+
+中文段落与 English paragraph 可以自然混排，公式同样即时排版：
+\begin{equation}\label{eq:model}
+  -\Delta u + |u|^{p-2}u = f \quad \text{in } \Om\subset\R^n,
+  \qquad u|_{\partial\Om}=0 .
+\end{equation}
+
+\begin{theorem}[能量估计]
+设 $f\in L^2(\Om)$ 且 $u\in H^1_0(\Om)$ 是方程 \eqref{eq:model} 的弱解，
+则存在仅依赖于 $\Om$ 与 $p$ 的常数 $C>0$，使得
+\begin{equation}
+  \|\nabla u\|_{L^2(\Om)} \le C\,\|f\|_{L^2(\Om)} .
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+在 \eqref{eq:model} 两端乘以 $u$ 并在 $\Om$ 上积分，由分部积分与
+Poincaré 不等式即得结论。
+\end{proof}
+
+\section{常用功能  追着}
+\begin{itemize}
+  \item \textbf{自动编译}：停止输入片刻后自动编译，或按 \texttt{Cmd/Ctrl + Enter} 手动编译。
+  \item \textbf{模板库}：顶部「模板」可一键套用 amsart、amsproc、amsbook、Elsevier、IEEE、
+        Springer、SIAM、中文 ctex、Beamer 等；把自己的 \texttt{.tex} 放进 \texttt{templates/}
+        目录即可自动加入模板列表。
+  \item \textbf{AI 辅助}：右侧 AI 面板可解释公式、润色文字、生成代码、诊断编译错误，
+        接入免费大模型，无需任何 API Key 设置。
+  \item \textbf{工具面板}：顶部「\texttt{工具面板}」按宏命令、运算符、定界符、环境、
+        函数、字体、表格等分类一键插入代码片段；选中文字时会自动包裹进命令参数。
+  \item \textbf{新建项目}：每个项目独立目录，PDF 与源文件保存在同一处。
+\end{itemize}
+
+\section{A Small English Section}
+This paragraph is written in English to demonstrate that YangTex handles
+both Chinese and English in a single document. Mathematical environments
+from \textsc{AMS} packages are available:
+\begin{align}
+  \frac{\partial u}{\partial t} - \divg(A(x)\nabla u) &= 0, \\
+  \|u\|_{L^\infty(0,T;L^2(\Om))} + \|\nabla u\|_{L^2(Q_T)} &\le C.
+\end{align}
+
+\bigskip
+\noindent\rule{\linewidth}{0.4pt}
+\begin{center}
+\small 祝写作顺利。\quad \textit{Happy \TeX ing with YangTex!}
+\end{center}
+
+\end{document}

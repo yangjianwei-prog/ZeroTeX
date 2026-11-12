@@ -1,0 +1,47 @@
+% === 中国科学：数学 (SCIENCE CHINA Mathematics) === 中文数学期刊排版模板（YangTex 内置）
+% 引擎：xelatex + ctex；按期刊投稿规范整理，非期刊官方 .cls 文件。
+% 分类：中文数学期刊
+\documentclass[UTF8,fontset=fandol,11pt]{ctexart}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\title{一类临界指数半线性抛物方程解的整体适定性}
+\author{杨建伟}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+本文研究有界区域上一类带临界增长非线性项的半线性抛物方程。通过能量估计与 Moser 迭代，证明整体经典解的存在唯一性，并给出显式衰减率。
+\end{abstract}
+\paragraph{关键词} 半线性抛物方程；能量估计；整体存在性；Sobolev 嵌入
+
+\section{引言}
+设 $\Om\subset\R^n$ 为具有光滑边界的有界区域，考虑如下初边值问题。
+经典背景与相关结果可参见~\cite{Evans,Brezis}。
+
+\begin{theorem}
+若 $u_0\in H^1_0(\Om)$ 且 $1<p<\frac{n+2}{n-2}$，则问题存在唯一整体经典解 $u\in C([0,\infty);H^1_0(\Om))$。
+\end{theorem}
+
+\begin{proof}
+由压缩映射原理得到局部存在性，能量恒等式给出的统一 $H^1$ 先验估计排除了有限时刻爆破。
+\end{proof}
+
+\section{主要估计}
+\begin{equation}
+\frac{\dd}{\dd t}\|u(t)\|_{L^2}^2+2\|\nabla u(t)\|_{L^2}^2\le C\|u(t)\|_{L^p}^{p},
+\end{equation}
+临界指数情形需要集中紧性方法，将在另文讨论。
+
+\section{结论}
+本文的结果可推广到更一般的区域与边界条件，相关讨论将在后续工作中给出。
+
+\begin{thebibliography}{9}
+\bibitem{Evans} 伍卓群、尹景学、王春朋，\emph{椭圆与抛物型方程引论}, 科学出版社, 2013.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

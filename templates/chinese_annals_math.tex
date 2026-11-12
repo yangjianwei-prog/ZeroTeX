@@ -1,0 +1,47 @@
+% === 数学年刊 (Chinese Annals of Mathematics) === 中文数学期刊排版模板（YangTex 内置）
+% 引擎：xelatex + ctex；按期刊投稿规范整理，非期刊官方 .cls 文件。
+% 分类：中文数学期刊
+\documentclass[UTF8,fontset=fandol,11pt]{ctexart}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\title{变系数阻尼波动方程解的长时间渐近行为}
+\author{杨建伟}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+研究空间变系数线性阻尼波动方程解的渐近性态，在几何控制条件下给出多项式能量衰减率。
+\end{abstract}
+\paragraph{关键词} 阻尼波动方程；能量衰减；变系数；可观测性
+
+\section{引言}
+考虑有界区域上 $u_{tt}-\mathrm{div}(a(x)\nabla u)+b(x)u_t=0$ 的 Dirichlet 问题。
+经典背景与相关结果可参见~\cite{Evans,Brezis}。
+
+\begin{theorem}
+若阻尼区域满足几何控制条件，则 $E(t)\le C(1+t)^{-1}E(0)$。
+\end{theorem}
+
+\begin{proof}
+预解式估计结合乘子恒等式，经半群插值得到多项式衰减。
+\end{proof}
+
+\section{主要估计}
+\begin{equation}
+E(t)=\frac12\int_\Om\bigl(|u_t|^2+a(x)|\nabla u|^2\bigr)\,\dd x,
+\end{equation}
+不满足几何控制条件时一般只能得到对数衰减。
+
+\section{结论}
+本文的结果可推广到更一般的区域与边界条件，相关讨论将在后续工作中给出。
+
+\begin{thebibliography}{9}
+\bibitem{Evans} 伍卓群、尹景学、王春朋，\emph{椭圆与抛物型方程引论}, 科学出版社, 2013.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

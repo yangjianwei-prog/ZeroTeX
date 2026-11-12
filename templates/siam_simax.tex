@@ -1,0 +1,75 @@
+% === SIAM Journal on Matrix Analysis and Applications === 官方投稿模板（YangTex 内置）
+% 官方类：siamart.cls | 引擎：pdflatex | 分类：SIAM 工业与应用数学会
+% 官方类缺失时自动降级为 article 预览排版，仍可正常编译与双向逐行同步。
+\IfFileExists{siamart.cls}{%
+  \documentclass[review,11pt]{siamart}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\providecommand{\journal}[1]{}
+\providecommand{\journalname}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\headers}[2]{}
+\providecommand{\shorttitle}[1]{}
+\providecommand{\subjclass}[2][]{}
+\providecommand{\IEEEmembership}[1]{}
+\providecommand{\affiliation}[1]{}
+\providecommand{\address}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\smartqed}{}
+\providecommand{\at}{, }
+\providecommand{\eps}{\varepsilon}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\headers{On Graded Representations of Quantum G}{Yang Jianwei}
+\title{On Graded Representations of Quantum Groups at Roots of Unity}
+\author{Yang Jianwei}
+\date{}
+\begin{document}
+\maketitle
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official class file \texttt{siamart.cls} was not found on this machine, so the
+document uses a generic article layout. Put the class file into
+\texttt{YangTex/templates/classes/} (or install it with \texttt{tlmgr}),
+then recompile to obtain the real journal layout.}}
+\bigskip
+\fi
+\begin{abstract}
+We classify simple modules over a quantized enveloping algebra at a root of unity and describe the associated graded Grothendieck ring.
+\end{abstract}
+\paragraph{Keywords} quantum group; root of unity; graded representation; Grothendieck ring
+
+\section{Introduction}
+Let $U_q(\mathfrak{g})$ be the quantized enveloping algebra associated with a complex semisimple Lie algebra $\mathfrak{g}$ and let $q$ be a primitive $\ell$-th root of unity.
+For the classical background and related results, see~\cite{Evans,Brezis}.
+
+\begin{theorem}
+The category of finite-dimensional graded $U_q(\mathfrak{g})$-modules is semisimple if and only if $\ell$ is coprime to the determinant of the Cartan matrix of $\mathfrak{g}$.
+\end{theorem}
+
+\begin{proof}
+The proof reduces to the rank-one case by triangular decomposition and a careful analysis of the Steinberg-type tensor product formula.
+\end{proof}
+
+\section{Main estimates}
+\begin{equation}
+K_i E_j K_i^{-1}=q^{a_{ij}}E_j,\qquad [E_i,F_j]=\delta_{ij}\frac{K_i-K_i^{-1}}{q-q^{-1}},
+\end{equation}
+As a corollary we obtain a positivity result for the associated canonical basis.
+
+\section{Concluding remarks}
+The method extends to more general domains and boundary conditions; a detailed
+treatment will appear elsewhere.
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L.~C. Evans, \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

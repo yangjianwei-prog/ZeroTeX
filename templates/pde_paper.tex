@@ -1,0 +1,125 @@
+% PDE 论文通用模板 —— 预置偏微分方程写作常用宏与定理环境
+% 引擎：pdflatex（中文请切换到 ctex 模板 + xelatex）
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\geometry{margin=2.7cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue}
+
+% ---------- 定理环境 ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- PDE 常用宏 ----------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Om}{\Omega}
+\newcommand{\paOm}{\partial\Omega}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\weakto}{\rightharpoonup}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
+\newcommand{\inner}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\dd}{\,\mathrm{d}}
+\DeclareMathOperator{\divg}{div}
+\DeclareMathOperator{\curl}{curl}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\dist}{dist}
+\newcommand{\pde}[1]{\eqref{#1}}
+
+\title{Well-posedness and Long-Time Dynamics of a Nonlinear Parabolic Equation}
+\author{Yang Jianwei}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish the global well-posedness of a nonlinear parabolic equation
+in $H^1_0(\Omega)$ and prove the existence of a global attractor with
+finite fractal dimension. The key ingredient is a uniform
+$H^2$ estimate obtained by an Alikakos--Moser iteration.
+\end{abstract}
+
+\section{Introduction}
+
+Let $\Om\subset\R^n$ be a bounded domain with smooth boundary $\paOm$.
+We study the initial--boundary value problem
+\begin{equation}\label{P}
+  \begin{cases}
+    u_t - \divg\bigl(a(x)\nabla u\bigr) + f(u) = g(x), & (x,t)\in\Om\times\R^+,\\[2pt]
+    u = 0, & (x,t)\in\paOm\times\R^+,\\[2pt]
+    u(x,0)=u_0(x), & x\in\Om,
+  \end{cases}
+\end{equation}
+where $a\in C^1(\overline\Om)$ is uniformly elliptic, i.e.\
+$\lambda|\xi|^2\le a(x)\xi\cdot\xi\le\Lambda|\xi|^2$ for all
+$\xi\in\R^n$.
+
+\begin{assumption}\label{A1}
+The nonlinearity $f\in C^1(\R)$ satisfies
+$f'(s)\ge -c_0$ and $|f(s)|\le c_1(1+|s|^{p-1})$ with
+$1\le p\le \frac{n+2}{n-2}$.
+\end{assumption}
+
+\begin{theorem}[Well-posedness]\label{T1}
+Under Assumption~\ref{A1}, for every $u_0\in L^2(\Om)$ problem~\pde{P}
+admits a unique weak solution
+$u\in C([0,\infty);L^2(\Om))\cap L^2_{\mathrm{loc}}(0,\infty;H^1_0(\Om))$.
+Moreover, the solution depends continuously on the initial data.
+\end{theorem}
+
+\section{A priori estimates}
+
+\begin{lemma}[Energy identity]\label{L1}
+For any $t>0$,
+\begin{equation}
+  \frac12\frac{\dd}{\dd t}\norm{u(t)}_{L^2}^2
+  + \int_{\Om}a(x)|\nabla u|^2\dd x
+  + \int_{\Om}f(u)u\dd x
+  = \int_{\Om}gu\dd x .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Multiply \pde{P} by $u$, integrate over $\Om$, and use
+$\inner{-\divg(a\nabla u),u}=\int_\Om a|\nabla u|^2\dd x$.
+\end{proof}
+
+\begin{remark}
+By Assumption~\ref{A1} and Poincaré's inequality, Lemma~\ref{L1} yields
+a uniform bound $\norm{u(t)}_{L^2}\le C(1+\norm{u_0}_{L^2}e^{-\mu t})$,
+which gives the existence of an absorbing set in $L^2(\Om)$.
+\end{remark}
+
+\section{Proof of Theorem~\ref{T1}}
+
+\begin{proof}
+We use a Faedo--Galerkin approximation. Let $\{w_k\}_{k\ge1}$ be the
+eigenfunctions of $-\divg(a\nabla\cdot)$ with Dirichlet boundary
+condition. For each $m$, let $u_m=\sum_{k=1}^m c_{mk}(t)w_k$ solve the
+projected ODE system. Lemma~\ref{L1} provides uniform bounds, and
+compactness (Aubin--Lions) allows passing to the limit $m\to\infty$.
+Uniqueness follows from the monotonicity of $f$ and Gronwall's inequality.
+\end{proof}
+
+For the classical background and related results, see~\cite{Temam,Lady}.
+
+\begin{thebibliography}{9}
+\bibitem{Temam} R.~Temam, \emph{Infinite-Dimensional Dynamical Systems in
+Mechanics and Physics}, 2nd ed., Springer, 1997.
+\bibitem{Lady} O.~A.~Ladyzhenskaya, V.~A.~Solonnikov and N.~N.~Ural'ceva,
+\emph{Linear and Quasi-linear Equations of Parabolic Type}, AMS, 1968.
+\end{thebibliography}
+
+\end{document}

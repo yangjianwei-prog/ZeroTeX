@@ -1,0 +1,75 @@
+% === Calculus of Variations and Partial Differential Equations === 官方投稿模板（YangTex 内置）
+% 官方类：svjour3.cls | 引擎：pdflatex | 分类：Springer 数学期刊
+% 官方类缺失时自动降级为 article 预览排版，仍可正常编译与双向逐行同步。
+\IfFileExists{svjour3.cls}{%
+  \documentclass[smallextended]{svjour3}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\providecommand{\journal}[1]{}
+\providecommand{\journalname}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\headers}[2]{}
+\providecommand{\shorttitle}[1]{}
+\providecommand{\subjclass}[2][]{}
+\providecommand{\IEEEmembership}[1]{}
+\providecommand{\affiliation}[1]{}
+\providecommand{\address}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\smartqed}{}
+\providecommand{\at}{, }
+\providecommand{\eps}{\varepsilon}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\journalname{Calculus of Variations and Partial Differential Equations}
+\title{Global Well-Posedness for a Semilinear Parabolic Equation with Critical Exponent}
+\author{Yang Jianwei}
+\date{}
+\begin{document}
+\maketitle
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official class file \texttt{svjour3.cls} was not found on this machine, so the
+document uses a generic article layout. Put the class file into
+\texttt{YangTex/templates/classes/} (or install it with \texttt{tlmgr}),
+then recompile to obtain the real journal layout.}}
+\bigskip
+\fi
+\begin{abstract}
+We study the Cauchy problem for a semilinear parabolic equation on a bounded domain. By combining energy estimates with a Moser-type iteration we prove the existence of a unique global solution and derive an explicit decay rate.
+\end{abstract}
+\paragraph{Keywords} semilinear parabolic equation; energy estimate; global existence; Sobolev embedding
+
+\section{Introduction}
+Let $\Om\subset\R^n$ be a bounded domain with smooth boundary. We consider the initial-boundary value problem for a semilinear heat equation with a critical growth nonlinearity.
+For the classical background and related results, see~\cite{Evans,Brezis}.
+
+\begin{theorem}
+Assume $u_0\in H^1_0(\Om)$ and $1<p<\frac{n+2}{n-2}$. Then there exists a unique global classical solution $u\in C([0,\infty);H^1_0(\Om))$.
+\end{theorem}
+
+\begin{proof}
+The local existence follows from the contraction mapping principle. A uniform $H^1$ bound obtained from the energy identity excludes finite-time blow-up.
+\end{proof}
+
+\section{Main estimates}
+\begin{equation}
+\frac{\dd}{\dd t}\|u(t)\|_{L^2}^2+2\|\nabla u(t)\|_{L^2}^2 \le C\|u(t)\|_{L^p}^{p},
+\end{equation}
+The critical case $p=\frac{n+2}{n-2}$ requires a concentration-compactness argument, which will be treated in a forthcoming work.
+
+\section{Concluding remarks}
+The method extends to more general domains and boundary conditions; a detailed
+treatment will appear elsewhere.
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L.~C. Evans, \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

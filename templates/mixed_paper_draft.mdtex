@@ -1,0 +1,72 @@
+---
+title: 论文初稿 · 能量估计与正则性
+author: 杨建伟
+lang: zh
+---
+# 摘要
+
+本文研究一类 *抛物型方程* 弱解的一致估计。
+主要工具是能量方法、Sobolev 嵌入与 Gronwall 不等式。
+关键词：弱解、能量估计、$L^p$ 正则性。
+
+## 1 引言
+
+设 $\Omega\subset\mathbb{R}^n$ 为有界 Lipschitz 区域，考虑
+
+:::latex
+\begin{equation}\label{eq:model}
+  \partial_t u - \nabla\cdot(A(x,t)\nabla u) = f,
+  \qquad u|_{\partial\Omega}=0,\quad u(0)=u_0 .
+\end{equation}
+:::
+
+假设 $A$ 一致椭圆，即存在 $\lambda,\Lambda>0$ 使
+$\lambda|\xi|^2 \le \xi^{T}A\xi \le \Lambda|\xi|^2$。
+
+## 2 预备知识
+
+| 记号 | 定义 | 备注 |
+| --- | --- | --- |
+| $H^1_0(\Omega)$ | $W^{1,2}_0$ 的闭包 | 零迹 |
+| $H^{-1}(\Omega)$ | $H^1_0$ 的对偶 | 外力空间 |
+| $\|u\|$ | $L^2$ 范数 | 简写 |
+
+- 由 Poincare 不等式，$\|\nabla u\|$ 与 $H^1$ 范数等价
+- 由 Rellich 定理，$H^1_0\hookrightarrow L^2$ 紧
+
+## 3 主要结果
+
+:::latex
+\begin{theorem}[一致能量估计]
+设 $u_0\in L^2(\Omega)$，$f\in L^2(0,T;H^{-1}(\Omega))$，
+则 \eqref{eq:model} 的弱解满足
+\begin{equation}
+  \sup_{0<t<T}\|u(t)\|_{L^2}^2
+    + \lambda\int_0^T\|\nabla u\|_{L^2}^2\,dt
+  \le \|u_0\|_{L^2}^2 + \frac{1}{\lambda}\int_0^T\|f\|_{H^{-1}}^2\,dt .
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+以 $u$ 为检验函数，利用一致椭圆性与 Young 不等式：
+\begin{align}
+  \frac12\frac{d}{dt}\|u\|_{L^2}^2 + \lambda\|\nabla u\|_{L^2}^2
+    &\le \langle f,u\rangle \notag\\
+    &\le \frac{\lambda}{2}\|\nabla u\|_{L^2}^2
+       + \frac{1}{2\lambda}\|f\|_{H^{-1}}^2 .
+\end{align}
+对时间积分即得结论。
+\end{proof}
+:::
+
+> 注：常数仅依赖 $\lambda,\Lambda,T$，与解的正则性无关。
+
+## 4 讨论
+
+1. 若 $f$ 更光滑，可进一步提升到 $L^\infty(0,T;H^1_0)$
+2. 非线性情形需额外紧性论证
+3. 数值实验将在后续版本中补上
+
+---
+
+初稿由 YangTex 混排模板生成：Markdown 起草，LaTeX 承载定理与公式。

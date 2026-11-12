@@ -1,0 +1,30 @@
+% === AMS Colloquium Publications / Surveys === 官方投稿模板（YangTex 内置）
+% 官方类：amsbook.cls | 引擎：pdflatex | 分类：AMS 美国数学会
+% 官方类缺失时自动降级为 article 预览排版，仍可正常编译与双向逐行同步。
+\IfFileExists{amsbook.cls}{%
+  \documentclass[11pt]{amsbook}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\providecommand{\journal}[1]{}
+\providecommand{\journalname}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\headers}[2]{}
+\providecommand{\shorttitle}[1]{}
+\providecommand{\subjclass}[2][]{}
+\providecommand{\IEEEmembership}[1]{}
+\providecommand{\affiliation}[1]{}
+\providecommand{\address}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\smartqed}{}
+\providecommand{\at}{, }
+\providecommand{\eps}{\varepsilon}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\dump

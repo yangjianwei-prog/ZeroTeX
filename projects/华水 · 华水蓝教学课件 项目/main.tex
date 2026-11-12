@@ -1,0 +1,282 @@
+% =====================================================================
+%  华水 · 华水蓝教学课件 (ctexbeamer)
+%  藏蓝渐变封面、水波徽标、金色点缀、定理/推论/例题卡片与分节页；适合高等数学课件
+%  来源：三大中值定理及其应用 sdzzdl.tex（原 27 帧）（由用户原始工程精简为单文件模板）
+%  精简说明：删除编译产物 PDF、digest.lock 与长篇章节正文；完整保留配色、
+%            自定义盒子 / 环境、章节样式、页眉页脚与封面设计。
+%  字体：已删除原工程的 macOS 专有字体声明，统一由 ctex fontset=fandol
+%        配置中文字体，Mac / Windows / Linux 均无需额外安装字体即可编译。
+%        在 macOS 上如需还原原设计，可改回 fontset=mac 并重新指定系统字体。
+%  编译：xelatex（目录 / 交叉引用建议编译两遍）
+% =====================================================================
+
+\documentclass[11pt,aspectratio=169,fontset=fandol]{ctexbeamer}
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath}
+\usepackage{unicode-math}
+\usepackage{tikz}
+\usetikzlibrary{calc,fadings,arrows.meta,positioning}
+\usepackage[most]{tcolorbox}
+
+\definecolor{navyblue}{HTML}{102A52}   % 最深·华水藏蓝（渐变左端）
+\definecolor{deepblue}{HTML}{1E4A9E}   % 主色·深华水蓝
+\definecolor{ncblue}{HTML}{2D6BD4}     % 华水蓝（标准色）
+\definecolor{accent}{HTML}{4A7FD9}     % 强调·亮华水蓝
+\definecolor{sky}{HTML}{6FA0EC}        % 浅华水蓝
+\definecolor{lightblue}{HTML}{5C8FE6}  % 渐变右端·浅华水蓝
+\definecolor{gold}{HTML}{D4A843}       % 金（点缀）
+\definecolor{golddeep}{HTML}{8A6D2E}   % 赭金（小字标签用）
+\definecolor{goldlight}{HTML}{F2D79B}  % 亮金（深底小字用）
+\definecolor{ink}{HTML}{1A2332}        % 正文
+\definecolor{muted}{HTML}{5A6A85}      % 灰字
+\definecolor{warnred}{HTML}{B5493A}    % 警示红（易错标记）
+\definecolor{paleblue}{HTML}{EDF2FB}   % 页面浅底（上）
+\definecolor{paleblue2}{HTML}{E6EEF9}  % 页面浅底（下）
+\definecolor{formulabg}{HTML}{EBF2FC}  % 公式卡底
+\definecolor{goldbg}{HTML}{FDF8EE}     % 金色公式卡底
+\definecolor{titlebg}{HTML}{E3EDFB}    % 卡片标题条
+\definecolor{cborder}{HTML}{D2E0F4}    % 卡片描边
+
+\setbeamercolor{normal text}{fg=ink,bg=white}
+\setbeamercolor{structure}{fg=deepblue}
+\setbeamercolor{frametitle}{fg=deepblue}
+\setbeamercolor{footline}{fg=muted}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+
+\setlength{\abovedisplayskip}{3pt plus 1pt minus 1pt}
+\setlength{\belowdisplayskip}{3pt plus 1pt minus 1pt}
+\setlength{\abovedisplayshortskip}{2pt plus 1pt}
+\setlength{\belowdisplayshortskip}{2pt plus 1pt}
+\setlength{\parindent}{0pt}
+
+\setbeamertemplate{footline}{%
+  \hbox to \paperwidth{\hspace{0.85cm}%
+    {\scriptsize\heiti\color{muted}华北水利水电大学 · 数学与统计学院}%
+    \hfill
+    {\scriptsize\color{muted}\insertframenumber\,/\,\inserttotalframenumber}%
+    \hspace{0.85cm}}%
+  \vskip6pt}
+
+\setbeamertemplate{frametitle}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.7ex,dp=1.2ex,leftskip=0.85cm,rightskip=0.85cm,sep=0pt]{frametitle}%
+    {\color{gold}\rule[-0.62ex]{3.4pt}{2.5ex}}\hspace{7pt}%
+    \usebeamerfont{frametitle}\heiti\insertframetitle%
+  \end{beamercolorbox}%
+  \vskip3pt}
+
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \shade[top color=paleblue,bottom color=paleblue2]
+      (current page.south west) rectangle (current page.north east);
+  \end{tikzpicture}}
+
+\tcbset{
+  htmlcard/.style={enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=5pt,
+    left=9pt,right=9pt,top=5pt,bottom=6.5pt,
+    fonttitle=\heiti\bfseries\fontsize{9}{10}\selectfont,
+    coltitle=deepblue,colbacktitle=titlebg},
+  fcard/.style={enhanced,colback=formulabg,colframe=formulabg,boxrule=0pt,arc=4pt,
+    left=10pt,right=10pt,top=4.5pt,bottom=5pt,before skip=2pt,after skip=2pt,
+    borderline west={2.4pt}{0pt}{accent}},
+  fgold/.style={enhanced,colback=goldbg,colframe=goldbg,boxrule=0pt,arc=4pt,
+    left=10pt,right=10pt,top=4.5pt,bottom=5pt,before skip=2pt,after skip=2pt,
+    borderline west={2.4pt}{0pt}{gold}},
+  statbox/.style={enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=5pt,
+    left=4pt,right=4pt,top=15pt,bottom=13pt,equal height group=stat},
+  navbox/.style={enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=5pt,
+    left=6pt,right=6pt,top=14pt,bottom=13pt,equal height group=nav},
+  mottobox/.style={enhanced,colback=titlebg,colframe=cborder!55,boxrule=0.6pt,arc=5pt,
+    left=5pt,right=5pt,top=16pt,bottom=14pt,equal height group=motto}
+}
+
+\newcounter{theoC}\newcounter{coroC}\newcounter{examC}
+
+\newenvironment{theobox}[1]{%
+  \refstepcounter{theoC}%
+  \begin{tcolorbox}[enhanced,colback=formulabg,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=10pt,right=10pt,top=6pt,bottom=7pt,before skip=2pt,after skip=2pt,
+    fontupper=\fontsize{8.4}{10.2}\selectfont,
+    fonttitle=\heiti\bfseries\fontsize{9.5}{11}\selectfont,coltitle=white,colbacktitle=deepblue,
+    title={定理~\thetheoC\quad #1}]}
+  {\end{tcolorbox}}
+
+\newenvironment{corobox}[1]{%
+  \refstepcounter{coroC}%
+  \begin{tcolorbox}[enhanced,colback=goldbg,colframe=goldbg,boxrule=0pt,arc=4pt,
+    left=10pt,right=10pt,top=5.5pt,bottom=6.5pt,before skip=2pt,after skip=2pt,
+    fontupper=\fontsize{8}{9.8}\selectfont,
+    borderline west={2.4pt}{0pt}{gold},
+    fonttitle=\heiti\bfseries\fontsize{9}{10.5}\selectfont,coltitle=golddeep,
+    title={推论~\thecoroC\quad #1}]}
+  {\end{tcolorbox}}
+
+\newenvironment{exambox}[1]{%
+  \refstepcounter{examC}%
+  \begin{tcolorbox}[enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=10pt,right=10pt,top=6pt,bottom=7pt,before skip=2pt,after skip=2pt,
+    fontupper=\fontsize{8}{9.8}\selectfont,
+    fonttitle=\heiti\bfseries\fontsize{9.5}{11}\selectfont,coltitle=white,colbacktitle=ncblue,
+    title={例~\theexamC\quad #1}]}
+  {\end{tcolorbox}}
+
+\newcommand{\iconsq}[2]{\tikz[baseline=-0.9pt]{\node[fill=#1,rounded corners=2.2pt,minimum width=11pt,minimum height=11pt,inner sep=0pt]{\color{white}\fontsize{6.6}{6.6}\selectfont\heiti\bfseries #2};}}
+\newcommand{\numsq}[2]{\tikz[baseline=-0.9pt]{\node[fill=#1,rounded corners=2.6pt,minimum width=14pt,minimum height=14pt,inner sep=0pt]{\color{white}\fontsize{7.2}{7.2}\selectfont\heiti\bfseries #2};}}
+\newcommand{\tagpill}[1]{\tikz[baseline=-0.8ex]{\node[fill=titlebg,draw=cborder,line width=0.5pt,rounded corners=5.5pt,inner xsep=6.5pt,inner ysep=2.8pt]{\fontsize{7.2}{8}\selectfont\heiti\color{ncblue}#1};}}
+\newcommand{\flabel}[1]{{\fontsize{6.6}{7.4}\selectfont\heiti\bfseries\color{ncblue}\addfontfeature{LetterSpace=1.5}#1}\par}
+\newcommand{\flabelg}[1]{{\fontsize{6.6}{7.4}\selectfont\heiti\bfseries\color{golddeep}\addfontfeature{LetterSpace=1.5}#1}\par}
+
+\newcommand{\navcard}[4]{%
+  \begin{tcolorbox}[navbox]
+    \centering
+    \numsq{deepblue}{#1}\par
+    \vskip7pt
+    {\fontsize{10.5}{11.5}\selectfont\heiti\bfseries\color{deepblue}#2}\par
+    \vskip3pt
+    {\fontsize{6.3}{7.3}\selectfont\bfseries\color{ncblue}\addfontfeature{LetterSpace=2}#3}\par
+    \vskip7pt
+    {\fontsize{7.2}{9}\selectfont\color{muted}#4}
+  \end{tcolorbox}}
+
+\newcommand{\pointcard}[2]{%
+  \begin{tcolorbox}[enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=8pt,right=8pt,top=4.5pt,bottom=5pt,before skip=3pt,after skip=3pt,
+    borderline west={2.2pt}{0pt}{ncblue}]
+    {\fontsize{8}{9.2}\selectfont\heiti\bfseries\color{deepblue}#1}\par\vskip1.5pt
+    {\fontsize{7.2}{8.8}\selectfont\color{ink}#2}
+  \end{tcolorbox}}
+
+\newcommand{\appcard}[3]{%
+  \begin{tcolorbox}[enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=7pt,right=7pt,top=5pt,bottom=5.5pt,height=1.62cm,valign=center,
+    borderline west={2.2pt}{0pt}{accent}]
+    {\fontsize{7.6}{8.8}\selectfont\heiti\bfseries\color{deepblue}#1}\par\vskip2.5pt
+    {\fontsize{6.8}{8.2}\selectfont\color{muted}构造：#2}\par\vskip1pt
+    {\fontsize{6.8}{8.2}\selectfont\color{muted}放缩：#3}
+  \end{tcolorbox}}
+
+\newcommand{\condcard}[2]{%
+  \begin{tcolorbox}[enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=6pt,right=6pt,top=4pt,bottom=5pt,height=1.5cm,valign=center]
+    \centering
+    \numsq{ncblue}{#1}\par\vskip2.5pt
+    {\fontsize{7.8}{9}\selectfont\heiti\bfseries\color{ink}#2}
+  \end{tcolorbox}}
+
+\newcommand{\warncard}[2]{%
+  \begin{tcolorbox}[enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=8pt,right=8pt,top=5pt,bottom=5.5pt,
+    borderline west={2.2pt}{0pt}{warnred}]
+    {\fontsize{8.2}{9.4}\selectfont\heiti\bfseries\color{warnred}#1}\par\vskip1.5pt
+    {\fontsize{7}{8.6}\selectfont\color{ink}#2}
+  \end{tcolorbox}}
+
+\newcommand{\tierbox}[2]{%
+  \begin{tcolorbox}[enhanced,colback=white,colframe=cborder,boxrule=0.7pt,arc=4pt,
+    left=8pt,right=8pt,top=4.5pt,bottom=5pt,before skip=3pt,after skip=3pt,
+    fonttitle=\heiti\bfseries\fontsize{8.5}{10}\selectfont,coltitle=white,
+    colbacktitle=ncblue,title={#1}]
+    #2
+  \end{tcolorbox}}
+
+\newcommand{\herobackground}{%
+  \shade[left color=navyblue,right color=deepblue]
+    (0,0) rectangle (5.6,9);
+  \shade[left color=deepblue,right color=ncblue]
+    (5.6,0) rectangle (10.4,9);
+  \shade[left color=ncblue,right color=lightblue]
+    (10.4,0) rectangle (16,9);
+  \foreach \i in {1,...,11} {%
+    \draw[white,opacity=0.035,line width=0.4pt] (\i*1.4,0) -- (\i*1.4,9);}
+  \foreach \j in {1,...,6} {%
+    \draw[white,opacity=0.035,line width=0.4pt] (0,\j*1.4) -- (16,\j*1.4);}
+  \fill[white,opacity=0.09,path fading=circle with fuzzy edge 20 percent] (2.4,1.6) circle (2.6);
+  \fill[gold,opacity=0.10,path fading=circle with fuzzy edge 20 percent] (13.6,7.2) circle (2.0);
+  \fill[white,opacity=0.05] plot[domain=0:16,samples=150] (\x,{0.98+0.13*sin(58*\x)}) -- (16,0) -- (0,0) -- cycle;
+  \draw[white,opacity=0.16,line width=1.1pt] plot[domain=0:16,samples=150] (\x,{0.98+0.13*sin(58*\x)});
+  \draw[white,opacity=0.22,line width=1.2pt] plot[domain=0:16,samples=150] (\x,{0.55+0.10*sin(58*\x+55)});
+}
+
+\newcommand{\sectdiv}[4]{%
+\begin{frame}[plain]
+\begin{tikzpicture}[overlay,remember picture,shift={(current page.south west)}]
+  \herobackground
+  \draw[white,opacity=0.70,line width=1.2pt] (7.30,7.69) sin (7.65,7.79) cos (8.00,7.69);
+  \draw[white,opacity=0.50,line width=1.2pt] (7.65,7.56) sin (8.00,7.66) cos (8.35,7.56);
+  \draw[gold,opacity=0.95,line width=1.2pt] (8.00,7.43) sin (8.35,7.53) cos (8.70,7.43);
+  \node[text=gold] at (8,6.15)
+    {\fontsize{40}{44}\selectfont\heiti\bfseries\addfontfeature{LetterSpace=6}#1};
+  \node[text=white] at (8,4.98)
+    {\fontsize{29}{33}\selectfont\heiti\bfseries\addfontfeature{LetterSpace=5}#2};
+  \draw[gold,line width=1.4pt,opacity=0.95] (6.7,4.42) -- (9.3,4.42);
+  \node[text=white,text opacity=0.78] at (8,4.02)
+    {\fontsize{10}{12}\selectfont\addfontfeature{LetterSpace=3}#3};
+  \foreach \i in {1,...,4} {%
+    \ifnum\i=#4\relax
+      \fill[gold] ({8-0.9+(\i-1)*0.6},2.85) circle (3.1pt);
+    \else
+      \fill[white,opacity=0.35] ({8-0.9+(\i-1)*0.6},2.85) circle (2.2pt);
+    \fi}
+\end{tikzpicture}
+\end{frame}}
+\begin{document}
+
+\begin{frame}[plain]
+\begin{tikzpicture}[overlay,remember picture,shift={(current page.south west)}]
+  \herobackground
+  \node[anchor=south,text=white,font=\fontsize{26}{32}\selectfont\heiti\bfseries]
+    at (8,4.9) {三大中值定理及其应用};
+  \node[anchor=south,text=goldlight,font=\fontsize{11}{15}\selectfont]
+    at (8,4.0) {高等数学 · 创新性教学课件};
+  \node[anchor=south,text=white!80,font=\fontsize{9}{12}\selectfont]
+    at (8,1.3) {华北水利水电大学 · 数学与统计学院};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{罗尔定理}
+\begin{theobox}{罗尔 (Rolle) 定理}
+若 $f\in C[a,b]$、在 $(a,b)$ 可导且 $f(a)=f(b)$，则存在
+$\xi\in(a,b)$ 使
+\begin{equation}\label{eq:rolle}
+  f'(\xi)=0 .
+\end{equation}
+\end{theobox}
+
+式 \eqref{eq:rolle} 是拉格朗日中值定理的特例；一般形式见~\cite{Tongji,Zorich}。
+\end{frame}
+
+\begin{frame}{拉格朗日中值定理}
+\begin{theobox}{Lagrange 中值定理}
+在上述条件下存在 $\xi\in(a,b)$ 使
+\begin{equation}\label{eq:lagrange}
+  f(b)-f(a)=f'(\xi)(b-a).
+\end{equation}
+\end{theobox}
+
+\begin{corobox}{推论}
+若 $f'(x)\equiv0$ 于区间 $I$，则 $f$ 在 $I$ 上为常数；
+由 \eqref{eq:lagrange} 立即得证，参见~\cite{Tongji}。
+\end{corobox}
+\end{frame}
+
+\begin{frame}{应用举例}
+\begin{exambox}{证明不等式}
+当 $x>0$ 时，由 \eqref{eq:lagrange} 作用于 $\ln(1+x)$ 可得
+$\frac{x}{1+x}<\ln(1+x)<x$。
+\end{exambox}
+
+\tagpill{重点} \quad \numsq{ncblue}{1} 先找区间 \quad
+\numsq{golddeep}{2} 再构造辅助函数
+\end{frame}
+
+\begin{frame}[allowframebreaks]{参考文献}
+\small
+\begin{thebibliography}{9}
+\bibitem{Tongji} 同济大学数学系, \emph{高等数学}（第七版）,
+  高等教育出版社, 2014.
+\bibitem{Zorich} V. A. Zorich, \emph{Mathematical Analysis I}, Springer, 2015.
+\end{thebibliography}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,75 @@
+% === Mathematics of Computation === 官方投稿模板（YangTex 内置）
+% 官方类：amsart.cls | 引擎：pdflatex | 分类：AMS 美国数学会
+% 官方类缺失时自动降级为 article 预览排版，仍可正常编译与双向逐行同步。
+\IfFileExists{amsart.cls}{%
+  \documentclass[11pt,reqno]{amsart}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\providecommand{\journal}[1]{}
+\providecommand{\journalname}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\headers}[2]{}
+\providecommand{\shorttitle}[1]{}
+\providecommand{\subjclass}[2][]{}
+\providecommand{\IEEEmembership}[1]{}
+\providecommand{\affiliation}[1]{}
+\providecommand{\address}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\smartqed}{}
+\providecommand{\at}{, }
+\providecommand{\eps}{\varepsilon}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{Optimal-Order Convergence of a Finite Element Scheme for Nonlocal Elliptic Problems}
+\author{Yang Jianwei}
+\date{}
+\begin{document}
+\maketitle
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official class file \texttt{amsart.cls} was not found on this machine, so the
+document uses a generic article layout. Put the class file into
+\texttt{YangTex/templates/classes/} (or install it with \texttt{tlmgr}),
+then recompile to obtain the real journal layout.}}
+\bigskip
+\fi
+\begin{abstract}
+A conforming finite element discretization for a nonlocal elliptic operator is proposed and analyzed. Under minimal regularity assumptions we derive optimal-order error estimates in the energy norm.
+\end{abstract}
+\paragraph{Keywords} finite element method; nonlocal operator; a priori error estimate; convergence
+
+\section{Introduction}
+We discretize the integral operator $(-\Delta)^s$ by a Galerkin method on a shape-regular triangulation $\mathcal{T}_h$ with mesh size $h$.
+For the classical background and related results, see~\cite{Evans,Brezis}.
+
+\begin{theorem}
+Let $u\in H^{1+s}(\Om)$ be the exact solution. Then the discrete solution $u_h$ satisfies $\|u-u_h\|_{H^s}\le C h^{1-s}|u|_{H^{1+s}}$.
+\end{theorem}
+
+\begin{proof}
+Galerkin orthogonality together with the interpolation estimate and the stability of the discrete bilinear form gives the result.
+\end{proof}
+
+\section{Main estimates}
+\begin{equation}
+a(u_h,v_h)=\int_\Om f v_h\,\dd x\qquad\forall v_h\in V_h,
+\end{equation}
+Numerical experiments on uniform and graded meshes confirm the predicted rates.
+
+\section{Concluding remarks}
+The method extends to more general domains and boundary conditions; a detailed
+treatment will appear elsewhere.
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L.~C. Evans, \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

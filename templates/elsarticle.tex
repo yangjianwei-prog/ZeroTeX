@@ -1,0 +1,87 @@
+% Elsevier 数学期刊模板 —— J. Differential Equations / JMAA 等
+% 引擎：pdflatex
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\journal{Journal of Differential Equations}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Global existence for a chemotaxis system with singular sensitivity}
+
+\author[1]{Yang Jianwei\corref{cor1}}
+\cortext[cor1]{Corresponding author}
+\ead{yangjianwei@example.edu.cn}
+\address[1]{School of Mathematics and Statistics,
+North China University of Water Resources and Electric Power,
+Zhengzhou 450046, P.R. China}
+
+\begin{abstract}
+We study a Keller--Segel type chemotaxis system with singular sensitivity
+in a bounded domain $\Om\subset\R^n$. By constructing a suitable
+Lyapunov functional we prove global existence of classical solutions
+for small initial mass, and we derive an explicit decay rate toward
+the spatially homogeneous steady state.
+\end{abstract}
+
+\begin{keyword}
+Keller--Segel system \sep global existence \sep Lyapunov functional \sep
+asymptotic stability \sep 35K55 \sep 35B40
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}\label{s:intro}
+
+Let $\Om\subset\R^n$, $n\ge2$, be a bounded domain with smooth boundary.
+We consider the system
+\begin{equation}\label{sys}
+  \begin{cases}
+    u_t = \Delta u - \chi\nabla\cdot\bigl(\dfrac{u}{v}\nabla v\bigr), & x\in\Om,\ t>0,\\[6pt]
+    v_t = \Delta v - v + u, & x\in\Om,\ t>0,\\[4pt]
+    \partial_\nu u = \partial_\nu v = 0, & x\in\partial\Om,\ t>0,
+  \end{cases}
+\end{equation}
+with initial data $u(\cdot,0)=u_0$, $v(\cdot,0)=v_0$.
+
+\begin{theorem}\label{thm:main}
+Suppose $0<\chi<\sqrt{2/n}$ and $\int_\Om u_0<4\pi/\chi$. Then
+problem~\eqref{sys} possesses a globally defined classical solution,
+which converges exponentially to $(\bar u_0,\bar u_0)$ with
+$\bar u_0=\frac{1}{|\Om|}\int_\Om u_0$.
+\end{theorem}
+
+\section{A Lyapunov functional}
+
+\begin{lemma}
+Along smooth solutions of \eqref{sys},
+\begin{equation}
+  \frac{\dd}{\dd t}\int_\Om\Bigl(u\ln u - \chi u\ln v
+  + \frac{\chi}{2}|\nabla v|^2\Bigr)\,\dd x \le -c\,\mathcal{D}(t)
+\end{equation}
+for some $c>0$, where $\mathcal{D}$ denotes the dissipation rate.
+\end{lemma}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+The Lyapunov functional yields a uniform bound in $L\log L$, which
+combined with standard parabolic regularity theory excludes finite-time
+blow-up.
+\end{proof}
+
+\section*{Acknowledgements}
+The author is grateful to the anonymous referees for helpful comments.
+
+\end{document}

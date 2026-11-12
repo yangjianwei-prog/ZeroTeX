@@ -1,0 +1,76 @@
+% AIMS 期刊模板 —— AIMS Mathematics / DCDS / Discrete & Continuous Dynamical Systems
+% 引擎：pdflatex
+% 官方类 aimsart 已安装时自动使用正式格式；未安装时降级为 article 预览排版。
+\IfFileExists{aimsart.cls}{%
+  \documentclass{aimsart}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\ifdefined\YTfallback
+  \newcommand{\shorttitle}[1]{}
+  \newcommand{\keyword}[1]{}
+  \newcommand{\msc}[1]{}
+  \newcommand{\received}[1]{}
+  \newcommand{\accepted}[1]{}
+\fi
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\begin{document}
+
+\title{Dynamics of a reaction--diffusion equation with nonlocal competition}
+\author{Yang Jianwei$^{1,}$\thanks{$^{1}$ School of Mathematics and Statistics, NCWU, Zhengzhou 450046, China. Email: yangjianwei@example.edu.cn}}
+\shorttitle{Nonlocal reaction--diffusion dynamics}
+\keyword{Reaction--diffusion; nonlocal competition; global attractor; traveling wave}
+\msc{35K57, 35B40, 37L30}
+\received{January 1, 2026}
+\accepted{March 1, 2026}
+
+\begin{abstract}
+We study a reaction--diffusion equation with a nonlocal competition
+term. Existence of a global attractor in $H^1_0(\Om)$ and upper bounds
+for its fractal dimension are obtained.
+\end{abstract}
+
+\maketitle
+
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official \texttt{aimsart.cls} is not installed, so this document uses a
+generic article class. Copy \texttt{aimsart.cls} from the journal's LaTeX
+template package into this project folder (or install the AIMS package) and
+recompile to obtain the real AIMS layout.}}
+\bigskip
+\fi
+
+\section{Introduction}
+
+Let $\Om\subset\R^n$ be bounded and consider
+\begin{equation}\label{eq:rd}
+  u_t - \Delta u = u\Bigl(1 - \int_\Om K(x,y)u(y,t)\,\dd y\Bigr),
+  \qquad u|_{\partial\Om}=0 .
+\end{equation}
+
+\begin{theorem}
+For a nonnegative bounded kernel $K$, problem \eqref{eq:rd} generates a
+dissipative semigroup on $H^1_0(\Om)$ possessing a compact global
+attractor $\mathcal{A}$ with finite fractal dimension.
+\end{theorem}
+
+\section{Proof outline}
+Uniform $L^\infty$ bounds follow from the maximum principle; the
+smoothing effect of the analytic semigroup gives compactness, and the
+dimension estimate follows from the trace formula.
+
+\section*{Conflict of interest}
+The author declares no conflict of interest.
+
+\end{document}

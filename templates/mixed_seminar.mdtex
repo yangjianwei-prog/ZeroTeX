@@ -1,0 +1,64 @@
+---
+title: 组会报告 · 先验估计与紧性
+author: 杨建伟
+lang: zh
+---
+# 本次报告提纲
+
+- **背景**：Navier--Stokes 弱解的存在性
+- **目标**：给出一致能量估计并说明紧性论证
+- **结论**：已得到 $\sup_t\|u(t)\|_{L^2} \le C$
+
+## 问题设定
+
+考虑有界区域 $\Omega\subset\mathbb{R}^3$ 上的方程，边界条件 $u|_{\partial\Omega}=0$。
+初值 $u_0\in L^2_\sigma(\Omega)$。
+
+:::latex
+\begin{equation}\label{eq:ns}
+  \partial_t u + (u\cdot\nabla)u - \nu\Delta u + \nabla p = f,
+  \qquad \nabla\cdot u = 0 .
+\end{equation}
+:::
+
+## 估计链条
+
+1. 用 $u$ 作检验函数
+2. 利用 $\nabla\cdot u=0$ 得 $((u\cdot\nabla)u,u)=0$
+3. 得到
+
+:::latex
+\begin{align}
+  \frac12\frac{d}{dt}\|u\|_{L^2}^2 + \nu\|\nabla u\|_{L^2}^2
+    &= (f,u) \notag\\
+    &\le \frac{\nu}{2}\|\nabla u\|_{L^2}^2 + \frac{C_P^2}{2\nu}\|f\|_{L^2}^2 .
+\end{align}
+:::
+
+4. 对时间积分并应用 *Gronwall 不等式*
+
+## 结果一览
+
+| 估计 | 结论 | 是否需要 $\nu$ 下界 |
+| --- | --- | --- |
+| 能量 | $u \in L^\infty(0,T;L^2)$ | 否 |
+| 耗散 | $\nabla u \in L^2(0,T;L^2)$ | 是 |
+
+> 讨论：紧性来自 Aubin--Lions 引理，需要 $\partial_t u$ 在 $H^{-1}$ 中有界。
+
+:::latex
+\begin{lemma}[Aubin--Lions 应用]
+若 $u_n$ 在 $L^2(0,T;H^1_0)$ 有界且 $\partial_t u_n$ 在
+$L^2(0,T;H^{-1})$ 有界，则 $u_n$ 在 $L^2(0,T;L^2)$ 中相对紧。
+\end{lemma}
+:::
+
+## 下一步
+
+- 处理非线性项的极限传递
+- 与数值结果对照
+- 准备期刊投稿版本
+
+---
+
+本页由 YangTex 混排模板生成：Markdown 写提纲，LaTeX 写公式与引理。

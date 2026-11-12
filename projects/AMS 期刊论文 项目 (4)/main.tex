@@ -1,0 +1,123 @@
+% AMS 期刊论文模板 —— Transactions / Proceedings of the AMS
+% 引擎：pdflatex（若需中文，请改用 ctex + xelatex 模板）
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage{amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue}
+
+% ---------- AMS 元数据（amsart 已内置 \subjclass / \keywords） ----------
+% 若使用非 AMS 文档类，可在此用 \providecommand 补充定义
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- 常用宏 ----------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Om}{\Omega}
+\newcommand{\eps}{\varepsilon}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\supp}{supp}
+
+\title[Short title]{On 1111111111111 rrry regularity of weak solutions to a class of elliptic equations}
+\author{Yang Jianwei} 
+\address{School of Mathematics and Statistics, North China University of Water Resources and Electric Power, Zhengzhou 450046, China}
+\email{yangjianwei@example.edu.cn}
+\thanks{This work was partially supported by NSFC (Grant No. 00000000).}
+
+\begin{document}
+
+\begin{abstract}ffffgfgffgffgf ghdufhujvijijijvij hhjfffujhhhh h  jjjj
+\end{abstract}
+
+\subjclass[2020]{Primary 35J60; Secondary 35B65, 46E35}
+\keywords{partial differential equations, Sobolev space, weak solution, regularity}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+For the classical background and related results, see~\cite{GT,LU}.
+
+Let $\Om\subset\R^n$ ($n\ge 2$) be a bounded domain with Lipschitz boundary.
+We consider the quasilinear elliptic problem
+\begin{equation}\label{eq:main}
+  -\operatorname{div}\bigl(A(x,\nabla u)\bigr)=f \quad \text{in } \Om,
+  \qquad u=0 \quad \text{on } \partial\Om ,
+\end{equation}
+where $A:\Om\times\R^n\to\R^n$ satisfies the standard $p$-growth and
+coercivity conditions with $1<p<\infty$.
+
+\begin{definition}\label{def:weak}
+A function $u\in W^{1,p}_0(\Om)$ is called a \emph{weak solution} of
+\eqref{eq:main} if for every $\varphi\in W^{1,p}_0(\Om)$,
+\begin{equation}\label{eq:weak}
+  \int_{\Om} A(x,\nabla u)\cdot\nabla\varphi\,dx
+  = \int_{\Om} f\varphi\,dx .
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Main result]\label{thm:main}
+Assume $f\in L^q(\Om)$ with $q>n/p$ and let $u\in W^{1,p}_0(\Om)$ be a weak
+solution of \eqref{eq:main}. Then there exist $\alpha\in(0,1)$ and $C>0$,
+depending only on $n,p,q$, and the structural constants, such that
+\begin{equation}\label{eq:holder}
+  \|\nabla u\|_{C^{0,\alpha}(\Om')} \le C
+  \quad\text{for every } \Om'\Subset\Om .
+\end{equation}
+\end{theorem}
+
+\subsection{Strategy of the proof}
+The proof combines a Caccioppoli inequality with an iteration argument.
+We first derive the energy estimate
+\begin{equation}
+  \int_{B_r} |\nabla u|^p\,dx
+  \le C r^{-p}\int_{B_{2r}} |u-u_{2r}|^p\,dx + C\int_{B_{2r}}|f|^{p'}\,dx ,
+\end{equation}
+and then apply the De Giorgi lemma on nested balls; see
+Section~\ref{sec:proof}.
+
+\section{Preliminaries}\label{sec:pre}
+
+We recall the Sobolev embedding $W^{1,p}_0(\Om)\hookrightarrow L^{p^*}(\Om)$
+with $p^*=np/(n-p)$ for $p<n$, and the Poincaré inequality
+$\|u\|_{L^p}\le C(\Om)\|\nabla u\|_{L^p}$.
+
+\begin{lemma}[Caccioppoli]\label{lem:cacc}
+For any $B_{2r}\Subset\Om$ and any $k\in\R$,
+\begin{equation}
+  \int_{B_r\cap\{u>k\}}|\nabla u|^p\,dx
+  \le \frac{C}{r^p}\int_{B_{2r}\cap\{u>k\}}(u-k)^p\,dx .
+\end{equation}
+\end{lemma}
+
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+
+\begin{proof}[Proof]
+Testing \eqref{eq:weak} with $\varphi=\eta^p(u-k)_+$ and applying
+Lemma~\ref{lem:cacc} yields a decay estimate for the level sets.
+Iteration gives an $L^\infty$ bound on $\nabla u$, and a standard
+rescaling argument then implies \eqref{eq:holder}.
+\end{proof}
+
+\begin{remark}
+The assumption $q>n/p$ is sharp in the scale of Lebesgue spaces;
+counterexamples are known for $q=n/p$.
+\end{remark}
+
+\section*{Acknowledgments}
+The author thanks the referee for careful reading and valuable suggestions.
+
+\begin{thebibliography}{9}
+\bibitem{GT} D.~Gilbarg and N.~S.~Trudinger, \emph{Elliptic Partial Differential
+  Equations of Second Order}, 2nd ed., Springer, 2001.
+\bibitem{LU} O.~A.~Ladyzhenskaya and N.~N.~Ural'tseva, \emph{Linear and Quasilinear
+  Elliptic Equations}, Academic Press, 1968.
+\end{thebibliography}
+
+\end{document}

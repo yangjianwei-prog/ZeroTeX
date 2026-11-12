@@ -1,0 +1,98 @@
+% 中文学术报告 Beamer 模板 —— 组会 / 会议报告
+% 引擎：xelatex
+\documentclass[UTF8,10pt]{beamer}
+\usepackage[fontset=fandol]{ctex}
+\usepackage{amsmath,amssymb,amsthm}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+
+% beamer 已内置 theorem/lemma/definition 环境，直接用 block 承载中文定理名
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\DeclareMathOperator{\divg}{div}
+
+\title[简报标题]{非线性偏微分方程解的正则性理论}
+\subtitle{Recent Progress and Open Problems}
+\author{杨建伟}
+\institute{华北水利水电大学 \quad 数学与统计学院}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{报告提纲}
+\tableofcontents
+\end{frame}
+
+\section{问题背景}
+\begin{frame}{模型方程}
+考虑有界区域 $\Om\subset\R^n$ 上的 Dirichlet 问题：
+\begin{equation}\label{eq:model}
+  -\divg\bigl(A(x,\nabla u)\bigr)=f \quad \text{in }\Om,
+  \qquad u|_{\partial\Om}=0 .
+\end{equation}
+
+\begin{itemize}
+  \item $A$ 满足 $p$-增长与强制性条件 \only<2>{\alert{（结构性假设）}}
+  \item $f\in L^q(\Om)$，$q>n/p$
+  \item 核心问题：\alert{弱解是否有界、是否 Hölder 连续？}
+\end{itemize}
+\end{frame}
+
+\section{主要结果}
+\begin{frame}{主要定理}
+\begin{block}{主要定理}
+设 $f\in L^q(\Om)$ 且 $q>n/p$，$u\in W^{1,p}_0(\Om)$ 是
+\eqref{eq:model} 的弱解，则
+\begin{equation}
+  u\in L^\infty_{\mathrm{loc}}(\Om)\cap C^{0,\alpha}_{\mathrm{loc}}(\Om)
+  \quad\text{for some } \alpha\in(0,1).
+\end{equation}
+\end{block}
+
+\pause
+\begin{block}{证明思路}
+Caccioppoli 不等式 $\longrightarrow$ De Giorgi 水平集递推
+$\longrightarrow$ Moser 迭代 $\longrightarrow$ 振荡衰减。
+\end{block}
+\end{frame}
+
+\begin{frame}{关键估计}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Caccioppoli 型不等式}
+\begin{align*}
+  \int_{B_r}|\nabla u|^p
+  &\le \frac{C}{r^p}\int_{B_{2r}}|u-k|^p \\
+  &\quad + C\int_{B_{2r}}|f|^{p'} .
+\end{align*}
+\column{0.48\textwidth}
+\textbf{递推关系}
+\begin{align*}
+  Y_{j+1} &\le C b^j Y_j^{1+\delta},\\
+  Y_j &\to 0 \quad (j\to\infty).
+\end{align*}
+由 $Y_0$ 充分小推出 $\sup u<\infty$。
+\end{columns}
+\end{frame}
+
+\section{展望}
+\begin{frame}{开放问题与后续工作}
+\begin{enumerate}
+  \item 临界指数 $q=n/p$ 时的反例构造
+  \item 各向异性系数矩阵 $A(x,\xi)$ 的情形
+  \item 非局部算子（分数阶 Laplacian）的对应理论
+\end{enumerate}
+
+\vspace{1em}
+\begin{center}
+\Large\emph{谢谢！欢迎批评指正}\\[4pt]
+\normalsize Thank you for your attention.
+\end{center}
+\end{frame}
+
+\end{document}

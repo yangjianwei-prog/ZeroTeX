@@ -1,0 +1,75 @@
+% === Archive for Rational Mechanics and Analysis === 官方投稿模板（YangTex 内置）
+% 官方类：svjour3.cls | 引擎：pdflatex | 分类：Springer 数学期刊
+% 官方类缺失时自动降级为 article 预览排版，仍可正常编译与双向逐行同步。
+\IfFileExists{svjour3.cls}{%
+  \documentclass[smallextended]{svjour3}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\providecommand{\journal}[1]{}
+\providecommand{\journalname}[1]{}
+\providecommand{\institute}[1]{}
+\providecommand{\headers}[2]{}
+\providecommand{\shorttitle}[1]{}
+\providecommand{\subjclass}[2][]{}
+\providecommand{\IEEEmembership}[1]{}
+\providecommand{\affiliation}[1]{}
+\providecommand{\address}[1]{}
+\providecommand{\email}[1]{}
+\providecommand{\smartqed}{}
+\providecommand{\at}{, }
+\providecommand{\eps}{\varepsilon}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\journalname{Archive for Rational Mechanics and Analysis}
+\title{Long-Time Behavior of a Damped Wave Equation with Variable Coefficients}
+\author{Yang Jianwei}
+\date{}
+\begin{document}
+\maketitle
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official class file \texttt{svjour3.cls} was not found on this machine, so the
+document uses a generic article layout. Put the class file into
+\texttt{YangTex/templates/classes/} (or install it with \texttt{tlmgr}),
+then recompile to obtain the real journal layout.}}
+\bigskip
+\fi
+\begin{abstract}
+We study the asymptotic behavior of solutions to a linearly damped wave equation with spatially varying coefficients and derive polynomial decay rates.
+\end{abstract}
+\paragraph{Keywords} damped wave equation; energy decay; variable coefficients; observability
+
+\section{Introduction}
+On a bounded domain $\Om\subset\R^n$ consider $u_{tt}-\mathrm{div}(a(x)\nabla u)+b(x)u_t=0$ with Dirichlet boundary data.
+For the classical background and related results, see~\cite{Evans,Brezis}.
+
+\begin{theorem}
+If the damping region satisfies the geometric control condition, then $E(t)\le C(1+t)^{-1}\,E(0)$ for all $t\ge0$.
+\end{theorem}
+
+\begin{proof}
+A resolvent estimate combined with a multiplier identity yields the polynomial decay via the semigroup interpolation argument.
+\end{proof}
+
+\section{Main estimates}
+\begin{equation}
+E(t)=\frac12\int_\Om\Bigl(|u_t|^2+a(x)|\nabla u|^2\Bigr)\,\dd x,
+\end{equation}
+Without the geometric control condition only logarithmic decay can be expected.
+
+\section{Concluding remarks}
+The method extends to more general domains and boundary conditions; a detailed
+treatment will appear elsewhere.
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L.~C. Evans, \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

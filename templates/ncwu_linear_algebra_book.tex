@@ -1,0 +1,4736 @@
+% =====================================================================
+%  ncwu_linear_algebra_book
+%  来源：线性代数讲义（水墨青主题，15 文件 / 9 章 + 封面 + 附录）（YangTex 模板库 · 用户原稿全量保留版）
+%  处理：仅删除编译产物 PDF / digest.lock，把 \input 递归展开为单文件；
+%        正文、章节、例题、每张幻灯片、封面与参考文献一字未改。
+%  字体：原稿的 macOS 字体声明全部保留，外加 \IfFontExistsTF 存在性判断；
+%        在 Mac 上视觉与原 PDF 完全一致，在 Windows / Linux 上字体缺失时
+%        自动跳过该声明改用默认字体，仍能正常编译。
+%  编译：xelatex（目录 / 交叉引用需连续编译 2~3 遍，产品已自动处理）
+% =====================================================================
+
+% ===================================================================
+%  线性代数讲义（2026—2027 学年新版）
+%  编译：xelatex main.tex   （需编译两遍以生成目录；亦可 latexmk -xelatex）
+%  主题：水墨青 —— 低调沉稳、单双栏混排、图文并茂
+% ===================================================================
+\documentclass[11pt,a4paper,openany]{ctexbook}
+
+% ---------- 版式 ----------
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  top=2.35cm, bottom=2.25cm,
+  inner=2.75cm, outer=3.05cm,
+  marginparsep=0.32cm, marginparwidth=1.55cm,
+  headheight=22.5pt, headsep=0.58cm, footskip=1.05cm
+}
+\usepackage{setspace}
+\setstretch{1.16}
+\usepackage{multicol}
+\usepackage{marginnote}
+\usepackage{emptypage}
+
+% ---------- 字体 ----------
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{}
+\IfFontExistsTF{Hiragino Sans GB}{\setsansfont{Hiragino Sans GB}}{}
+\IfFontExistsTF{Menlo}{\setmonofont{Menlo}}{}
+\setmathfont{texgyretermes-math.otf}[Scale=MatchLowercase]
+\IfFontExistsTF{Songti SC}{\setCJKmainfont{Songti SC}[BoldFont=STHeiti, AutoFakeSlant=0.16]}{}
+\IfFontExistsTF{Hiragino Sans GB}{\setCJKsansfont{Hiragino Sans GB}}{}
+\IfFontExistsTF{Menlo}{\setCJKmonofont{Menlo}}{}
+\IfFontExistsTF{FandolKai}{\setCJKfamilyfont{kai}{FandolKai}}{\setCJKfamilyfont{kai}{FandolKai}}
+\IfFontExistsTF{STHeiti}{\setCJKfamilyfont{hei}{STHeiti}}{\setCJKfamilyfont{hei}{FandolHei}}
+\newcommand{\cjkkai}{\CJKfamily{kai}}
+\newcommand{\cjkhei}{\CJKfamily{hei}}
+
+% ---------- 颜色（水墨青 · 低调沉稳）----------
+\usepackage{xcolor}
+\definecolor{ink}{RGB}{40,52,58}        % 墨（正文主色）
+\definecolor{inkl}{RGB}{104,116,122}    % 淡墨（次级说明）
+\definecolor{qing}{RGB}{42,88,102}      % 天青（主强调色）
+\definecolor{qingd}{RGB}{30,66,78}      % 深天青
+\definecolor{dai}{RGB}{84,110,98}       % 黛绿
+\definecolor{zhe}{RGB}{152,100,64}      % 赭石
+\definecolor{lan}{RGB}{72,98,126}       % 靛蓝
+\definecolor{line}{RGB}{212,218,218}    % 细线
+\definecolor{soft}{RGB}{246,247,245}    % 极浅底
+\definecolor{paper}{RGB}{253,252,249}   % 宣纸白
+
+% ---------- 数学 ----------
+\usepackage{amsmath}
+\usepackage{mathtools}
+\allowdisplaybreaks[3]
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Col}{Col}
+\DeclareMathOperator{\Nul}{Nul}
+\DeclareMathOperator{\Row}{Row}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\proj}{proj}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\cond}{cond}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\ip}[2]{\left\langle #1,\,#2 \right\rangle}
+\newcommand{\Rnum}[1]{\mathbb{R}^{#1}}
+
+% ---------- 图表 ----------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,backgrounds,fit,positioning,
+                shapes.geometric,patterns,matrix,decorations.pathreplacing,
+                decorations.pathmorphing,3d,perspective}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+% 知识图谱节点样式（front.tex 的“全书知识地图”使用）
+\tikzset{
+  nmap/.style={
+    draw=#1!55, fill=white, rounded corners=1.6pt, line width=0.6pt,
+    minimum width=3.9cm, minimum height=0.88cm, inner sep=3pt,
+    text=ink, font=\small\sffamily,
+  },
+  nmap/.default=qing,
+}
+\usepackage{booktabs,array,tabularx,multirow}
+\usepackage{adjustbox}
+\usepackage{enumitem}
+\usepackage{listings}
+
+% ---------- 标题 / 页眉 / 目录 ----------
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{fancyhdr}
+
+% ---------- 定理盒子 ----------
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins,breakable,theorems}
+
+% ===================================================================
+%  页眉页脚
+% ===================================================================
+% openany 版式下取消 cleardoublepage 产生的空白页
+\makeatletter
+\renewcommand{\cleardoublepage}{\clearpage}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\sffamily\color{qing}\nouppercase{\leftmark}}
+\fancyhead[RO]{\small\sffamily\color{qing}\nouppercase{\rightmark}}
+\fancyfoot[C]{\small\sffamily\color{inkl}\thepage}
+\renewcommand{\headrulewidth}{0.45pt}
+\renewcommand{\headrule}{%
+  \hbox to\headwidth{\color{qing!28}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\small\sffamily\color{inkl}\thepage}
+  \renewcommand{\headrulewidth}{0pt}}
+
+% ===================================================================
+%  标题样式
+% ===================================================================
+\titleformat{\chapter}[display]
+  {\sffamily\bfseries\color{ink}}
+  {\filleft\fontsize{58}{58}\selectfont\color{qing!17}\thechapter}
+  {4pt}
+  {\fontsize{23}{28}\selectfont\raggedright}
+  [\vspace{3pt}{\color{qing}\rule{\textwidth}{0.9pt}}]
+
+\titleformat{\section}[hang]
+  {\sffamily\bfseries\Large\color{qing}}{\thesection}{0.55em}{}
+\titleformat{\subsection}[hang]
+  {\sffamily\bfseries\large\color{ink}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}[runin]
+  {\sffamily\bfseries\normalsize\color{dai}}{\thesubsubsection}{0.5em}{}[~~]
+
+\titlespacing*{\chapter}{0pt}{-6pt}{16pt}
+\titlespacing*{\section}{0pt}{15pt plus 3pt}{6pt}
+\titlespacing*{\subsection}{0pt}{11pt plus 2pt}{4pt}
+
+\titlecontents{chapter}[0em]
+  {\addvspace{7pt}\sffamily\bfseries\color{qing}}
+  {\thecontentslabel\qquad}{}
+  {\titlerule*[5pt]{$\cdot$}\contentspage}
+\titlecontents{section}[1.9em]
+  {\sffamily\color{ink}}
+  {\thecontentslabel\qquad}{}
+  {\titlerule*[5pt]{$\cdot$}\contentspage}
+
+% ===================================================================
+%  插图 / 表格 环境（避免浮动带来的排版不可控）
+% ===================================================================
+\newcounter{fignum}[chapter]
+\newcounter{tabnum}[chapter]
+\newenvironment{lafig}[2][]{%
+  \par\addvspace{9pt}%
+  \stepcounter{fignum}%
+  \gdef\lafigcap{#2}%
+  \begin{center}%
+  \begin{adjustbox}{max width=\textwidth,center}%
+  \begin{tikzpicture}[#1]%
+}{%
+  \end{tikzpicture}%
+  \end{adjustbox}%
+  \par\vspace{4pt}%
+  {\small\sffamily\color{qing}\textbf{图~\thechapter.\arabic{fignum}}\quad \lafigcap\par}%
+  \vspace{3pt}%
+  \end{center}%
+  \addvspace{8pt}%
+}
+\newenvironment{latab}[1]{%
+  \par\addvspace{9pt}%
+  \stepcounter{tabnum}%
+  \gdef\latabcap{#1}%
+  \begin{center}%
+  \begin{minipage}{0.94\textwidth}%
+}{%
+  \end{minipage}%
+  \par\vspace{4pt}%
+  {\small\sffamily\color{qing}\textbf{表~\thechapter.\arabic{tabnum}}\quad \latabcap\par}%
+  \vspace{3pt}%
+  \end{center}%
+  \addvspace{8pt}%
+}
+\newcommand{\marnote}[1]{%
+  \marginnote{\footnotesize\sffamily\color{qing!80}\raggedright\setstretch{1.05}#1}}
+
+% ===================================================================
+%  定理 / 定义 / 例题 盒子
+% ===================================================================
+\tcbset{
+  labox/.style={
+    enhanced, breakable, boxrule=0.35pt, arc=1.5mm,
+    left=8pt, right=8pt, top=6pt, bottom=6.5pt,
+    fonttitle=\sffamily\bfseries\small,
+    fontupper=\rmfamily,
+    separator sign={~},
+    description delimiters={~~（}{）},
+    description font=\normalfont\rmfamily,
+    before skip=9pt, after skip=9pt,
+    colbacktitle=white, coltitle=qing,
+  }
+}
+
+\newtcbtheorem[number within=chapter]{defn}{定义}{
+  labox, colframe=qing!45, colback=qing!3,
+  borderline west={2.4pt}{0pt}{qing!65},
+}{dfn}
+\newtcbtheorem[use counter from=defn]{thm}{定理}{
+  labox, colframe=zhe!55, colback=zhe!3, coltitle=zhe,
+  borderline west={2.4pt}{0pt}{zhe!75},
+}{thm}
+\newtcbtheorem[use counter from=defn]{prop}{命题}{
+  labox, colframe=lan!50, colback=lan!3, coltitle=lan,
+  borderline west={2.4pt}{0pt}{lan!70},
+}{prp}
+\newtcbtheorem[use counter from=defn]{lem}{引理}{
+  labox, colframe=lan!45, colback=lan!2.5, coltitle=lan,
+  borderline west={2.4pt}{0pt}{lan!60},
+}{lem}
+\newtcbtheorem[use counter from=defn]{coro}{推论}{
+  labox, colframe=zhe!40, colback=zhe!2.5, coltitle=zhe,
+  borderline west={2.4pt}{0pt}{zhe!55},
+}{cor}
+\newtcbtheorem[use counter from=defn]{exmp}{例}{
+  labox, colframe=line, colback=soft,
+  borderline west={2.4pt}{0pt}{dai!70}, coltitle=dai,
+}{exm}
+\newtcbtheorem[use counter from=defn]{remk}{注记}{
+  labox, colframe=line, colback=soft, boxrule=0.3pt,
+  borderline west={2.4pt}{0pt}{inkl!55}, coltitle=inkl,
+}{rmk}
+\newtcbtheorem[use counter from=defn]{alg}{算法}{
+  labox, colframe=dai!45, colback=dai!3, coltitle=dai,
+  borderline west={2.4pt}{0pt}{dai!70},
+}{alg}
+
+% 证明结束符（unicode-math 下 \square 不可用，改用 TikZ 空心方块）
+\newcommand{\pfbox}{\tikz[baseline=-0.55ex]{\draw[qing, line width=0.65pt] (0,0) rectangle (0.60em,0.60em);}}
+
+% 证明环境
+\newenvironment{pf}{%
+  \par\vspace{2pt}\noindent
+  {\sffamily\bfseries\color{zhe}证明\quad}%
+  \ignorespaces
+}{%
+  \hfill\pfbox\par\vspace{6pt}%
+}
+% 证明梗概
+\newenvironment{pfsketch}{%
+  \par\vspace{2pt}\noindent
+  {\sffamily\bfseries\color{zhe}证明梗概\quad}%
+  \ignorespaces
+}{%
+  \hfill\pfbox\par\vspace{6pt}%
+}
+
+% 章首导览（双栏）
+\newtcolorbox{chapoutline}{
+  enhanced, breakable, colback=qing!2.6, colframe=qing!22, boxrule=0.35pt,
+  arc=1.8mm, left=9pt, right=9pt, top=7pt, bottom=7pt,
+  coltitle=qing, fonttitle=\sffamily\bfseries\small,
+  title=\sffamily 本章导览,
+  borderline west={2.6pt}{0pt}{qing!55},
+  before skip=4pt, after skip=10pt,
+}
+% 章末要点（双栏）
+\newtcolorbox{chapkeys}{
+  enhanced, breakable, colback=dai!2.6, colframe=dai!22, boxrule=0.35pt,
+  arc=1.8mm, left=9pt, right=9pt, top=7pt, bottom=7pt,
+  coltitle=dai, fonttitle=\sffamily\bfseries\small,
+  title=\sffamily 本章要点,
+  borderline west={2.6pt}{0pt}{dai!65},
+  before skip=10pt, after skip=8pt,
+}
+% 历史 / 拓展边栏
+\newtcolorbox{sidebar}[1]{
+  enhanced, breakable, colback=zhe!2.4, colframe=zhe!20, boxrule=0.35pt,
+  arc=1.6mm, left=9pt, right=9pt, top=6pt, bottom=6pt,
+  coltitle=zhe, fonttitle=\sffamily\bfseries\small,
+  title=\sffamily #1,
+  borderline west={2.6pt}{0pt}{zhe!55},
+  before skip=10pt, after skip=10pt,
+}
+% 小结提示条
+\newtcolorbox{keypoint}{
+  enhanced, breakable, colback=qing!4, colframe=qing!28, boxrule=0.35pt,
+  arc=1.2mm, left=8pt, right=8pt, top=5pt, bottom=5pt,
+  borderline west={2.4pt}{0pt}{qing},
+  before skip=8pt, after skip=8pt,
+}
+
+% 习题小节标题（双栏内使用）
+% 满宽细线（自动适配单/双栏宽度，且不受段落缩进影响）
+\newcommand{\fullrule}[2][0.8pt]{%
+  \par\vspace{2pt}\noindent{\color{#2}\rule{\linewidth}{#1}}\par\vspace{4pt}}
+\newcommand{\exhead}{%
+  \par\addvspace{12pt}%
+  {\noindent\sffamily\bfseries\Large\color{qing} 习题\par}%
+  \vspace{-4pt}\noindent{\color{qing!32}\rule{\linewidth}{0.7pt}}\par\vspace{6pt}}
+\newcommand{\minihead}[1]{%
+  \par\addvspace{8pt}%
+  {\noindent\sffamily\bfseries\large\color{qing} #1\par}%
+  \vspace{-4pt}\noindent{\color{qing!28}\rule{\linewidth}{0.6pt}}\par\vspace{5pt}}
+
+% ---------- 代码环境 ----------
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{qing}\bfseries,
+  commentstyle=\color{inkl}\itshape,
+  stringstyle=\color{zhe},
+  backgroundcolor=\color{soft},
+  frame=single, framerule=0.3pt, rulecolor=\color{line},
+  framesep=5pt, xleftmargin=6pt, xrightmargin=6pt,
+  tabsize=2, showstringspaces=false, breaklines=true,
+  captionpos=b, abovecaptionskip=6pt, belowcaptionskip=2pt,
+}
+
+% ---------- 列表 ----------
+\setlist{itemsep=3pt, parsep=2pt, topsep=4pt, leftmargin=2.2em}
+\setlist[enumerate]{labelsep=0.5em}
+
+% ---------- 杂项 ----------
+\setcounter{tocdepth}{1}
+\renewcommand{\textfraction}{0.10}
+\hyphenpenalty=100
+\tolerance=900
+\emergencystretch=2em
+\raggedbottom
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true, linkcolor=qing, citecolor=qing, urlcolor=qingd,
+  bookmarksnumbered=true, bookmarksopen=true, pdftitle={线性代数讲义},
+  pdfauthor={杨建伟}, pdfcreator={XeLaTeX},
+}
+
+% ===================================================================
+\begin{document}
+\frontmatter
+\pagenumbering{Roman}
+% ===================== 封面 =====================
+\begin{titlepage}
+\thispagestyle{empty}
+\enlargethispage{1.4cm}
+\centering
+\begin{tikzpicture}[remember picture,overlay]
+  % 背景：居中的淡网格（线性世界的底纹）
+  \begin{scope}[shift={([xshift=10.5cm,yshift=-6.0cm]current page.north west)}]
+    \foreach \i in {0,...,8}{
+      \draw[qing!6, line width=0.8pt] (\i*0.82-3.28,0) -- (\i*0.82-3.28,6.56);
+      \draw[qing!6, line width=0.8pt] (-3.28,\i*0.82) -- (3.28,\i*0.82);
+    }
+  \end{scope}
+  \draw[qing!16, line width=1.5pt]
+    ([xshift=3.4cm,yshift=-26.1cm]current page.north west) --
+    ([xshift=17.6cm,yshift=-26.1cm]current page.north west);
+\end{tikzpicture}
+
+\vspace*{1.25cm}
+
+{\sffamily\bfseries\color{qing}\fontsize{12.5}{17}\selectfont
+ 华北水利水电大学\quad·\quad 数学与统计学院\quad·\quad 课程讲义系列\par}
+
+\vspace{0.52cm}
+{\color{qing}\rule{0.80\textwidth}{1.1pt}\par}
+\vspace{0.80cm}
+
+{\sffamily\bfseries\fontsize{50}{58}\selectfont\color{ink} 线 性 代 数\par}
+\vspace{0.34cm}
+{\sffamily\fontsize{19}{27}\selectfont\color{qing} 讲\qquad 义\par}
+\vspace{0.16cm}
+{\sffamily\fontsize{14.5}{21}\selectfont\color{qing!85} 2026—2027 学年新版\par}
+
+\vspace{0.34cm}
+{\rmfamily\fontsize{11.5}{16}\selectfont\color{inkl}
+ Linear Algebra: A Course Companion\par}
+\vspace{0.06cm}
+{\rmfamily\fontsize{11.5}{16}\selectfont\color{inkl}
+ for the 2026--2027 Academic Year\par}
+
+\vspace{0.78cm}
+
+\begin{tikzpicture}[>=Stealth, line cap=round, line join=round, scale=0.92]
+  % ---------- 左：单位圆与正交基 ----------
+  \begin{scope}
+    \draw[line!80, very thin, step=0.5] (-1.75,-1.75) grid (1.75,1.75);
+    \draw[qing!45, line width=0.7pt, ->] (-2.0,0) -- (2.05,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-2.0) -- (0,2.05);
+    \draw[qing, line width=1.35pt] (0,0) circle (1.35);
+    \draw[qing!80, line width=1.5pt, ->] (0,0) -- (0.955,0.955)
+      node[midway, above left, xshift=-1pt]{\scriptsize $\boldsymbol{v}_1$};
+    \draw[dai!80, line width=1.5pt, ->] (0,0) -- (-0.955,0.955)
+      node[midway, above right, xshift=2pt]{\scriptsize $\boldsymbol{v}_2$};
+    \node[below=3pt, font=\small, color=inkl] at (0,-2.25) {单位圆：$\norm{x}=1$};
+  \end{scope}
+  % ---------- 变换箭头 ----------
+  \draw[zhe, line width=1.6pt, ->] (2.45,0) -- (3.75,0)
+    node[midway, above=4pt, font=\small]{$\boldsymbol{A}$};
+  % ---------- 右：椭圆与奇异方向 ----------
+  \begin{scope}[xshift=6.7cm]
+    \draw[line!80, very thin, step=0.5] (-2.6,-1.75) grid (2.6,1.75);
+    \draw[qing!45, line width=0.7pt, ->] (-2.85,0) -- (2.9,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-2.0) -- (0,2.05);
+    \draw[zhe, line width=1.35pt] (0,0) ellipse (2.0 and 0.85);
+    \draw[zhe!85, line width=1.5pt, ->] (0,0) -- (2.0,0)
+      node[midway, below, yshift=-2pt]{\scriptsize $\sigma_1 u_1$};
+    \draw[zhe!70, line width=1.5pt, ->] (0,0) -- (0,0.85)
+      node[midway, right, xshift=1pt]{\scriptsize $\sigma_2 u_2$};
+    \node[below=3pt, font=\small, color=inkl] at (0,-2.25) {像：椭圆 $\norm{Ax}=1$ 的边界};
+  \end{scope}
+\end{tikzpicture}
+
+\vspace{0.20cm}
+{\centering\sffamily\footnotesize\color{inkl}
+ 封面主图：单位圆在线性变换 $A$ 下的像是椭圆，其半轴即奇异值 $\sigma_1,\sigma_2$\par}
+
+\vspace{0.52cm}
+{\color{qing}\rule{0.80\textwidth}{1.1pt}\par}
+\vspace{0.62cm}
+
+\sffamily\fontsize{10.5}{17}\selectfont\color{ink}
+\begin{tabular}{r@{\hspace{0.85em}}l}
+\textcolor{qing}{主\quad 编}   & 杨建伟（华北水利水电大学 数学与统计学院）\\[3pt]
+\textcolor{qing}{适用对象}     & 数学类、统计类、信息与计算科学、工科各专业\\[3pt]
+\textcolor{qing}{学时建议}     & 48—64 学时（含上机实践 8 学时）\\[3pt]
+\textcolor{qing}{版\quad 次}   & 2025年 9 月第 1 版\quad·\quad 2026 年9 月第 2 次修订\\[3pt]
+\textcolor{qing}{配套资源}     & 习题参考解答、Python / MATLAB 演示程序、课件源文件
+\end{tabular}
+
+\vfill
+{\sffamily\fontsize{10.5}{15}\selectfont\color{inkl}
+ 二〇二六年九月\quad·\quad 谨以此讲义献给初入线性世界的同学们\par}
+\vspace{0.15cm}
+\end{titlepage}
+
+% ===================== 版本说明页 =====================
+\cleardoublepage
+\thispagestyle{empty}
+\vspace*{1.6cm}
+{\sffamily\bfseries\Large\color{qing}版本说明\par}
+\vspace{4pt}\noindent{\color{qing}\rule{\textwidth}{0.8pt}}\par
+\vspace{0.6cm}
+
+本讲义依据 2026—2027 学年《线性代数》课程教学大纲编写，参考同济大学《线性代数》、
+David C.\ Lay《线性代数及其应用》、Gilbert Strang《线性代数导论》等国内外经典教材，
+并结合编者十余年一线教学实践重新组织与改写。全书在以下方面作了特别处理：
+
+\begin{multicols}{2}
+\sffamily\small\setstretch{1.25}
+\begin{itemize}[leftmargin=1.5em]
+\item[$\diamond$] \textbf{几何先行。}每一概念先给出平面或空间的直观图像，再进入代数推演。
+\item[$\diamond$] \textbf{矩阵即作用。}始终强调矩阵是“线性变换的一种描述”，而非单纯的数表。
+\item[$\diamond$] \textbf{单双栏混排。}正文推导单栏排印，便于长公式与大幅插图；
+      导览、要点、习题与附录采用双栏，便于检索与对照。
+\item[$\diamond$] \textbf{计算与理论并重。}每章配置算法框、上机提示与工程背景材料。
+\item[$\diamond$] \textbf{层次分明。}定义、定理、例题、注记分别用不同色系的边框标识，
+      一眼即可分辨内容性质。
+\item[$\diamond$] \textbf{面向应用。}第 6、7、9 章分别给出动力系统、最小二乘拟合与主成分分析的完整案例。
+\end{itemize}
+\end{multicols}
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[>=Stealth]
+  \foreach \x/\lab in {-6.0/\text{向量},-3.6/\text{矩阵},-1.2/\text{方程组},
+                       1.2/\text{空间},3.6/\text{变换},6.0/\text{特征值}} {
+    \node[draw=qing!45, fill=qing!3, rounded corners=1.6pt, minimum width=2.05cm,
+          minimum height=0.72cm, font=\small\sffamily, text=ink] at (\x,0) {\lab};
+  }
+  \foreach \a/\b in {-6.0/-3.6,-3.6/-1.2,-1.2/1.2,1.2/3.6,3.6/6.0}{
+    \draw[qing!55, line width=0.8pt, ->] (\a+1.05,0) -- (\b-1.05,0);
+  }
+\end{tikzpicture}
+\end{center}
+\vspace{0.2cm}
+{\centering\sffamily\small\color{inkl}图 0.1\quad 全书知识主线：向量 $\to$ 矩阵 $\to$ 方程组 $\to$ 空间 $\to$ 变换 $\to$ 谱\par}
+
+\vfill
+\noindent\sffamily\footnotesize\color{inkl}
+本书为校内讲义，仅供教学使用。排版引擎 XeLaTeX，插图由 TikZ / pgfplots 现场绘制。
+
+% ===================== 全书知识地图 =====================
+\cleardoublepage
+\thispagestyle{empty}
+\vspace*{0.9cm}
+{\sffamily\bfseries\Large\color{qing}全书知识地图\par}
+\vspace{4pt}\noindent{\color{qing}\rule{\textwidth}{0.8pt}}\par
+\vspace{0.15cm}
+{\sffamily\small\color{inkl}
+ 下图给出九章内容的依赖关系：自下而上为“基础 $\to$ 核心 $\to$ 桥梁 $\to$ 结构 $\to$ 应用”，
+ 实线箭头表示直接依赖，虚线表示交叉应用。\par}
+\vspace{0.25cm}
+
+\noindent\makebox[\textwidth][c]{%
+\begin{tikzpicture}[>=Stealth, line cap=round, font=\small\sffamily]
+  % ---------- 分层底纹 ----------
+  \foreach \y/\lab/\cf in {0.55/基\quad 础/qing, 2.85/核\quad 心/lan,
+                           5.15/桥\quad 梁/dai, 7.45/结\quad 构/zhe,
+                           9.75/应\quad 用/qingd}{
+    \fill[\cf!5] (0,\y-0.62) rectangle (14.5,\y+0.62);
+    \draw[\cf!22, line width=0.4pt] (0,\y-0.62) -- (14.5,\y-0.62);
+    \node[\cf, font=\footnotesize\sffamily] at (0.95,\y) {\lab};
+  }
+  \draw[line!70, line width=0.4pt] (1.85,0.05) -- (1.85,10.3);
+
+  % ---------- 节点 ----------
+  \node[nmap=qing] (n1) at (7.6,0.55) {第1章\quad 向量与矩阵运算};
+  \node[nmap=lan]  (n2) at (3.3,2.85)  {第2章\quad 线性方程组};
+  \node[nmap=lan]  (n3) at (7.6,2.85)  {第3章\quad 行列式};
+  \node[nmap=lan]  (n4) at (11.9,2.85) {第4章\quad 向量空间};
+  \node[nmap=dai]  (n5) at (7.6,5.15)  {第5章\quad 线性变换};
+  \node[nmap=zhe]  (n6) at (4.4,7.45)  {第6章\quad 特征值与对角化};
+  \node[nmap=zhe]  (n7) at (10.8,7.45) {第7章\quad 正交性与最小二乘};
+  \node[nmap=qingd](n8) at (4.4,9.75)  {第8章\quad 二次型与极值};
+  \node[nmap=qingd](n9) at (10.8,9.75) {第9章\quad 奇异值分解与应用};
+
+  % ---------- 依赖箭头 ----------
+  \foreach \a/\b in {n1/n2,n1/n3,n1/n4,n2/n5,n3/n5,n4/n5,n5/n6,n5/n7,n6/n8,n7/n9}{
+    \draw[line!75, line width=0.85pt, ->] (\a) -- (\b);
+  }
+  \draw[line!60, line width=0.7pt, ->, dashed] (n6) to[bend left=22] (n9);
+  \draw[line!60, line width=0.7pt, ->, dashed] (n7) to[bend right=22] (n8);
+  \draw[zhe!60, line width=0.7pt, <->, dashed] (n6) -- (n7)
+    node[midway, above=3.5pt, font=\scriptsize\sffamily, color=inkl]
+      {对称矩阵 $\Rightarrow$ 正交对角化};
+\end{tikzpicture}}
+\vspace{0.12cm}
+{\centering\sffamily\small\color{inkl}
+ 图 0.2\quad 全书九章的知识依赖图谱\par}
+
+\vspace{0.35cm}
+
+\begin{multicols}{2}
+\sffamily\small\setstretch{1.26}
+\minihead{贯穿全书的三条主线}
+
+\textbf{代数主线}（可计算）：\\
+矩阵运算 $\to$ 高斯消元 $\to$ 行列式展开 $\to$ 特征多项式 $\to$ QR / SVD 迭代。
+这条线回答“\emph{怎么算}”。
+
+\textbf{几何主线}（可想象）：\\
+向量叠加 $\to$ 平面相交 $\to$ 有向体积 $\to$ 空间的拉伸旋转 $\to$ 单位圆变椭圆。
+这条线回答“\emph{是什么}”。
+
+\textbf{结构主线}（可推广）：\\
+线性组合 $\to$ 子空间与基 $\to$ 四个基本子空间 $\to$ 谱分解 $\to$ 低秩逼近。
+这条线回答“\emph{为什么}”。
+
+\minihead{三者的配合方式}
+
+每章都按“\textbf{几何直观 $\to$ 代数定义 $\to$ 算法步骤 $\to$ 应用案例}”
+四步推进。读者若时间有限，可只沿几何主线浏览插图，
+亦可只沿代数主线演练算法，二者在结构主线处汇合。
+
+\minihead{几条常用捷径}
+
+\begin{itemize}[leftmargin=1.4em]
+\item 只求解方程组 $\Rightarrow$ 第 2 章 + 第 4 章前三节；
+\item 只备考特征值与二次型 $\Rightarrow$ 第 3、6、8 章；
+\item 只做数据分析与降维 $\Rightarrow$ 第 7、9 章；
+\item 补习几何直觉 $\Rightarrow$ 第 1、5 章的全部插图。
+\end{itemize}
+\end{multicols}
+
+\vfill
+\noindent\sffamily\footnotesize\color{inkl}
+图中虚线箭头提示：特征值理论（第 6 章）是奇异值分解（第 9 章）的对称化特例，
+而正交化方法（第 7 章）则是二次型标准化（第 8 章）的主要工具。
+
+% ===================== 前言 =====================
+\cleardoublepage
+\thispagestyle{empty}
+\vspace*{1.2cm}
+{\sffamily\bfseries\Large\color{qing}前\quad 言\par}
+\vspace{4pt}\noindent{\color{qing}\rule{\textwidth}{0.8pt}}\par
+\vspace{0.5cm}
+
+\setstretch{1.22}
+线性代数是一门“越往后越觉得当初没学透”的课程。初学时，它似乎只是行列式的展开、
+矩阵的行变换与一堆莫名其妙的运算规则；等到学习微分方程、最优化、统计学、
+机器学习乃至量子力学时，我们才恍然发觉：那些看似繁琐的记号，其实是在描述
+\emph{空间本身的结构}——向量如何叠加，空间如何被拉伸、旋转与压缩，
+一个变换在哪些方向上最“省力”。
+
+本讲义试图换一种讲法：\textbf{把几何放在前面，把代数作为几何的语言}。
+第一章从向量的加法与数乘出发，让读者先在平面上“看见”线性组合；
+第二章用三张平面的相交情形解释方程组解的结构；第三章把行列式解释成有向体积；
+第五章用一张网格的变形说明矩阵乘法；第六章在箭头的迭代中看到特征方向；
+第九章则以“单位圆变成椭圆”这一幅图收束全书，把奇异值分解的几何含义说清楚。
+\marnote{建议读者在每一章结束时，合上书默画一遍该章的主图。}
+
+与此同时，讲义并未放松对计算能力的要求。高斯消元、格拉姆—施密特正交化、
+特征多项式、二次型的配方法、QR 迭代等基本技能，都以算法框的形式给出完整步骤，
+并配相应的 Python / MATLAB 命令（见附录 B）。每章末的习题分三级：
+A 组为基础计算，B 组为推理证明，C 组为建模与应用，供不同需求的读者取舍。
+
+讲义的排版也刻意向正式出版物看齐：正文单栏便于长推导，导览与要点双栏便于速查；
+定义、定理、例题、注记分别用天青、赭石、黛绿与灰色的边框加以区分；
+所有插图均以矢量方式现场绘制，缩放不失真。希望能为读者提供一份
+既能\textbf{读得下去}、也能\textbf{查得起来}的教材。
+
+\vspace{0.8cm}
+\begin{flushright}
+\cjkkai
+教学相长，疏漏之处在所难免。\\
+欢迎读者将意见与勘误反馈至编者，以便下一学年修订。\\[6pt]
+\sffamily\color{qing}杨建伟\\[2pt]
+\sffamily\footnotesize\color{inkl}2026 年 9 月\quad 于华北水利水电大学
+\end{flushright}
+
+% ===================== 使用说明（双栏） =====================
+\cleardoublepage
+\thispagestyle{empty}
+\vspace*{1.0cm}
+{\sffamily\bfseries\Large\color{qing}使用说明\par}
+\vspace{4pt}\noindent{\color{qing}\rule{\textwidth}{0.8pt}}\par
+\vspace{0.45cm}
+
+\begin{multicols}{2}
+\sffamily\small\setstretch{1.28}
+
+\minihead{版面与栏式}
+
+本书采用\textbf{单双栏混排}：正文推导、长公式与大幅插图使用单栏，
+以保证可读性与公式完整；章首“本章导览”、章末“本章要点”与“习题”、
+以及全部附录使用双栏，便于快速检索与左右对照。
+
+\minihead{彩色边框的含义}
+
+每类内容都有固定的色系，读者可凭颜色判断性质：
+
+\begin{center}
+\begin{tikzpicture}[font=\small\sffamily]
+  \node[draw=qing!50, fill=qing!3, text width=4.4cm, text=ink,
+        rounded corners=1.5pt, inner sep=4pt,
+        label={[color=qing]left:\bfseries 定}] at (0,0) {\ 定义：概念的精确表述};
+  \node[draw=zhe!55, fill=zhe!3, text width=4.4cm, text=ink,
+        rounded corners=1.5pt, inner sep=4pt,
+        label={[color=zhe]left:\bfseries 理}] at (0,-0.95) {\ 定理 / 命题 / 推论};
+  \node[draw=line, fill=soft, text width=4.4cm, text=ink,
+        rounded corners=1.5pt, inner sep=4pt,
+        label={[color=dai]left:\bfseries 例}] at (0,-1.90) {\ 例题：完整演算过程};
+  \node[draw=line, fill=soft, text width=4.4cm, text=ink,
+        rounded corners=1.5pt, inner sep=4pt,
+        label={[color=inkl]left:\bfseries 注}] at (0,-2.85) {\ 注记：补充与提醒};
+\end{tikzpicture}
+\end{center}
+
+\minihead{习题分级}
+
+\begin{itemize}[leftmargin=1.4em]
+\item[\textbf{A}] 基础计算，覆盖全部必会技能；
+\item[\textbf{B}] 推理与证明，训练逻辑表达；
+\item[\textbf{C}] 建模与应用，鼓励上机实现。
+\end{itemize}
+
+\minihead{符号约定}
+
+向量默认写作列向量 $\boldsymbol{x}$；矩阵用大写拉丁字母 $A,B,\dots$；
+标量用小写字希腊或拉丁字母。若未特别说明，数域默认为实数域 $\R$。
+
+\minihead{上机提示}
+
+标有 \textcolor{dai}{\textbf{$\triangleright$ 上机}} 的段落给出可在
+Python（NumPy）或 MATLAB 中直接运行的核心命令，建议边学边练。
+浮点运算与理论结果存在舍入误差，判定时应使用容差。
+
+\minihead{阅读建议}
+
+第一遍可按教师进度逐章阅读；考前复习时，只看各章“本章要点”与
+“本章导览”两处双栏内容，再回头做 A 组习题，效率最高。
+
+\end{multicols}
+
+\vfill
+\noindent\sffamily\footnotesize\color{inkl}
+题图说明：封面主图为“单位圆在线性变换下的像”，它同时是全书第 9 章
+奇异值分解的几何出发点。
+
+
+\cleardoublepage
+{\sffamily\hypersetup{linkcolor=ink}\tableofcontents}
+
+\mainmatter
+\pagenumbering{arabic}
+% ===================== 第 1 章 向量与矩阵 =====================
+\chapter{向量与矩阵}
+\label{ch:vecmat}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 用几何直观理解向量的加法、数乘与线性组合；
+\item 掌握矩阵的三重身份：数表、算子与映射；
+\item 熟练完成矩阵乘法，并理解“行乘列”与“列的线性组合”两种视角；
+\item 认识常见特殊矩阵及其运算性质。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+线性组合\quad 张成\quad 列向量\quad 行向量\\
+矩阵乘法\quad 单位矩阵\quad 转置\quad 分块
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+8 学时（含上机 1 学时）
+\end{multicols}
+\end{chapoutline}
+
+\section{向量：既有大小，又有方向}
+
+把 $n$ 个实数排成一列，就得到一个\textbf{列向量}：
+\[
+\boldsymbol{x}=\begin{bmatrix}x_1\\ x_2\\ \vdots\\ x_n\end{bmatrix}\in\Rnum{n},
+\qquad
+\boldsymbol{x}^{\mathsf T}=[\,x_1\ \ x_2\ \ \cdots\ \ x_n\,]\in\R{1\times n}
+\]
+称为行向量。在 $\Rnum{2}$ 与 $\Rnum{3}$ 中，向量可以被“看见”：
+它是有长度、有方向的箭头，起点约定在原点。
+
+\begin{defn}{向量的加法与数乘}{vec-op}
+设 $\boldsymbol{u},\boldsymbol{v}\in\Rnum{n}$，$c\in\R$。定义
+\[
+\boldsymbol{u}+\boldsymbol{v}=(u_1+v_1,\dots,u_n+v_n)^{\mathsf T},
+\qquad
+c\,\boldsymbol{u}=(cu_1,\dots,cu_n)^{\mathsf T}.
+\]
+\end{defn}
+
+\begin{exmp}{两种几何解释}{geo-add}
+下图给出 $\Rnum{2}$ 中的向量加法：$\boldsymbol{u}+\boldsymbol{v}$ 是以
+$\boldsymbol{u},\boldsymbol{v}$ 为邻边的平行四边形的对角线，
+也是“先走 $\boldsymbol{u}$ 再走 $\boldsymbol{v}$”的三角形折线的终点。
+数乘 $c\boldsymbol{v}$ 则是把 $\boldsymbol{v}$ 拉长（$|c|>1$）、
+压短（$|c|<1$），并在 $c<0$ 时掉头反向。
+\begin{lafig}[>=Stealth, line cap=round]{向量加法的平行四边形法则（阴影）与数乘的伸缩（虚线）}
+  \draw[line!80, very thin, step=0.5] (-1.2,-1.0) grid (3.9,3.9);
+  \draw[qing!55, line width=0.7pt, ->] (-1.4,0) -- (4.05,0);
+  \draw[qing!55, line width=0.7pt, ->] (0,-1.2) -- (0,4.05);
+  \fill[qing!9] (0,0) -- (2.0,1.0) -- (3.0,3.0) -- (1.0,2.0) -- cycle;
+  \draw[dashed, ink!40] (2.0,1.0) -- (3.0,3.0) -- (1.0,2.0);
+  \draw[dai, line width=1.6pt, ->] (0,0) -- (2.0,1.0);
+  \node[dai] at (1.25,0.28) {\small $\boldsymbol{u}$};
+  \draw[zhe, line width=1.6pt, ->] (0,0) -- (1.0,2.0);
+  \node[zhe] at (0.52,1.35) {\small $\boldsymbol{v}$};
+  \draw[qing, line width=1.9pt, ->] (0,0) -- (3.0,3.0);
+  \node[qing] at (2.4,3.3) {\small $\boldsymbol{u}+\boldsymbol{v}$};
+  \draw[zhe!60, dashed, line width=0.9pt, ->] (2.0,1.0) -- (2.5,2.0)
+     node[midway, right, yshift=-1pt]{\scriptsize $\tfrac12\boldsymbol{v}$};
+  \draw[dai!60, dashed, line width=0.9pt, ->] (0,0) -- (3.0,1.5)
+     node[midway, below, xshift=6pt]{\scriptsize $1.5\,\boldsymbol{u}$};
+\end{lafig}
+\end{exmp}
+
+\begin{remk}{加法是唯一的主角}{only-add}
+线性代数的全部内容，几乎都建立在两种“保结构”的运算之上：
+加法与数乘。凡是把加法与数乘“送进去、送出来”的映射，
+我们都称之为线性的。这句话现在听起来像口号，
+第五章会把它变成精确定义。
+\end{remk}
+
+\section{线性组合与张成空间}
+
+\begin{defn}{线性组合与张成}{span-def}
+对向量 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_k\in\Rnum{n}$ 与标量
+$c_1,\dots,c_k\in\R$，称
+\[
+c_1\boldsymbol{v}_1+c_2\boldsymbol{v}_2+\cdots+c_k\boldsymbol{v}_k
+\]
+为一个\textbf{线性组合}。全体线性组合之集记为
+\[
+\Span\{\boldsymbol{v}_1,\dots,\boldsymbol{v}_k\}
+=\{\,c_1\boldsymbol{v}_1+\cdots+c_k\boldsymbol{v}_k : c_i\in\R\,\},
+\]
+称为由这组向量\textbf{张成}（span）的集合。
+\end{defn}
+
+\begin{keypoint}
+张成的几何图像非常清晰：一个非零向量张成一条过原点的直线；
+两个不成比例的向量张成一个过原点的平面；
+三个“不太巧”的向量在 $\Rnum{3}$ 中张成整个空间。
+反之，若 $\boldsymbol{v}_2=c\,\boldsymbol{v}_1$，
+则 $\Span\{\boldsymbol{v}_1,\boldsymbol{v}_2\}$ 只是一条直线——
+第二个向量没有带来任何新东西。
+\end{keypoint}
+
+\begin{exmp}{三个向量的三种命运}{span-ex}
+\[
+\Span\Big\{\begin{bmatrix}1\\0\end{bmatrix}\Big\}
+=\text{$x$ 轴（一条直线）};\qquad
+\Span\Big\{\begin{bmatrix}1\\0\end{bmatrix},
+              \begin{bmatrix}0\\1\end{bmatrix}\Big\}=\Rnum{2};\qquad
+\Span\Big\{\begin{bmatrix}1\\0\end{bmatrix},
+              \begin{bmatrix}2\\0\end{bmatrix}\Big\}
+=\text{$x$ 轴（仍是直线）}.
+\]
+第三组说明：张成集合的大小取决于向量的“方向是否重复”，
+而不取决于向量的个数。这为第四章“线性相关性”埋下伏笔。
+\end{exmp}
+
+\begin{lafig}[>=Stealth, line cap=round]{线性组合的几何：左图两个不共线向量张成整个平面，
+右图两个共线向量只能张成一条直线}
+  % ---------- 左：张成平面 ----------
+  \begin{scope}
+    \fill[qing!6] (-2.4,-1.7) rectangle (2.4,1.7);
+    \draw[line!80, very thin, step=0.5] (-2.4,-1.7) grid (2.4,1.7);
+    \begin{scope}
+      \clip (-2.4,-1.7) rectangle (2.4,1.7);
+      \foreach \t in {-1,0,1}{
+        \draw[qing!30, line width=0.6pt] (1.5*\t,-1.7) -- (1.5*\t,1.7);
+      }
+      \foreach \s in {-1,0,1}{
+        \draw[dai!35, line width=0.6pt] (-2.4,1.0*\s) -- (2.4,1.0*\s);
+      }
+    \end{scope}
+    \draw[qing!45, line width=0.7pt, ->] (-2.65,0) -- (2.65,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.95) -- (0,1.95);
+    \draw[qing, line width=1.5pt, ->] (0,0) -- (1.5,0)
+      node[midway, below, yshift=-3pt, fill=paper, inner sep=1pt]{\small $\boldsymbol{v}_1$};
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (0,1.0)
+      node[midway, left, xshift=-2pt]{\small $\boldsymbol{v}_2$};
+    \draw[ink!70, line width=0.9pt, ->, dashed] (0,0) -- (1.5,1.0)
+      node[right, xshift=1pt]{\small $c_1\boldsymbol{v}_1+c_2\boldsymbol{v}_2$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.35)
+      {两族平行网格线：$\Span\{\boldsymbol{v}_1,\boldsymbol{v}_2\}=\Rnum{2}$};
+  \end{scope}
+  % ---------- 右：共线退化 ----------
+  \begin{scope}[xshift=9.6cm]
+    \draw[line!80, very thin, step=0.5] (-2.4,-1.7) grid (2.4,1.7);
+    \draw[qing!45, line width=0.7pt, ->] (-2.65,0) -- (2.65,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.95) -- (0,1.95);
+    \draw[qing!16, line width=4.2pt] (-2.35,0) -- (2.35,0);
+    \draw[qing, line width=1.5pt, ->] (0,0) -- (1.5,0)
+      node[midway, below, yshift=-2pt]{\small $\boldsymbol{v}_1$};
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (0.9,0)
+      node[midway, above, yshift=2pt]{\small $\boldsymbol{v}_2=\tfrac35\boldsymbol{v}_1$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.35)
+      {$\boldsymbol{v}_2$ 与 $\boldsymbol{v}_1$ 共线：只能张成一条直线};
+  \end{scope}
+\end{lafig}
+
+\section{矩阵：一张数表，一种作用}
+
+\begin{defn}{矩阵}{mat-def}
+由 $m\times n$ 个数排成的矩形数表称为 $m\times n$ 矩阵，记作
+\[
+A=\begin{bmatrix}
+a_{11} & a_{12} & \cdots & a_{1n}\\
+a_{21} & a_{22} & \cdots & a_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{bmatrix}\in\R{m\times n},
+\]
+其中 $a_{ij}$ 位于第 $i$ 行第 $j$ 列。当 $m=n$ 时称 $A$ 为\textbf{$n$ 阶方阵}。
+\end{defn}
+
+\begin{remk}{矩阵的三重身份}{three-roles}
+同一张数表，在不同场合扮演三种角色：
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{数表}：储存数据，如 $m$ 名学生 $n$ 门课的成绩矩阵；
+\item \textbf{算子}：对向量做线性变换，$A\boldsymbol{x}$ 把 $\boldsymbol{x}$ “搬”到别处；
+\item \textbf{方程组的浓缩}：$A\boldsymbol{x}=\boldsymbol{b}$ 用一行符号写下了 $m$ 个方程。
+\end{enumerate}
+本讲义最强调第二种身份。
+\end{remk}
+
+\subsection{矩阵加法、数乘与转置}
+
+设 $A=(a_{ij}),B=(b_{ij})\in\R{m\times n}$，$c\in\R$，则
+\[
+(A+B)_{ij}=a_{ij}+b_{ij},\qquad (cA)_{ij}=c\,a_{ij},\qquad
+(A^{\mathsf T})_{ij}=a_{ji}.
+\]
+三者都按“逐元素”进行，只有\textbf{乘法}例外。这些运算满足
+\[
+A+B=B+A,\quad (A+B)+C=A+(B+C),\quad c(A+B)=cA+cB,
+\]
+\[
+(A^{\mathsf T})^{\mathsf T}=A,\quad (A+B)^{\mathsf T}=A^{\mathsf T}+B^{\mathsf T},\quad
+(cA)^{\mathsf T}=cA^{\mathsf T},\quad (AB)^{\mathsf T}=B^{\mathsf T}A^{\mathsf T}.
+\]
+最后一式尤其值得记住：\emph{转置把乘积的顺序颠倒过来}。
+
+\section{矩阵乘法：两种视角，一个事实}
+
+\begin{defn}{矩阵乘法}{matmul-def}
+设 $A\in\R{m\times n}$，$B\in\R{n\times p}$，则 $C=AB\in\R{m\times p}$ 定义为
+\[
+c_{ij}=\sum_{k=1}^{n}a_{ik}b_{kj}
+=\text{$A$ 的第 $i$ 行}\cdot\text{$B$ 的第 $j$ 列}.
+\]
+\end{defn}
+
+\begin{keypoint}
+乘法能进行的条件是\textbf{内维相等}：$(m\times n)(n\times p)$。
+结果的形状由外侧两数决定。这个“内维相等”的口诀，比任何公式都好用。
+\end{keypoint}
+
+按定义算乘法是“行乘列”。但理解乘法，更靠下面两种视角。
+
+\begin{prop}{列组合视角}{colview}
+$AB$ 的第 $j$ 列，等于 $A$ 乘以 $B$ 的第 $j$ 列：
+\[
+AB=A\,[\,\boldsymbol{b}_1\ \boldsymbol{b}_2\ \cdots\ \boldsymbol{b}_p\,]
+=[\,A\boldsymbol{b}_1\ \ A\boldsymbol{b}_2\ \ \cdots\ \ A\boldsymbol{b}_p\,].
+\]
+即\textbf{乘积的每一列都是 $A$ 各列的线性组合}，组合系数由 $\boldsymbol{b}_j$ 给出。
+因此 $\Col(AB)\subseteq \Col(A)$。
+\end{prop}
+
+\begin{prop}{行组合视角}{rowview}
+对称地，$AB$ 的第 $i$ 行是 $B$ 各行的线性组合：
+\[
+(AB)_{i\,*}=a_{i\,1}\,\boldsymbol{b}_{1\,*}+a_{i\,2}\,\boldsymbol{b}_{2\,*}+\cdots
++a_{i\,n}\,\boldsymbol{b}_{n\,*},
+\]
+因此 $\Row(AB)\subseteq \Row(B)$。
+\end{prop}
+
+\begin{lafig}[>=Stealth, line cap=round]{矩阵乘法的两种视角：左为“行乘列”的逐元素定义，右为“乘一个向量即取列的线性组合”}
+  % 左：行乘列
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (1.9,2.5) {视角一：行乘列};
+    \matrix (A1) [matrix of math nodes, left delimiter={[}, right delimiter={]},
+                  nodes={minimum width=0.72cm, minimum height=0.46cm, font=\small},
+                  row sep=-0.1pt, column sep=-0.1pt] at (0,0.62)
+      { a_{11} & a_{12} & a_{13}\\ a_{21} & a_{22} & a_{23}\\ a_{31} & a_{32} & a_{33}\\ };
+    \node[qing, font=\footnotesize] at (1.85,0.62) {$\times$};
+    \matrix (B1) [matrix of math nodes, left delimiter={[}, right delimiter={]},
+                  nodes={minimum width=0.72cm, minimum height=0.46cm, font=\small},
+                  row sep=-0.1pt, column sep=-0.1pt] at (2.9,0.62)
+      { b_{11} & b_{12}\\ b_{21} & b_{22}\\ b_{31} & b_{32}\\ };
+    \node[qing, font=\footnotesize] at (4.35,0.62) {$=$};
+    \matrix (C1) [matrix of math nodes, left delimiter={[}, right delimiter={)},
+                  nodes={minimum width=0.72cm, minimum height=0.46cm, font=\small},
+                  row sep=-0.1pt, column sep=-0.1pt] at (5.7,0.62)
+      { c_{11} & c_{12}\\ c_{21} & c_{22}\\ c_{31} & c_{32}\\ };
+    \draw[zhe, line width=1.1pt] ($(A1-2-1.north west)+(-0.06,0.02)$) rectangle
+         ($(A1-2-3.south east)+(0.06,-0.02)$);
+    \draw[zhe, line width=1.1pt] ($(B1-1-2.north west)+(-0.06,0.02)$) rectangle
+         ($(B1-3-2.south east)+(0.06,-0.02)$);
+    \draw[zhe, line width=1.1pt] ($(C1-2-2.north west)+(-0.06,0.02)$) rectangle
+         ($(C1-2-2.south east)+(0.06,-0.02)$);
+    \node[font=\footnotesize, color=inkl] at (2.9,-0.75)
+      {第 $2$ 行 $\cdot$ 第 $2$ 列 $=c_{22}$};
+  \end{scope}
+  % 右：列组合
+  \begin{scope}[xshift=9.7cm]
+    \node[font=\small\sffamily, color=qing] at (2.3,2.5) {视角二：列的线性组合};
+    \matrix (A2) [matrix of math nodes, left delimiter={[}, right delimiter={]},
+                  nodes={minimum width=0.72cm, minimum height=0.46cm, font=\small},
+                  row sep=-0.1pt, column sep=-0.1pt] at (0,0.62)
+      { a_{11} & a_{12}\\ a_{21} & a_{22}\\ a_{31} & a_{32}\\ };
+    \node[qing, font=\footnotesize] at (1.55,0.62) {$\times$};
+    \node[draw=zhe, line width=1.1pt, inner sep=3pt, font=\small] (B2) at (2.8,0.62)
+      {$\begin{matrix}x\\ y\end{matrix}$};
+    \node[qing, font=\footnotesize] at (3.85,0.62) {$=$};
+    \node[font=\small] at (5.05,0.62) {$x\,\boldsymbol{a}_1+y\,\boldsymbol{a}_2$};
+    \node[font=\footnotesize, color=inkl] at (2.5,-0.75)
+      {其中 $\boldsymbol{a}_i$ 为 $A$ 的第 $i$ 列};
+  \end{scope}
+\end{lafig}
+
+\begin{prop}{矩阵乘法的基本法则}{matmul-law}
+在维数允许的前提下：
+\[
+A(BC)=(AB)C,\qquad A(B+C)=AB+AC,\qquad (B+C)D=BD+CD,
+\]
+\[
+AI=IA=A,\qquad A\,\boldsymbol{0}=\boldsymbol{0}.
+\]
+\end{prop}
+
+\begin{remk}{交换律一般不成立}{no-commute}
+矩阵乘法\textbf{不满足交换律}。取
+$A=\begin{bmatrix}0&1\\1&0\end{bmatrix}$，$B=\begin{bmatrix}1&0\\0&-1\end{bmatrix}$，
+则
+\[
+AB=\begin{bmatrix}0&-1\\1&0\end{bmatrix},\qquad
+BA=\begin{bmatrix}0&1\\-1&0\end{bmatrix}.
+\]
+两者一个是顺时针旋转 $90^\circ$，一个是逆时针旋转 $90^\circ$。
+几何上看：\emph{先翻转再旋转}与\emph{先旋转再翻转}
+是两回事。第五章将把这一点讲透。
+\end{remk}
+
+由结合律可定义矩阵的幂：$A^k=AA\cdots A$（$k$ 个 $A$ 连乘），
+并约定 $A^0=I$。幂是第六章讨论迭代与动力系统的基本语言。
+
+\section{特殊矩阵与分块}
+
+\begin{latab}{常见特殊矩阵一览（$n$ 阶方阵）}
+\small\centering
+\renewcommand{\arraystretch}{1.34}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\sffamily 名称 & \sffamily 定义特征 & \sffamily 关键性质\\
+\midrule
+单位矩阵 $I$ & $a_{ii}=1$，其余为 $0$ & 乘法的单位元，$AI=A$\\
+对角矩阵 & 非对角元全为 $0$ & 乘向量即逐分量缩放\\
+上三角矩阵 & $a_{ij}=0\ (i>j)$ & 行列式等于对角元之积\\
+对称矩阵 & $A^{\mathsf T}=A$ & 必可正交对角化（第 6 章）\\
+正交矩阵 & $Q^{\mathsf T}Q=I$ & 保长度、保角度，$\det Q=\pm 1$\\
+零矩阵 $O$ & 全部元素为 $0$ & 注意 $AB=O\not\Rightarrow A=O$ 或 $B=O$\\
+幂零矩阵 & 某个 $k$ 使 $A^k=O$ & 特征值必全为 $0$\\
+\bottomrule
+\end{tabular}
+\end{latab}
+
+\subsection{分块矩阵}
+
+把矩阵切成小块再运算，是处理大型问题与理论推导的利器。设
+\[
+A=\begin{bmatrix}A_{11} & A_{12}\\ A_{21} & A_{22}\end{bmatrix},
+\qquad
+B=\begin{bmatrix}B_{11} & B_{12}\\ B_{21} & B_{22}\end{bmatrix},
+\]
+其中每个 $A_{ij}$ 与对应的 $B_{ij}$ 形状相配，则形式上有
+\[
+AB=\begin{bmatrix}
+A_{11}B_{11}+A_{12}B_{21} & A_{11}B_{12}+A_{12}B_{22}\\
+A_{21}B_{11}+A_{22}B_{21} & A_{21}B_{12}+A_{22}B_{22}
+\end{bmatrix}.
+\]
+\textbf{规则与普通乘法完全一致，只是把“数”换成“块”。}唯一要注意的是
+块的排列顺序不可交换，如 $B_{11}A_{11}\neq A_{11}B_{11}$。
+
+\begin{exmp}{用分块看分块对角矩阵}{blkdiag}
+若 $A=\diag(A_1,A_2)$（两个方阵块），则对任意 $k$ 有
+$A^k=\diag(A_1^k,A_2^k)$。因此大矩阵的幂可以拆成小矩阵的幂分别计算——
+这正是“解耦”思想的代数表达。
+\end{exmp}
+
+\begin{remk}{$\triangleright$ 上机：用 NumPy 验证乘法法则}{numpy-1}
+{\small\ttfamily
+import numpy as np\\
+A = np.array([[0., 1.], [1., 0.]])\\
+B = np.array([[1., 0.], [0., -1.]])\\
+print(A @ B)\\
+print(np.allclose(A @ B, B @ A))}
+\par\smallskip
+\noindent 运行后会发现前两行输出不同，最后一行打印 \texttt{False}——
+这正是“矩阵乘法不满足交换律”的一个直接证据。
+\end{remk}
+
+\begin{sidebar}{人物侧记：凯莱与矩阵代数的诞生}
+把矩阵当作独立的代数对象来研究，一般归功于英国数学家
+\textbf{阿瑟·凯莱}（Arthur Cayley，1821—1895）。1858 年他在
+\emph{A Memoir on the Theory of Matrices} 中给出了矩阵的加法、
+乘法与逆的定义。有趣的是，凯莱是出于研究代数方程的需要才发明矩阵的，
+他甚至没有意识到矩阵会在此后的物理学中无处不在。
+今天我们习以为常的“矩阵即变换”，要等到二十世纪量子力学兴起之后才被普遍接受。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 向量加法与数乘是线性代数仅有的两种基本运算。
+\item 张成集合的大小取决于方向是否重复，而非向量个数。
+\item 矩阵乘法要求内维相等：$(m\times n)(n\times p)=m\times p$。
+\item $AB$ 的第 $j$ 列是 $A$ 各列的线性组合（系数来自 $B$ 的第 $j$ 列）。
+\item 结合律成立，交换律一般不成立。
+\item $(AB)^{\mathsf T}=B^{\mathsf T}A^{\mathsf T}$，顺序要颠倒。
+\item 分块运算规则与普通乘法一致，但块的次序不可交换。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 设 $\boldsymbol{u}=(1,-2,3)^{\mathsf T}$，$\boldsymbol{v}=(0,4,-1)^{\mathsf T}$。
+      求 $2\boldsymbol{u}-3\boldsymbol{v}$，并指出 $\Span\{\boldsymbol{u},\boldsymbol{v}\}$ 的几何维数。
+\item 计算下列乘积（能算则算，不能算请说明理由）：
+      \[ \begin{bmatrix}1&2\\3&4\end{bmatrix}
+         \begin{bmatrix}0&1\\1&0\end{bmatrix},\qquad
+         \begin{bmatrix}1&2&3\end{bmatrix}
+         \begin{bmatrix}4\\5\\6\end{bmatrix} \]
+      \[ \begin{bmatrix}1\\2\\3\end{bmatrix}
+         \begin{bmatrix}4&5&6\end{bmatrix}. \]
+\item 设 $A=\begin{bmatrix}1&2\\0&1\end{bmatrix}$，求 $A^2,A^3$，并猜测 $A^n$ 的通式。
+\item 求 $A=\begin{bmatrix}1&2&0\\3&-1&4\end{bmatrix}$ 的转置，并验证 $(A^{\mathsf T})^{\mathsf T}=A$。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：若 $A^{\mathsf T}=-A$（反对称矩阵），则 $A$ 的对角元全为 $0$。
+\item 证明：对任意方阵 $A$，$A+A^{\mathsf T}$ 对称，$A-A^{\mathsf T}$ 反对称，
+      且 $A$ 可写成二者之和。此分解唯一吗？
+\item 设 $A,B$ 为 $n$ 阶方阵且 $AB=BA$。证明 $(A+B)^2=A^2+2AB+B^2$，
+      并举例说明去掉该条件后等式不再成立。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=8]
+\item 某工厂生产三种产品，需经两道工序。工序耗时矩阵 $A\in\R{2\times 3}$，
+      产品计划产量向量 $\boldsymbol{q}\in\Rnum{3}$。说明 $A\boldsymbol{q}$ 的两个分量各表示什么。
+\item 用 NumPy 随机生成 $100\times 100$ 矩阵，比较计算 $A^{10}$ 的两种方法
+      （连乘与反复平方）的耗时，并解释差异。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 2 章 线性方程组与高斯消元 =====================
+\chapter{线性方程组与高斯消元}
+\label{ch:gauss}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 从几何上理解方程组解的三种情形；
+\item 熟练运用初等行变换把增广矩阵化为阶梯形；
+\item 用主元与自由变量描述解集的完整结构；
+\item 掌握可逆矩阵的判定与求法，认识 LU 分解。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+增广矩阵\quad 初等行变换\quad 主元\\
+阶梯形\quad 自由变量\quad 可逆矩阵\quad LU 分解
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+10 学时（含上机 1 学时）
+\end{multicols}
+\end{chapoutline}
+
+\section{方程组的三种几何面目}
+
+一个 $n$ 元线性方程 $a_1x_1+\cdots+a_nx_n=b$ 在 $\Rnum{2}$ 中是一条直线，
+在 $\Rnum{3}$ 中是一张平面。所谓解方程组，就是求这些“平坦对象”的公共点。
+
+\begin{exmp}{二元情形的三种可能}{2var-cases}
+\[
+\left\{
+\begin{aligned}
+x+2y&=4\\
+3x- y&=1
+\end{aligned}\right.
+\qquad
+\left\{
+\begin{aligned}
+x+2y&=4\\
+2x+4y&=9
+\end{aligned}\right.
+\qquad
+\left\{
+\begin{aligned}
+x+2y&=4\\
+2x+4y&=8
+\end{aligned}\right.
+\]
+三组方程分别对应：两直线相交（唯一解 $(6/7,\,11/7)$）、
+两直线平行（无解）、两直线重合（无穷多解）。
+\begin{lafig}[>=Stealth, line cap=round, scale=1.0]{二元线性方程组的三种几何情形：相交、平行与重合}
+  % ============ 左：相交（x+2y=4 与 3x-y=1，交点 (6/7,11/7)）============
+  \begin{scope}[xshift=0cm]
+    \draw[line!80, very thin, step=0.5] (-0.9,-0.9) grid (2.9,2.9);
+    \draw[qing!55, line width=0.7pt, ->] (-1.05,0) -- (3.05,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.05) -- (0,3.05);
+    \draw[zhe, line width=1.5pt] (-0.9,2.45) -- (2.9,0.55)
+      node[pos=0.14, above, yshift=1pt]{\scriptsize $x{+}2y=4$};
+    \draw[dai, line width=1.5pt] (0.03,-0.9) -- (1.3,2.9)
+      node[pos=0.85, right, xshift=1pt]{\scriptsize $3x{-}y=1$};
+    \fill[qing] (0.857,1.571) circle (2.3pt);
+    \node[qing] at (1.72,1.05) {\small 唯一解};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.0,-1.5) {相交};
+  \end{scope}
+  % ============ 中：平行（x+2y=4 与 2x+4y=9，同斜率 -1/2）============
+  \begin{scope}[xshift=5.0cm]
+    \draw[line!80, very thin, step=0.5] (-0.9,-0.9) grid (2.9,2.9);
+    \draw[qing!55, line width=0.7pt, ->] (-1.05,0) -- (3.05,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.05) -- (0,3.05);
+    \draw[zhe, line width=1.5pt] (-0.9,2.45) -- (2.9,0.55)
+      node[pos=0.14, above, yshift=1pt]{\scriptsize $x{+}2y=4$};
+    \draw[dai, line width=1.5pt] (-0.9,2.7) -- (2.9,0.8)
+      node[pos=0.88, below, yshift=-2pt]{\scriptsize $2x{+}4y=9$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.0,-1.5) {平行};
+    \node[zhe] at (2.05,1.9) {\small 无公共点};
+  \end{scope}
+  % ============ 右：重合（x+2y=4 与 2x+4y=8，同一条直线 y=2-x/2）============
+  \begin{scope}[xshift=10.0cm]
+    \draw[line!80, very thin, step=0.5] (-0.9,-0.9) grid (2.9,2.9);
+    \draw[qing!55, line width=0.7pt, ->] (-1.05,0) -- (3.05,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.05) -- (0,3.05);
+    \draw[line width=3.2pt, qing!22] (-0.9,2.45) -- (2.9,0.55);
+    \draw[dai, line width=1.2pt] (-0.9,2.45) -- (2.9,0.55);
+    \draw[zhe, dashed, line width=1.0pt] (-0.9,2.45) -- (2.9,0.55);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.0,-1.5) {重合};
+    \node[qing] at (0.95,2.55) {\small 两方程同解：同一条直线};
+  \end{scope}
+\end{lafig}
+\end{exmp}
+
+在更高维，情形依然只有这三种，但“为什么只有三种”要到第二章末尾
+才能说清——它本质上是秩的一个结论。
+
+\begin{lafig}[>=Stealth, line cap=round, x={(0.92cm,0.44cm)}, y={(-0.50cm,0.46cm)}, z={(0cm,1cm)}]
+{三元方程组的几何：三个平面的三种位置关系——交于一点、交于一条直线、没有公共点}
+  % ================= 左：唯一解 =================
+  \begin{scope}
+    \fill[qing!9]  (0,0,0) -- (2.2,0,0) -- (2.2,0,1.35) -- (0,0,1.35) -- cycle;
+    \fill[dai!9]   (0,0,0) -- (0,2.2,0) -- (0,2.2,1.35) -- (0,0,1.35) -- cycle;
+    \fill[zhe!8]   (0,0,0) -- (2.2,0,0) -- (2.2,2.2,0) -- (0,2.2,0) -- cycle;
+    \draw[qing!60, line width=0.7pt] (0,0,0) -- (2.2,0,0) -- (2.2,0,1.35) -- (0,0,1.35) -- cycle;
+    \draw[dai!60, line width=0.7pt]  (0,0,0) -- (0,2.2,0) -- (0,2.2,1.35) -- (0,0,1.35) -- cycle;
+    \draw[zhe!60, line width=0.7pt]  (0,0,0) -- (2.2,0,0) -- (2.2,2.2,0) -- (0,2.2,0) -- cycle;
+    \fill[qing] (0,0,0) circle (2.2pt);
+    \node[qing, font=\footnotesize] at (0.42,0.42,0.30) {$P$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.05,1.05,-1.75) {交于一点：唯一解};
+  \end{scope}
+  % ================= 中：无穷多解 =================
+  \begin{scope}[xshift=6.0cm]
+    \fill[qing!9]  (0,0,0) -- (2.2,0,0) -- (2.2,0,1.35) -- (0,0,1.35) -- cycle;
+    \fill[zhe!8]   (0,0,0) -- (2.2,0,0) -- (2.2,2.2,0) -- (0,2.2,0) -- cycle;
+    \fill[dai!12]  (0,-0.35,0) -- (0,2.4,0) -- (1.45,2.4,1.45) -- (1.45,-0.35,1.45) -- cycle;
+    \draw[qing!60, line width=0.7pt] (0,0,0) -- (2.2,0,0) -- (2.2,0,1.35) -- (0,0,1.35) -- cycle;
+    \draw[zhe!60, line width=0.7pt]  (0,0,0) -- (2.2,0,0) -- (2.2,2.2,0) -- (0,2.2,0) -- cycle;
+    \draw[dai!65, line width=0.7pt]  (0,-0.35,0) -- (0,2.4,0) -- (1.45,2.4,1.45)
+      -- (1.45,-0.35,1.45) -- cycle;
+    \draw[ink, line width=1.5pt] (0,-0.35,0) -- (0,2.4,0);
+    \node[ink, font=\footnotesize] at (0.42,1.15,0.16) {$L$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.05,1.05,-1.75) {交于一条直线：无穷多解};
+  \end{scope}
+  % ================= 右：无解 =================
+  \begin{scope}[xshift=12.0cm]
+    \fill[qing!9]  (0,0,0) -- (2.2,0,0) -- (2.2,0,1.75) -- (0,0,1.75) -- cycle;
+    \fill[zhe!8]   (0,0,0) -- (2.2,0,0) -- (2.2,2.2,0) -- (0,2.2,0) -- cycle;
+    \fill[dai!12]  (0,0,0.95) -- (2.2,0,0.95) -- (2.2,2.2,0.95) -- (0,2.2,0.95) -- cycle;
+    \draw[qing!60, line width=0.7pt] (0,0,0) -- (2.2,0,0) -- (2.2,0,1.75) -- (0,0,1.75) -- cycle;
+    \draw[zhe!60, line width=0.7pt]  (0,0,0) -- (2.2,0,0) -- (2.2,2.2,0) -- (0,2.2,0) -- cycle;
+    \draw[dai!65, line width=0.7pt]  (0,0,0.95) -- (2.2,0,0.95) -- (2.2,2.2,0.95)
+      -- (0,2.2,0.95) -- cycle;
+    \draw[ink!70, dashed, line width=0.8pt] (0,1.05,0) -- (0,1.05,0.95);
+    \node[inkl, font=\scriptsize] at (0.5,1.15,0.5) {$d$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.05,1.05,-1.75) {相互错开：无解};
+  \end{scope}
+\end{lafig}
+
+\begin{remk}{如何读这张图}{read-3planes}
+左图中三个平面像房间的一个墙角，公共点 $P$ 就是解；
+中图中三个平面像一本翻开的书再加一张斜插的纸，公共部分是一条直线 $L$，
+通解即 $L$ 的参数表示；右图中两张水平平面相互平行，无论第三个平面怎么放，
+至多与它们各交出一条平行线，三个平面没有公共点。
+“点—线—空”三种交叠方式，对应后面将要定义的三种秩情形
+$\rank(A)=3$、$\rank(A)=2$ 与方程组不相容。
+\end{remk}
+
+\section{增广矩阵与初等行变换}
+
+把方程组的系数与右端项一起抄进一张数表，就得到\textbf{增广矩阵}：
+\[
+\left\{
+\begin{aligned}
+x+\ 2y+\ 2z&=6\\
+2x+\ 5y+\ 7z&=15\\
+-2x-4y-4z&=-12
+\end{aligned}\right.
+\qquad\longleftrightarrow\qquad
+\left[\begin{array}{ccc|c}
+1 & 2 & 2 & 6\\
+2 & 5 & 7 & 15\\
+-2 & -4 & -4 & -12
+\end{array}\right].
+\]
+
+\begin{defn}{初等行变换}{row-op}
+对增广矩阵允许以下三种操作，它们不改变方程组的解集：
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{交换}：交换两行的位置，记作 $R_i\leftrightarrow R_j$；
+\item \textbf{倍乘}：用非零常数 $c$ 乘某一行，记作 $cR_i$；
+\item \textbf{倍加}：把某一行的 $c$ 倍加到另一行，记作 $R_j\leftarrow R_j+cR_i$。
+\end{enumerate}
+\end{defn}
+
+\begin{exmp}{完整的高斯消元}{gauss-full}
+继续上面的例子：
+\[
+\left[\begin{array}{ccc|c}1&2&2&6\\2&5&7&15\\-2&-4&-4&-12\end{array}\right]
+\xrightarrow[\;R_3\leftarrow R_3+2R_1\;]{\;R_2\leftarrow R_2-2R_1\;}
+\left[\begin{array}{ccc|c}1&2&2&6\\0&1&3&3\\0&0&0&0\end{array}\right]
+\]
+消元提前结束了：第三行整行变成了零。这说明第三个方程是前两个的推论，
+真正独立的方程只有两个，于是有一个自由变量。取 $z=t$，回代得
+\[
+y=3-3t,\qquad x=6-2(3-3t)-2t=6t.
+\]
+解集为
+$\{\,(6t,\ 3-3t,\ t)^{\mathsf T}: t\in\R\,\}
+=(0,3,0)^{\mathsf T}+t\,(6,-3,1)^{\mathsf T}$：
+一条过 $(0,3,0)$、方向向量为 $(6,-3,1)^{\mathsf T}$ 的直线。
+\end{exmp}
+
+\begin{remk}{为什么行变换不改变解集}{why-rowop}
+三种变换都对应“方程的等价变形”：交换是交换方程，倍乘是两边同乘非零常数，
+倍加是用一个方程去消去另一个方程中的未知数。这些操作都可逆，
+因此新旧方程组互为推论，解集相同。
+\end{remk}
+
+\section{阶梯形、主元与自由变量}
+
+\begin{defn}{行阶梯形与简化行阶梯形}{rref}
+称矩阵为\textbf{行阶梯形}（echelon form），若
+全零行（若有）位于最下方，且每个非零行的首个非零元（\textbf{主元}）
+位于上一行主元的右侧。
+若进一步要求主元为 $1$ 且主元所在列的其余元素全为 $0$，
+则称为\textbf{简化行阶梯形}（RREF）。
+\end{defn}
+
+\begin{keypoint}
+\textbf{定理（RREF 唯一性）}：任何矩阵的简化行阶梯形是唯一的。
+（行阶梯形不唯一，但主元的位置唯一。）
+\end{keypoint}
+
+\begin{exmp}{识别主元与自由变量}{pivot-read}
+\[
+\left[\begin{array}{ccccc|c}
+\textcolor{zhe}{1} & 2 & 0 & 3 & 0 & 4\\
+0 & 0 & \textcolor{zhe}{1} & 1 & 0 & 2\\
+0 & 0 & 0 & 0 & \textcolor{zhe}{1} & 1\\
+0 & 0 & 0 & 0 & 0 & 0
+\end{array}\right]
+\qquad
+\text{主元列：第 }1,3,5\text{ 列；自由变量：}x_2,\ x_4.
+\]
+（赭色标出主元位置。）令 $x_2=s$，$x_4=t$，逐行读出
+$x_1=4-2s-3t$，$x_3=2-t$，$x_5=1$，即得通解。
+\end{exmp}
+
+\begin{remk}{主元个数 = 秩}{pivots-rank}
+主元的个数称为矩阵的\textbf{秩}（rank）。秩是全书最重要的数字之一：
+\[
+\#\{\text{主元}\}=\rank(A)=\rank(A\,|\,\boldsymbol{b})
+\quad\Longleftrightarrow\quad
+A\boldsymbol{x}=\boldsymbol{b}\ \text{有解}.
+\]
+而\textbf{自由变量的个数} $=n-\rank(A)$。
+\end{remk}
+
+\section{解的结构：特解加齐次解}
+
+\begin{thm}{非齐次方程组解的完整结构}{sol-struct}
+设 $A\in\R{m\times n}$，$\boldsymbol{b}\in\Rnum{m}$，且 $A\boldsymbol{x}=\boldsymbol{b}$ 有解。
+取定一个解 $\boldsymbol{x}_p$（特解），则
+\[
+\{\boldsymbol{x}:A\boldsymbol{x}=\boldsymbol{b}\}
+=\boldsymbol{x}_p+\Nul(A)
+=\{\,\boldsymbol{x}_p+\boldsymbol{x}_h : A\boldsymbol{x}_h=\boldsymbol{0}\,\}.
+\]
+\end{thm}
+
+\begin{pf}
+若 $A\boldsymbol{x}=\boldsymbol{b}$，则 $A(\boldsymbol{x}-\boldsymbol{x}_p)=\boldsymbol{0}$，
+故 $\boldsymbol{x}-\boldsymbol{x}_p\in\Nul(A)$。反之，若 $A\boldsymbol{x}_h=\boldsymbol{0}$，
+则 $A(\boldsymbol{x}_p+\boldsymbol{x}_h)=\boldsymbol{b}$。
+\end{pf}
+
+\begin{lafig}[>=Stealth, line cap=round]{解集结构：特解 $\boldsymbol{x}_p$ 加上零空间 $\Nul(A)$ 的平移}
+  \draw[line!80, very thin, step=0.5] (-2.4,-1.6) grid (2.4,1.6);
+  \draw[qing!55, line width=0.7pt, ->] (-2.55,0) -- (2.6,0);
+  \draw[qing!55, line width=0.7pt, ->] (0,-1.75) -- (0,1.8);
+  % Nul(A)：过原点、斜率 0.5；解集：同斜率、过 x_p=(0.9,0.9)
+  \draw[dai, line width=1.7pt] (-2.2,-1.1) -- (2.2,1.1)
+     node[pos=0.09, below, yshift=-2pt]{\small $\Nul(A)$};
+  \draw[zhe!70, dashed, line width=1.3pt] (-2.5,-0.8) -- (2.5,1.7);
+  \draw[qing, line width=1.4pt] (-2.3,-0.7) -- (2.3,1.6)
+     node[pos=0.82, below right, xshift=-2pt, yshift=1pt]{\small $\boldsymbol{x}_p+\Nul(A)$};
+  \fill[zhe] (0.9,0.9) circle (2.2pt);
+  \node[zhe, above right, xshift=-3pt] at (0.9,0.9) {\small $\boldsymbol{x}_p$};
+  \draw[->, ink!60, line width=1.1pt] (0,0) -- (0.9,0.9);
+  \fill[ink] (0,0) circle (1.9pt);
+  \node[font=\footnotesize, color=inkl, below=3pt] at (0,-1.9)
+    {解集是齐次解直线 $\Nul(A)$ 沿 $\boldsymbol{x}_p$ 平移得到的仿射直线};
+\end{lafig}
+
+\begin{remk}{一句话记住解的结构}{one-line-sol}
+\textbf{非齐次的解集 = 一个特解 + 齐次的全部解。}
+这条“平移”的观点在最小二乘（第 7 章）与 PCA（第 9 章）中会反复出现。
+\end{remk}
+
+\section{可逆矩阵}
+
+\begin{defn}{逆矩阵}{inverse}
+设 $A$ 为 $n$ 阶方阵。若存在 $B$ 使 $AB=BA=I$，则称 $A$ \textbf{可逆}，
+$B$ 称为 $A$ 的逆，记作 $A^{-1}$。可逆矩阵必为方阵，且逆唯一。
+\end{defn}
+
+\begin{thm}{可逆的等价刻画}{invertible-thm}
+对 $n$ 阶方阵 $A$，下列条件等价：
+\begin{enumerate}[label=(\alph*)]
+\item $A$ 可逆；
+\item $A\boldsymbol{x}=\boldsymbol{0}$ 只有零解；
+\item $\rank(A)=n$（每个列都是主元列）；
+\item $A$ 的简化行阶梯形为 $I$；
+\item $\det A\neq 0$（第三章）；
+\item $A$ 的列向量张成 $\Rnum{n}$（第四章）。
+\end{enumerate}
+\end{thm}
+
+\begin{prop}{逆的运算性质}{inv-law}
+\[
+(A^{-1})^{-1}=A,\qquad (AB)^{-1}=B^{-1}A^{-1},\qquad
+(A^{\mathsf T})^{-1}=(A^{-1})^{\mathsf T},\qquad (cA)^{-1}=c^{-1}A^{-1}\ (c\neq0).
+\]
+\end{prop}
+
+\begin{prop}{用行变换求逆}{inv-by-row}
+$[A\,|\,I]\xrightarrow{\ \text{行变换}\ }[I\,|\,A^{-1}]$。
+若左侧无法化为 $I$，则 $A$ 不可逆。
+\end{prop}
+
+\begin{exmp}{求逆并解方程组}{inv-ex}
+$A=\begin{bmatrix}2&1\\1&1\end{bmatrix}$。作
+$\left[\begin{array}{cc|cc}2&1&1&0\\1&1&0&1\end{array}\right]
+\xrightarrow{R_1\leftrightarrow R_2}
+\left[\begin{array}{cc|cc}1&1&0&1\\2&1&1&0\end{array}\right]
+\xrightarrow{R_2\leftarrow R_2-2R_1}
+\left[\begin{array}{cc|cc}1&1&0&1\\0&-1&1&-2\end{array}\right]
+\xrightarrow[\,R_1\leftarrow R_1-R_2\,]{R_2\leftarrow -R_2}
+\left[\begin{array}{cc|cc}1&0&1&-1\\0&1&-1&2\end{array}\right]$
+故 $A^{-1}=\begin{bmatrix}1&-1\\-1&2\end{bmatrix}$。
+于是 $A\boldsymbol{x}=\boldsymbol{b}$ 的解为 $\boldsymbol{x}=A^{-1}\boldsymbol{b}$。
+\end{exmp}
+
+\begin{remk}{数值警告：不要用逆来解方程}{no-inverse}
+理论上 $\boldsymbol{x}=A^{-1}\boldsymbol{b}$ 很漂亮，数值上却应当避免：
+计算 $A^{-1}$ 的代价是 $O(n^3)$ 且舍入误差更大。
+工程与科学计算的标配是 LU 分解或 QR 分解。
+\end{remk}
+
+\section{LU 分解：消元的“记账法”}
+
+高斯消元的每一步“倍加”都可以用一个初等矩阵实现。把所有消元步骤合起来，
+就得到
+\[
+A=LU,\qquad
+L=\begin{bmatrix}1&0&0\\ \ell_{21}&1&0\\ \ell_{31}&\ell_{32}&1\end{bmatrix},
+\quad
+U=\text{行阶梯形},
+\]
+其中 $L$ 是单位下三角矩阵（其元素恰为消元时用过的乘数），$U$ 是上三角矩阵。
+
+\begin{prop}{LU 分解的用途}{lu-use}
+解 $A\boldsymbol{x}=\boldsymbol{b}$ 等价于依次解两个三角方程组：
+\[
+L\boldsymbol{y}=\boldsymbol{b}\quad(\text{前代}),\qquad
+U\boldsymbol{x}=\boldsymbol{y}\quad(\text{回代}).
+\]
+分解只需做一次（约 $\tfrac23 n^3$ 次乘加）；此后每换一个右端项 $\boldsymbol{b}$，
+只需 $O(n^2)$ 次运算。这是科学计算中最经济的做法。
+\end{prop}
+
+\begin{remk}{$\triangleright$ 上机：SciPy 的 LU 分解}{lu-code}
+{\small\ttfamily
+from scipy.linalg import lu\_factor, lu\_solve\\
+lu, piv = lu\_factor(A)\\
+x = lu\_solve((lu, piv), b)}
+\par\smallskip
+\noindent 先做一次分解，之后更换任意右端项 $\boldsymbol{b}$ 都只需前代与回代两步。
+\end{remk}
+
+\begin{sidebar}{高斯与“消去法”的两千年}
+消去法并非高斯首创。中国汉代的《九章算术》第八章“方程”已完整给出
+用算筹在增广长方形数表上消元的算法，比高斯早约一千七百年。
+高斯（1777—1855）是在用最小二乘法确定小行星谷神星轨道时
+重新系统地使用了这一方法，并把它与对称正定方程组的快速解法结合起来，
+因此今天以他的名字命名。1940 年代计算机出现后，
+人们才意识到消元法的运算量必须精打细算，LU 分解由此成为标准记法。
+\end{sidebar}
+
+\begin{remk}{为什么要选最大的主元（部分主元法）}{pivot-stability}
+若某步的主元恰好是 $0$ 或非常接近 $0$，直接消元要么无法继续、
+要么产生巨大的乘数 $\ell_{ij}$，把舍入误差急剧放大。标准做法是
+\textbf{部分主元法}：每一步在当前列中选绝对值最大的元素，
+先做行交换再消元。这也解释了为什么实际软件中的 LU 分解总带一个
+置换矩阵 $P$，形如 $PA=LU$。
+\textbf{经验法则}：主元越小，解越“晃”——
+第 2.5 节的条件数理论会把这句话变成可计算的判据。
+\end{remk}
+
+\begin{latab}{消元法的运算量与三种“分解记账法”（$n$ 阶一般矩阵）}
+\centering\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+方法 & 分解形式 & 运算量 & 适用场景\\
+\midrule
+高斯消元（逐步） & 无 & $O(n^3)$ / 每个右端项 & 手算小方程组\\
+LU 分解 & $PA=LU$ & 分解 $\tfrac23n^3$，回代 $O(n^2)$ & 多个右端项\\
+Cholesky 分解 & $A=LL^{\mathsf T}$ & $\tfrac13n^3$（约省一半） & 对称正定矩阵\\
+QR 分解 & $A=QR$ & $2n^3$ & 最小二乘（第七章）\\
+\bottomrule
+\end{tabular}
+\end{latab}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 行变换不改变解集；三种变换均可逆。
+\item 主元个数 = 秩；自由变量个数 $=n-\rank(A)$。
+\item 简化行阶梯形唯一，行阶梯形不唯一。
+\item 有解 $\Leftrightarrow$ 增广矩阵与系数矩阵同秩。
+\item 解的结构：$\boldsymbol{x}_p+\Nul(A)$，即“特解 + 齐次解”。
+\item 方阵可逆 $\Leftrightarrow$ 零空间只有零解 $\Leftrightarrow$ $\rank=n$。
+\item $(AB)^{-1}=B^{-1}A^{-1}$，顺序颠倒。
+\item LU 分解一次，多次右端项各付 $O(n^2)$。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 用行变换把
+      $\left[\begin{array}{ccc|c}1&2&1&3\\2&5&3&8\\1&1&-1&-1\end{array}\right]$
+      化为简化行阶梯形，并写出通解。
+\item 判断下列方程组是否有解、是否有唯一解：
+      \[ \left\{\begin{aligned}x+2y-z&=1\\ 2x+4y-2z&=3\end{aligned}\right.,
+      \qquad
+      \left\{\begin{aligned}x+2y-z&=1\\ 2x+4y-2z&=2\end{aligned}\right. \]
+\item 用行变换求 $A=\begin{bmatrix}1&2\\3&7\end{bmatrix}$ 的逆，
+      并用它解 $A\boldsymbol{x}=(1,0)^{\mathsf T}$。
+\item 求 $A=\begin{bmatrix}2&1&1\\4&3&3\\8&7&9\end{bmatrix}$ 的 LU 分解。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：若 $A$ 可逆且 $AB=O$，则 $B=O$。举一个 $A$ 不可逆的反例。
+\item 证明：可逆矩阵的逆唯一。（提示：设 $B,C$ 都是逆，考察 $B(AC)$。）
+\item 设 $A$ 为 $n$ 阶方阵且 $\rank(A)=n-1$。证明 $\rank(A^2)$ 可为 $n-1$ 或 $n-2$，
+      并各举一例。
+\item 证明：上三角可逆矩阵的逆仍是上三角矩阵。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 交通流量问题：某十字路口四条进入车道的流量满足线性方程组。
+      自行设定流量并讨论“哪些流量是自由的，哪些是被约束的”。
+\item 配平化学方程式 $a\,\mathrm{C_3H_8}+b\,\mathrm{O_2}\to c\,\mathrm{CO_2}+d\,\mathrm{H_2O}$：
+      对 C、H、O 三种元素列线性方程组，求最小正整数解。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 3 章 行列式 =====================
+\chapter{行列式}
+\label{ch:det}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 从有向面积出发理解二阶行列式；
+\item 掌握行列式的十条基本性质并熟练运用于计算；
+\item 会用余子式展开与行变换法求高阶行列式；
+\item 理解行列式的几何意义：有向体积。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+有向面积\quad 置换\quad 余子式\quad 代数余子式\\
+克拉默法则\quad 范德蒙德行列式
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+8 学时
+\end{multicols}
+\end{chapoutline}
+
+\section{从面积说起：二阶行列式}
+
+\begin{defn}{二阶行列式}{det2}
+\[
+\det\begin{bmatrix}a & b\\ c & d\end{bmatrix}=ad-bc.
+\]
+\end{defn}
+
+这个式子单看是枯燥的，但它的几何意义极其漂亮。
+设 $A=\begin{bmatrix}a&b\\c&d\end{bmatrix}$ 的两列为
+$\boldsymbol{u}=(a,c)^{\mathsf T}$，$\boldsymbol{v}=(b,d)^{\mathsf T}$，
+则以 $\boldsymbol{u},\boldsymbol{v}$ 为邻边的平行四边形面积恰为 $|ad-bc|$；
+而 $ad-bc$ 本身还带\textbf{符号}：当 $\boldsymbol{u}$ 逆时针转到 $\boldsymbol{v}$
+时为正，顺时针为负。故二阶行列式是\textbf{有向面积}。
+\begin{lafig}[>=Stealth, line cap=round]{二阶行列式的几何意义：以两列为边的平行四边形的有向面积}
+  \begin{scope}
+    \draw[line!80, very thin, step=0.5] (-0.6,-0.4) grid (2.9,2.9);
+    \draw[qing!55, line width=0.7pt, ->] (-0.75,0) -- (3.05,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-0.55) -- (0,3.05);
+    \fill[qing!11] (0,0) -- (2.0,0.5) -- (3.0,2.5) -- (1.0,2.0) -- cycle;
+    \draw[dai, line width=1.7pt, ->] (0,0) -- (2.0,0.5);
+    \draw[zhe, line width=1.7pt, ->] (0,0) -- (1.0,2.0);
+    \draw[dashed, ink!35] (2.0,0.5) -- (3.0,2.5) -- (1.0,2.0);
+    \draw[qing, ->, line width=1.1pt] (1.15,1.35) arc[start angle=63, end angle=14, radius=1.3];
+    \node[qing] at (1.55,0.92) {\small 逆时针：$+$};
+    \node[font=\footnotesize, color=inkl] at (1.5,-0.95)
+      {$\det A=2\cdot2-1\cdot0.5=+3.5>0$};
+  \end{scope}
+  \begin{scope}[xshift=6.6cm]
+    \draw[line!80, very thin, step=0.5] (-0.6,-0.4) grid (2.9,2.9);
+    \draw[qing!55, line width=0.7pt, ->] (-0.75,0) -- (3.05,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-0.55) -- (0,3.05);
+    \fill[zhe!11] (0,0) -- (1.0,2.0) -- (3.0,2.5) -- (2.0,0.5) -- cycle;
+    \draw[dai, line width=1.7pt, ->] (0,0) -- (1.0,2.0);
+    \draw[zhe, line width=1.7pt, ->] (0,0) -- (2.0,0.5);
+    \draw[dashed, ink!35] (1.0,2.0) -- (3.0,2.5) -- (2.0,0.5);
+    \draw[zhe, ->, line width=1.1pt] (0.55,1.1) arc[start angle=63, end angle=14, radius=1.3];
+    \node[zhe] at (1.0,0.72) {\small 顺时针：$-$};
+    \node[font=\footnotesize, color=inkl] at (1.5,-0.95)
+      {交换两列，行列式变号};
+  \end{scope}
+\end{lafig}
+
+\begin{remk}{行列式与可逆性}{det-invert}
+$\det A\neq 0$ 恰好等价于“两列不共线”，也就是 $A$ 可逆。
+因此\textbf{行列式是方阵可逆性的一个数值判据}：
+面积被压成零，信息就被压没了。
+\end{remk}
+
+\section{排列定义与基本性质}
+
+\begin{defn}{$n$ 阶行列式}{detn}
+设 $A=(a_{ij})$ 为 $n$ 阶方阵。定义
+\[
+\det A=\sum_{\sigma\in S_n}\sign(\sigma)\,
+a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)},
+\]
+其中 $S_n$ 是 $n$ 个数码的全部置换，$\sign(\sigma)=(-1)^{\operatorname{inv}(\sigma)}$
+由逆序数 $\operatorname{inv}(\sigma)$ 决定。
+\end{defn}
+
+\begin{exmp}{三阶行列式按定义展开}{det3-def}
+三阶情形有 $3!=6$ 项：
+\[
+\det\begin{bmatrix}a_{11}&a_{12}&a_{13}\\a_{21}&a_{22}&a_{23}\\a_{31}&a_{32}&a_{33}\end{bmatrix}
+=a_{11}a_{22}a_{33}+a_{12}a_{23}a_{31}+a_{13}a_{21}a_{32}
+-a_{13}a_{22}a_{31}-a_{11}a_{23}a_{32}-a_{12}a_{21}a_{33}.
+\]
+\end{exmp}
+
+\begin{thm}{行列式的十条基本性质}{det-prop}
+设 $A,B$ 为 $n$ 阶方阵，则
+\begin{enumerate}[label=(\arabic*), itemsep=1pt]
+\item $\det I=1$；
+\item 交换两行（列），行列式变号；
+\item 某行乘常数 $c$，行列式乘 $c$；
+\item 某行加上另一行的 $c$ 倍，行列式不变；
+\item 某行为两组数之和，则行列式可按该行拆成两个行列式之和；
+\item 有两行（列）成比例或相同 $\Rightarrow\det A=0$；
+\item $\det A^{\mathsf T}=\det A$（行与列地位平等）；
+\item 上（下）三角矩阵的行列式等于对角元之积；
+\item $A$ 可逆 $\Longleftrightarrow \det A\neq 0$，且 $\det A^{-1}=1/\det A$；
+\item $\det(AB)=\det A\cdot\det B$（乘性！但 $\det(A+B)$ 无简单公式）。
+\end{enumerate}
+\end{thm}
+
+\begin{remk}{用性质计算，而不是用定义}{det-calc}
+性质 (2)(3)(4) 正是初等行变换的翻译。于是求高阶行列式的标准流程是：
+\textbf{用行变换把矩阵化成三角阵，再取对角元之积}——
+每做一次换行记一个负号，每做一次倍加不记号。
+这比按定义展开（$n!$ 项）高效得多：$10!=3628800$。
+\end{remk}
+
+\begin{exmp}{行变换法求四阶行列式}{det4-ex}
+\[
+D=\begin{vmatrix}
+2 & 1 & 1 & 1\\
+1 & 2 & 1 & 1\\
+1 & 1 & 2 & 1\\
+1 & 1 & 1 & 2
+\end{vmatrix}.
+\]
+各行元素之和都是 $5$，故把第 $2,3,4$ 列都加到第 $1$ 列，提出公因子 $5$：
+\[
+D=5\begin{vmatrix}1&1&1&1\\1&2&1&1\\1&1&2&1\\1&1&1&2\end{vmatrix}
+=5\begin{vmatrix}1&1&1&1\\0&1&0&0\\0&0&1&0\\0&0&0&1\end{vmatrix}=5.
+\]
+\end{exmp}
+
+\begin{exmp}{范德蒙德行列式}{vandermonde}
+\[
+V(x_1,\dots,x_n)=\det
+\begin{bmatrix}
+1 & 1 & \cdots & 1\\
+x_1 & x_2 & \cdots & x_n\\
+x_1^2 & x_2^2 & \cdots & x_n^2\\
+\vdots & \vdots & & \vdots\\
+x_1^{n-1} & x_2^{n-1} & \cdots & x_n^{n-1}
+\end{bmatrix}
+=\prod_{1\le i<j\le n}(x_j-x_i).
+\]
+证明思路：自下而上，用 $R_i\leftarrow R_i-x_1R_{i-1}$ 逐行消去第一列的
+$x_1$ 的幂，再按第一列展开，归纳即得。
+\end{exmp}
+
+\section{余子式展开}
+
+\begin{defn}{余子式与代数余子式}{cofactor}
+设 $A$ 为 $n$ 阶方阵。划去第 $i$ 行第 $j$ 列所得的 $n-1$ 阶行列式记作 $M_{ij}$
+（\textbf{余子式}），而
+\[
+A_{ij}=(-1)^{i+j}M_{ij}
+\]
+称为\textbf{代数余子式}。
+\end{defn}
+
+\begin{thm}{按行（列）展开}{laplace}
+对任意固定的 $i$ 与 $j$：
+\[
+\det A=\sum_{k=1}^{n}a_{ik}A_{ik}\quad(\text{按第 }i\text{ 行展开})
+=\sum_{k=1}^{n}a_{kj}A_{kj}\quad(\text{按第 }j\text{ 列展开}).
+\]
+进一步有\textbf{异乘变零}：$\sum_{k=1}^{n}a_{ik}A_{jk}=0\ (i\neq j)$。
+\end{thm}
+
+\begin{pf}
+只证异乘变零。把 $A$ 的第 $j$ 行换成第 $i$ 行得到 $A'$，
+则 $A'$ 有两行相同，故 $\det A'=0$。按第 $j$ 行展开 $A'$：
+\[
+0=\det A'=\sum_{k=1}^{n}a_{ik}A'_{jk}=\sum_{k=1}^{n}a_{ik}A_{jk},
+\]
+因为划去第 $j$ 行后 $A$ 与 $A'$ 完全相同。
+\end{pf}
+
+\begin{prop}{伴随矩阵}{adjugate}
+$A^{*}=(A_{ji})_{n\times n}$ 称为\textbf{伴随矩阵}，满足
+\[
+A\,A^{*}=A^{*}A=(\det A)\,I,
+\qquad
+A^{-1}=\frac{1}{\det A}A^{*}\quad(\det A\neq0).
+\]
+\end{prop}
+
+\begin{remk}{伴随矩阵适合理论，不适合计算}{adj-note}
+用 $A^{-1}=\frac{1}{\det A}A^{*}$ 求 $n$ 阶逆需要 $n^2$ 个 $(n-1)$ 阶行列式，
+运算量约 $O(n!)$。实用中请使用第 2 章的行变换法。
+伴随矩阵的价值在于公式本身——它给出逆矩阵的\emph{封闭表达式}，
+在理论推导（如克拉默法则）中不可替代。
+\end{remk}
+
+\section{克拉默法则}
+
+\begin{thm}{克拉默法则}{cramer}
+设 $A$ 为 $n$ 阶可逆矩阵，$\boldsymbol{b}\in\Rnum{n}$。则 $A\boldsymbol{x}=\boldsymbol{b}$
+有唯一解，且
+\[
+x_j=\frac{\det A_j}{\det A},\qquad
+A_j=[\boldsymbol{a}_1,\dots,\boldsymbol{a}_{j-1},\boldsymbol{b},
+      \boldsymbol{a}_{j+1},\dots,\boldsymbol{a}_n],
+\]
+即把 $A$ 的第 $j$ 列换成 $\boldsymbol{b}$。
+\end{thm}
+
+\begin{pf}
+在 $A\boldsymbol{x}=\boldsymbol{b}$ 两端左乘 $A^{*}$：
+$(\det A)\boldsymbol{x}=A^{*}\boldsymbol{b}$。
+考察第 $j$ 个分量：$\sum_i A_{ij}b_i=\sum_i A_{ij}(A\boldsymbol{x})_i
+=\sum_i A_{ij}\sum_k a_{ik}x_k=\sum_k x_k\sum_i a_{ik}A_{ij}=x_j\det A$，
+最后一步用了“异乘变零”。
+\end{pf}
+
+\begin{remk}{克拉默法则的地位}{cramer-note}
+克拉默法则给出了解的\textbf{显式公式}，在理论分析（尤其是解对参数的依赖性）
+中极有用。但它需要 $n+1$ 个行列式，运算量远高于消元法，
+因此只适合 $n\le 3$ 的手算与理论研究。
+\end{remk}
+
+\section{行列式的几何意义：有向体积}
+
+\begin{thm}{行列式 $=$ 有向体积}{det-vol}
+设 $A$ 为 $n$ 阶方阵，其列向量为 $\boldsymbol{a}_1,\dots,\boldsymbol{a}_n$。
+则 $\det A$ 等于这 $n$ 个向量张成的平行多面体的\textbf{有向}体积；
+其绝对值等于该平行多面体的体积。
+特别地，$|\det A|$ 是线性变换 $A$ 对体积的缩放因子。
+\end{thm}
+
+\begin{lafig}[>=Stealth, line cap=round]{行列式的几何意义：二维为有向面积，三维为有向体积；高维类推}
+  % 左：二阶面积
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (1.6,2.75) {二维：有向面积};
+    \draw[line!80, very thin, step=0.5] (-0.5,-0.3) grid (2.7,2.3);
+    \fill[qing!10] (0,0) -- (1.0,0.3) -- (2.2,1.9) -- (1.2,1.6) -- cycle;
+    \draw[dai, line width=1.6pt, ->] (0,0) -- (1.0,0.3);
+    \draw[zhe, line width=1.6pt, ->] (0,0) -- (1.2,1.6);
+    \draw[dashed, ink!35] (1.0,0.3) -- (2.2,1.9) -- (1.2,1.6);
+    \node[dai] at (0.55,0.02) {\small $\boldsymbol{a}_1$};
+    \node[zhe] at (0.62,1.02) {\small $\boldsymbol{a}_2$};
+    \node[font=\footnotesize, color=inkl] at (1.3,-0.75)
+      {$|\det A|=\,$平行四边形面积};
+  \end{scope}
+  % 右：三阶体积
+  \begin{scope}[xshift=7.2cm, x={(0.95cm,0cm)}, y={(0.42cm,0.42cm)}, z={(0cm,1.0cm)}]
+    \node[font=\small\sffamily, color=qing] at (1.3,2.85) {三维：有向体积};
+    % 底面网格
+    \foreach \i in {0,0.5,1.0,1.5}{
+      \draw[line!65, very thin] (\i,-0.3,0) -- (\i,2.1,0);
+      \draw[line!65, very thin] (-0.3,\i,0) -- (1.9,\i,0);
+    }
+    \coordinate (O)   at (0,0,0);
+    \coordinate (A)   at (1.6,0,0);
+    \coordinate (B)   at (0,1.5,0);
+    \coordinate (C)   at (0,0,1.15);
+    \coordinate (AB)  at (1.6,1.5,0);
+    \coordinate (AC)  at (1.6,0,1.15);
+    \coordinate (BC)  at (0,1.5,1.15);
+    \coordinate (ABC) at (1.6,1.5,1.15);
+    \fill[qing!7]  (O) -- (A) -- (AB) -- (B) -- cycle;
+    \fill[qing!11] (O) -- (A) -- (AC) -- (C) -- cycle;
+    \fill[qing!15] (O) -- (B) -- (BC) -- (C) -- cycle;
+    \fill[qing!19] (C) -- (AC) -- (ABC) -- (BC) -- cycle;
+    \fill[qing!22] (A) -- (AB) -- (ABC) -- (AC) -- cycle;
+    \fill[qing!25] (B) -- (AB) -- (ABC) -- (BC) -- cycle;
+    \draw[qing!75, line width=0.6pt]
+      (O) -- (A) -- (AB) -- (B) -- cycle;
+    \draw[qing!75, line width=0.6pt] (O) -- (C) -- (BC);
+    \draw[qing!75, line width=0.6pt] (A) -- (AC) -- (ABC) -- (BC);
+    \draw[qing!75, line width=0.6pt] (AB) -- (ABC);
+    \draw[dai, line width=1.6pt, ->] (O) -- (A)
+      node[midway, below, yshift=-2pt]{\small $\boldsymbol{a}_1$};
+    \draw[lan, line width=1.6pt, ->] (O) -- (B)
+      node[midway, right, xshift=1pt]{\small $\boldsymbol{a}_2$};
+    \draw[zhe, line width=1.6pt, ->] (O) -- (C)
+      node[midway, left, xshift=-1pt]{\small $\boldsymbol{a}_3$};
+    \node[font=\footnotesize, color=inkl] at (1.3,-1.15)
+      {$|\det A|=\,$平行六面体体积};
+  \end{scope}
+\end{lafig}
+
+\begin{coro}{行列式的三条几何推论}{det-geo-cor}
+\begin{enumerate}[label=(\arabic*), itemsep=1pt]
+\item 两列共线 $\Rightarrow$ “体积”被压扁为零 $\Rightarrow\det A=0$；
+\item 正交矩阵的 $|\det|=1$（旋转与反射不改变体积）；
+\item $\det(AB)=\det A\,\det B$ 的几何版本：先缩放 $\det A$ 倍再缩放 $\det B$ 倍。
+\end{enumerate}
+\end{coro}
+
+\begin{lafig}[>=Stealth, line cap=round]{三种初等行变换对面积（行列式）的影响：
+倍加不变、对换反号、倍乘乘 $c$}
+  % ============ 左：倍加（剪切，面积不变）============
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (1.35,2.55) {倍加：$r_2 \mathrel{+}= k\,r_1$};
+    \fill[zhe!12] (0,0) -- (1.6,0) -- (1.6,1.1) -- (0,1.1) -- cycle;
+    \fill[qing!14] (0,0) -- (1.6,0) -- (2.35,1.1) -- (0.75,1.1) -- cycle;
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (1.6,0)
+      node[midway, below, yshift=-2pt]{\small $\boldsymbol{a}_1$};
+    \draw[zhe, line width=1.3pt, ->] (0,0) -- (0.75,1.1)
+      node[midway, left, xshift=-1pt]{\small $\boldsymbol{a}_2$};
+    \draw[qing, line width=1.5pt, ->] (0,0) -- (2.35,1.1)
+      node[midway, above right, xshift=-2pt]{\small $\boldsymbol{a}_2'\!=\boldsymbol{a}_2+k\boldsymbol{a}_1$};
+    \draw[ink!55, dashed, line width=0.7pt] (0.75,1.1) -- (2.35,1.1);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.35,-0.62)
+      {剪切变形，面积不变：$\det$ 不变};
+  \end{scope}
+  % ============ 中：对换（面积不变，定向反号）============
+  \begin{scope}[xshift=6.1cm]
+    \node[font=\small\sffamily, color=zhe] at (1.35,2.55) {对换：$\boldsymbol{a}_1\leftrightarrow\boldsymbol{a}_2$};
+    \fill[qing!14] (0,0) -- (1.6,0) -- (2.35,1.1) -- (0.75,1.1) -- cycle;
+    \draw[qing!45, line width=0.7pt] (0,0) -- (1.6,0) -- (2.35,1.1) -- (0.75,1.1) -- cycle;
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (0.75,1.1)
+      node[midway, above left, xshift=1pt]{\small $\boldsymbol{a}_1'$};
+    \draw[zhe, line width=1.5pt, ->] (0,0) -- (1.6,0)
+      node[midway, below, yshift=-2pt]{\small $\boldsymbol{a}_2'$};
+    \draw[ink!50, dashed, line width=0.7pt] (0.75,1.1) -- (0,1.1);
+    % 定向（绕行）箭头：逆时针 -> 顺时针
+    \draw[ink!60, line width=0.8pt, ->] (0.42,0.47) arc[start angle=125, end angle=15, radius=0.51];
+    \node[font=\scriptsize, color=inkl] at (1.0,0.14) {顺时针};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.35,-0.62)
+      {底与高不变，绕行方向反转：$\det$ 变号};
+  \end{scope}
+  % ============ 右：倍乘（面积放大 c 倍）============
+  \begin{scope}[xshift=12.2cm]
+    \node[font=\small\sffamily, color=dai] at (1.35,2.55) {倍乘：$r_2 \mathrel{*}= c$};
+    \fill[zhe!8]  (0,0) -- (1.6,0) -- (1.6,1.1) -- (0,1.1) -- cycle;
+    \fill[qing!16] (0,0) -- (1.6,0) -- (1.6,1.98) -- (0,1.98) -- cycle;
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (1.6,0)
+      node[midway, below, yshift=-2pt]{\small $\boldsymbol{a}_1$};
+    \draw[zhe, line width=1.3pt, ->] (0,0) -- (0,1.1)
+      node[midway, left, xshift=-1pt]{\small $\boldsymbol{a}_2$};
+    \draw[qing, line width=1.5pt, ->] (0,0) -- (0,1.98)
+      node[midway, right, xshift=1pt]{\small $c\,\boldsymbol{a}_2$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.35,-0.62)
+      {高变成 $c$ 倍：$\det$ 变为原来的 $c$ 倍};
+  \end{scope}
+\end{lafig}
+
+\begin{keypoint}
+把上图的观察写成公式，就是行变换法求行列式的全部理论依据：
+\[
+\text{倍加不变}\;(r_i \mathrel{+}= k r_j)\,;\qquad
+\text{对换变号}\;(r_i \leftrightarrow r_j)\,;\qquad
+\text{倍乘乘}\,c\;(r_i \mathrel{*}= c).
+\]
+消元把矩阵打成上三角形时，只有“对换变号”与“倍乘乘 $c$”两种干扰，
+因此 $\det A = (\pm 1)\times(\text{主元之积})$——这正是本章算法框的出处。
+\end{keypoint}
+
+\begin{sidebar}{行列式一词的来历}
+“determinant”（行列式）由德国数学家\textbf{高斯}在 1801 年的
+《算术研究》中首次使用，但当时仅指二次型的判别式。
+把它作为独立对象系统研究的是\textbf{柯西}（Cauchy，1812），
+他引入了双下标记法与乘积公式 $\det(AB)=\det A\,\det B$。
+日本数学家\textbf{关孝和}早在 1683 年就得到了消元法与行列式的雏形，
+比莱布尼茨的同类工作早了十年。行列式在十九世纪曾是线性代数的中心；
+二十世纪以后，“矩阵与变换”逐渐取代了它的中心地位，
+但行列式作为“体积缩放因子”的几何身份从未动摇。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 二阶行列式 $=$ 有向面积；$n$ 阶 $=$ 有向体积。
+\item 交换两行变号；倍加一行不变；倍乘一行乘 $c$。
+\item 上三角行列式 $=$ 对角元之积——这是行变换法的目标。
+\item $\det A^{\mathsf T}=\det A$，行与列地位平等。
+\item $\det(AB)=\det A\,\det B$；$\det(A^{-1})=1/\det A$。
+\item 异乘变零：$\sum_k a_{ik}A_{jk}=0\ (i\neq j)$。
+\item 克拉默法则：$x_j=\det A_j/\det A$。
+\item $|\det A|$ 是线性变换的体积缩放因子。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 计算下列行列式：
+      \[ \begin{vmatrix}3&1\\ 5&2\end{vmatrix},\qquad
+         \begin{vmatrix}1&2&3\\ 4&5&6\\ 7&8&9\end{vmatrix} \]
+      \[ \begin{vmatrix}1&1&1\\ 1&2&4\\ 1&3&9\end{vmatrix}. \]
+\item 用行变换求
+      \[ D=\begin{vmatrix}1&2&3&4\\ 2&3&4&1\\ 3&4&1&2\\ 4&1&2&3\end{vmatrix}. \]
+\item 求解方程 $\begin{vmatrix}x&1\\ 2&x-1\end{vmatrix}=0$。
+\item 设 $A$ 为 $3$ 阶方阵且 $\det A=2$，求 $\det(2A)$、$\det(A^{-1})$、$\det(-A)$、$\det(A^{*})$。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：奇数阶反对称矩阵的行列式为 $0$。
+\item 证明：若 $A$ 是 $n$ 阶幂零矩阵，则 $\det A=0$。
+\item 设 $\boldsymbol{a},\boldsymbol{b},\boldsymbol{c}\in\Rnum{3}$。证明
+      $\det[\boldsymbol{a}+\boldsymbol{b},\boldsymbol{b}+\boldsymbol{c},\boldsymbol{c}+\boldsymbol{a}]
+       =2\det[\boldsymbol{a},\boldsymbol{b},\boldsymbol{c}]$。
+\item 用归纳法证明范德蒙德行列式公式。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 平面上三点 $(x_1,y_1),(x_2,y_2),(x_3,y_3)$ 共线的充要条件是
+      $\begin{vmatrix}x_1&y_1&1\\ x_2&y_2&1\\ x_3&y_3&1\end{vmatrix}=0$。
+      用它判断 $(1,2),(3,5),(5,8)$ 是否共线，并说明该行列式的几何意义。
+\item 用 NumPy 随机生成 $50\times 50$ 矩阵 $A$，比较
+      $\det(A)$ 与 $\prod_i(\text{LU 分解得到的对角元})$，观察舍入误差的影响。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 4 章 向量空间 =====================
+\chapter{向量空间与子空间}
+\label{ch:space}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 理解向量空间、子空间、基与维数的严格定义；
+\item 掌握线性相关与线性无关的判定方法；
+\item 求四个基本子空间并理解它们之间的正交互补关系；
+\item 会做基变换与坐标转换，理解秩—零化度定理。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+子空间\quad 线性相关性\quad 基\quad 维数\\
+零空间\quad 列空间\quad 秩\quad 坐标变换
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+12 学时
+\end{multicols}
+\end{chapoutline}
+
+\section{向量空间与子空间}
+
+\begin{defn}{向量空间}{vspace}
+设 $V$ 是一个非空集合，其上定义了加法与数乘。若对任意
+$\boldsymbol{u},\boldsymbol{v}\in V$ 与 $c\in\R$ 都有
+$\boldsymbol{u}+\boldsymbol{v}\in V$，$c\boldsymbol{u}\in V$（\textbf{封闭性}），
+并且这两种运算满足八条运算律（结合律、交换律、分配律、单位元等），
+则称 $V$ 为\textbf{向量空间}。
+\end{defn}
+
+\begin{exmp}{常见的向量空间}{vspace-ex}
+\begin{itemize}[itemsep=1pt]
+\item $\Rnum{n}$：$n$ 维列向量全体，最基本的空间；
+\item $\R{m\times n}$：$m\times n$ 实矩阵全体；
+\item $\mathcal{P}_k$：次数不超过 $k$ 的多项式全体；
+\item $C[a,b]$：区间 $[a,b]$ 上的连续函数全体——\emph{函数也能作向量}。
+\end{itemize}
+\end{exmp}
+
+\begin{defn}{子空间}{subspace}
+设 $V$ 是向量空间，$W\subseteq V$ 非空。若 $W$ 对 $V$ 中的加法与数乘封闭，
+则称 $W$ 为 $V$ 的\textbf{子空间}。特别地，$\{\boldsymbol{0}\}$ 与 $V$ 本身
+是 $V$ 的平凡子空间。
+\end{defn}
+
+\begin{keypoint}
+\textbf{判定子空间只需验证两条：}非零元相加仍在内、数乘仍在内。
+（由此自动得到 $\boldsymbol{0}\in W$，因 $0\cdot\boldsymbol{v}=\boldsymbol{0}$。）
+不必逐条检查八条运算律。
+\end{keypoint}
+
+\begin{exmp}{是或不是子空间}{sub-ex}
+在 $\Rnum{2}$ 中：
+\begin{itemize}[itemsep=1pt]
+\item 直线 $y=2x$：\textbf{是}子空间（过原点且封闭）；
+\item 直线 $y=2x+1$：\textbf{不是}（$\boldsymbol{0}$ 不在其上，也不封闭）；
+\item 第一象限 $\{(x,y):x\ge0,\ y\ge0\}$：\textbf{不是}（$(-1)\cdot(1,1)=(-1,-1)$ 跑出去了）；
+\item 集合 $\{(x,y):x^2+y^2=1\}$：\textbf{不是}（单位圆对加法不封闭）。
+\end{itemize}
+\end{exmp}
+
+\begin{remk}{几何口诀：子空间必过原点}{through-origin}
+$\Rnum{2}$ 的子空间只有三类：$\{\boldsymbol{0}\}$、过原点的直线、$\Rnum{2}$ 本身。
+$\Rnum{3}$ 的子空间只有四类：$\{\boldsymbol{0}\}$、过原点的直线、过原点的平面、$\Rnum{3}$。
+\textbf{不过原点的平面或直线绝不是子空间}——
+尽管它们看起来“平坦”。
+\end{remk}
+
+\section{线性相关与线性无关}
+
+\begin{defn}{线性相关与线性无关}{lin-dep}
+向量组 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_k$ 称为\textbf{线性相关}，
+若存在\textbf{不全为零}的 $c_1,\dots,c_k$ 使
+$c_1\boldsymbol{v}_1+\cdots+c_k\boldsymbol{v}_k=\boldsymbol{0}$；
+否则称为\textbf{线性无关}。
+\end{defn}
+
+\begin{keypoint}
+\textbf{把定义翻译成方程组：}线性相关 $\Leftrightarrow$
+齐次方程组 $[\boldsymbol{v}_1\ \cdots\ \boldsymbol{v}_k]\,\boldsymbol{c}=\boldsymbol{0}$
+有非零解 $\Leftrightarrow$ \textbf{自由变量存在} $\Leftrightarrow$
+$\rank[\boldsymbol{v}_1\ \cdots\ \boldsymbol{v}_k]<k$。
+\end{keypoint}
+
+\begin{prop}{线性相关性的常用事实}{lin-facts}
+\begin{enumerate}[label=(\arabic*), itemsep=1pt]
+\item 单个向量 $\boldsymbol{v}$ 线性无关 $\Leftrightarrow\boldsymbol{v}\neq\boldsymbol{0}$；
+\item 两个向量线性相关 $\Leftrightarrow$ 它们共线（成比例）；
+\item 含零向量的向量组必线性相关；
+\item \textbf{部分相关则整体相关}，\textbf{整体无关则部分无关}；
+\item $n+1$ 个 $\Rnum{n}$ 中的向量必线性相关（“向量太多”）；
+\item 无关向量组的\textbf{接长}仍无关，相关向量组的\textbf{截短}仍相关。
+\end{enumerate}
+\end{prop}
+
+\begin{exmp}{判定三组向量}{lin-ex}
+\[
+\text{(a)}\ \Big\{\begin{bmatrix}1\\2\end{bmatrix},
+                 \begin{bmatrix}2\\4\end{bmatrix}\Big\}
+\ \text{相关（成比例）};\qquad
+\text{(b)}\ \Big\{\begin{bmatrix}1\\2\end{bmatrix},
+                 \begin{bmatrix}1\\3\end{bmatrix}\Big\}
+\ \text{无关};\qquad
+\text{(c)}\ \Big\{\begin{bmatrix}1\\0\\0\end{bmatrix},
+   \begin{bmatrix}0\\1\\0\end{bmatrix},
+   \begin{bmatrix}1\\1\\0\end{bmatrix}\Big\}\ \text{相关}.
+\]
+对 (c)：$\boldsymbol{v}_3=\boldsymbol{v}_1+\boldsymbol{v}_2$，
+即 $(1,1,-1)^{\mathsf T}$ 是一组非零组合系数。
+\end{exmp}
+
+\begin{lafig}[>=Stealth, line cap=round, x={(0.92cm,0.44cm)}, y={(-0.50cm,0.46cm)}, z={(0cm,1cm)}]
+{线性相关与无关的几何：左图三向量共面（相关），右图三向量不共面（无关）}
+  % ================= 左：共面（相关）=================
+  \begin{scope}
+    \fill[qing!8] (0,0,0) -- (2.3,0.25,0) -- (2.75,2.05,0) -- (0.45,1.8,0) -- cycle;
+    \draw[qing!55, line width=0.7pt] (0,0,0) -- (2.3,0.25,0) -- (2.75,2.05,0)
+      -- (0.45,1.8,0) -- cycle;
+    \foreach \t in {0.25,0.5,0.75}{
+      \draw[qing!22, line width=0.45pt] (2.3*\t,0.25*\t,0) -- (0.45+2.3*\t,1.8+0.25*\t,0);
+      \draw[qing!22, line width=0.45pt] (2.3*\t+0.45,1.8*\t,0) -- (2.3*\t,0,0);
+    }
+    \draw[dai, line width=1.5pt, ->] (0,0,0) -- (2.3,0.25,0)
+      node[pos=0.62, below, yshift=-2pt]{\small $\boldsymbol{v}_1$};
+    \draw[lan, line width=1.5pt, ->] (0,0,0) -- (0.45,1.8,0)
+      node[pos=0.6, left, xshift=-2pt]{\small $\boldsymbol{v}_2$};
+    \draw[zhe, line width=1.5pt, ->] (0,0,0) -- (1.5,1.0,0)
+      node[pos=0.55, above right, xshift=-2pt]{\small $\boldsymbol{v}_3$};
+    \draw[ink!60, dashed, line width=0.7pt, ->] (0,0,0) -- (1.5,1.0,0.95)
+      node[pos=0.9, right, xshift=1pt]{\small $\boldsymbol{w}$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.15,0.95,-2.0)
+      {$\boldsymbol{v}_3\in\Span\{\boldsymbol{v}_1,\boldsymbol{v}_2\}$：相关};
+  \end{scope}
+  % ================= 右：不共面（无关）=================
+  \begin{scope}[xshift=6.4cm]
+    \fill[qing!8] (0,0,0) -- (2.3,0.25,0) -- (2.75,2.05,0) -- (0.45,1.8,0) -- cycle;
+    \draw[qing!55, line width=0.7pt] (0,0,0) -- (2.3,0.25,0) -- (2.75,2.05,0)
+      -- (0.45,1.8,0) -- cycle;
+    \draw[dai, line width=1.5pt, ->] (0,0,0) -- (2.3,0.25,0)
+      node[pos=0.62, below, yshift=-2pt]{\small $\boldsymbol{v}_1$};
+    \draw[lan, line width=1.5pt, ->] (0,0,0) -- (0.45,1.8,0)
+      node[pos=0.6, left, xshift=-2pt]{\small $\boldsymbol{v}_2$};
+    \draw[zhe, line width=1.5pt, ->] (0,0,0) -- (0.9,0.7,1.5)
+      node[pos=0.72, above right, xshift=-1pt]{\small $\boldsymbol{v}_3$};
+    \draw[ink!45, dashed, line width=0.6pt] (0,0,0) -- (0.9,0.7,0);
+    \draw[qing!40, line width=0.5pt, dashed] (0.9,0.7,0) -- (0.9,0.7,1.5);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.15,0.95,-2.0)
+      {$\boldsymbol{v}_3$ 跳出平面：无关，且 $c_1\boldsymbol{v}_1+c_2\boldsymbol{v}_2
+        +c_3\boldsymbol{v}_3=\boldsymbol{0}$ 只有零解};
+  \end{scope}
+\end{lafig}
+
+\begin{remk}{“无关”为什么如此重要}{why-independent}
+左图中 $\boldsymbol{v}_3$ 沿用 $\boldsymbol{v}_1,\boldsymbol{v}_2$ 就能造出来，
+它作为“第三个坐标轴”是多余的——用它表示向量会有\emph{两套}坐标，
+表达不再唯一。右图中 $\boldsymbol{v}_1,\boldsymbol{v}_2,\boldsymbol{v}_3$
+互相“够不着”，任何一个向量都不能由其余向量造出，此时每个向量
+都有\textbf{唯一}的分解方式。“唯一可表达”正是基与坐标概念的核心，
+也是第 4.3 节的出发点。
+\end{remk}
+
+\section{基、维数与坐标}
+
+\begin{defn}{基}{basis}
+设 $V$ 是向量空间。若 $\mathcal{B}=\{\boldsymbol{v}_1,\dots,\boldsymbol{v}_k\}$
+满足：(i) $\mathcal{B}$ 线性无关；(ii) $\Span\mathcal{B}=V$，
+则称 $\mathcal{B}$ 为 $V$ 的一个\textbf{基}。基中向量的个数 $k$ 称为 $V$ 的
+\textbf{维数}，记作 $\dim V$。
+\end{defn}
+
+\begin{thm}{基的等价刻画}{basis-thm}
+设 $V$ 是 $k$ 维向量空间，则 $V$ 中任意 $k$ 个线性无关的向量必构成 $V$ 的基；
+反之，$V$ 的任何基都恰含 $k$ 个向量（维数是良定义的）。
+\end{thm}
+
+\begin{defn}{坐标}{coord}
+设 $\mathcal{B}=\{\boldsymbol{v}_1,\dots,\boldsymbol{v}_k\}$ 是 $V$ 的基，
+$\boldsymbol{x}\in V$。存在唯一一组数 $c_1,\dots,c_k$ 使
+$\boldsymbol{x}=c_1\boldsymbol{v}_1+\cdots+c_k\boldsymbol{v}_k$，
+称 $[c_1,\dots,c_k]^{\mathsf T}$ 为 $\boldsymbol{x}$ 在基 $\mathcal{B}$ 下的\textbf{坐标}，
+记作 $[\boldsymbol{x}]_{\mathcal{B}}$。
+\end{defn}
+
+\begin{lafig}[>=Stealth, line cap=round]{同一个向量 $\boldsymbol{x}$，在标准基下坐标是 $(2.75,2.25)$，
+在新基 $\{\boldsymbol{b}_1,\boldsymbol{b}_2\}$ 下是 $(1.5,1)$}
+  \draw[line!80, very thin, step=0.5] (-1.4,-1.4) grid (3.4,3.4);
+  \draw[qing!55, line width=0.7pt, ->] (-1.6,0) -- (3.55,0);
+  \draw[qing!55, line width=0.7pt, ->] (0,-1.6) -- (0,3.55);
+  \draw[ink!55, line width=1.3pt, ->] (0,0) -- (1,0)
+    node[below, yshift=-1pt]{\small $\boldsymbol{e}_1$};
+  \draw[ink!55, line width=1.3pt, ->] (0,0) -- (0,1)
+    node[left, xshift=-1pt]{\small $\boldsymbol{e}_2$};
+  \draw[dai, line width=1.7pt, ->] (0,0) -- (2,0.5)
+    node[below right, xshift=-3pt]{\small $\boldsymbol{b}_1$};
+  \draw[zhe, line width=1.7pt, ->] (0,0) -- (-0.5,2)
+    node[above left, xshift=3pt]{\small $\boldsymbol{b}_2$};
+  \coordinate (P) at (2.75,2.25);
+  \draw[dashed, ink!35] (0,0) -- (P) -- (2,0.5) -- cycle;
+  \draw[dashed, ink!35] (0,0) -- (P) -- (-0.5,2) -- cycle;
+  \draw[qing, line width=2.1pt, ->] (0,0) -- (P)
+    node[right, xshift=1pt]{\small $\boldsymbol{x}$};
+  \fill[qing] (P) circle (2.3pt);
+  \node[font=\footnotesize, color=inkl] at (1.6,-1.15)
+    {$\boldsymbol{x}=1.5\,\boldsymbol{b}_1+1\,\boldsymbol{b}_2
+      \ \Rightarrow\ [\boldsymbol{x}]_{\mathcal{B}}=\begin{bmatrix}1.5\\1\end{bmatrix}$};
+\end{lafig}
+
+\begin{prop}{坐标变换公式}{coord-change}
+设 $P=[\boldsymbol{b}_1\ \cdots\ \boldsymbol{b}_k]$（各列为新基向量），
+则
+\[
+\boldsymbol{x}=P\,[\boldsymbol{x}]_{\mathcal{B}}
+\qquad\Longleftrightarrow\qquad
+[\boldsymbol{x}]_{\mathcal{B}}=P^{-1}\boldsymbol{x}.
+\]
+$P$ 称为\textbf{基变换矩阵}；当 $\mathcal{B}$ 也是 $\Rnum{n}$ 的基时 $P$ 可逆。
+\end{prop}
+
+\section{四个基本子空间}
+
+设 $A\in\R{m\times n}$。与 $A$ 相关的有四个子空间，它们是整门课程的骨架。
+
+\begin{latab}{$A\in\R{m\times n}$ 的四个基本子空间}
+\small\centering
+\renewcommand{\arraystretch}{1.42}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\sffamily 名称 & \sffamily 记号 & \sffamily 所在空间 & \sffamily 维数\\
+\midrule
+列空间   & $\Col(A)=\Span\{A\text{ 的列}\}$ & $\Rnum{m}$ & $\rank(A)=r$\\
+零空间   & $\Nul(A)=\{\boldsymbol{x}:A\boldsymbol{x}=\boldsymbol{0}\}$ & $\Rnum{n}$ & $n-r$\\
+行空间   & $\Row(A)=\Col(A^{\mathsf T})$ & $\Rnum{n}$ & $r$\\
+左零空间 & $\Nul(A^{\mathsf T})$ & $\Rnum{m}$ & $m-r$\\
+\bottomrule
+\end{tabular}
+\end{latab}
+
+\begin{keypoint}
+\textbf{秩—零化度定理}：$\rank(A)+\dim\Nul(A)=n$，
+即 $\dim\Col(A)+\dim\Nul(A)=$ 列数。
+它是“主元个数 $+$ 自由变量个数 $=$ 未知数个数”的直接翻译。
+\end{keypoint}
+
+\begin{thm}{正交互补}{orthocomp}
+\[
+\Row(A)\perp\Nul(A)\ \text{（同在 }\Rnum{n}\text{ 中），}
+\qquad
+\Col(A)\perp\Nul(A^{\mathsf T})\ \text{（同在 }\Rnum{m}\text{ 中）}.
+\]
+且维数恰好互补，因此
+\[
+\Rnum{n}=\Row(A)\oplus\Nul(A),\qquad
+\Rnum{m}=\Col(A)\oplus\Nul(A^{\mathsf T}).
+\]
+\end{thm}
+
+\begin{pf}
+只证第一式。若 $\boldsymbol{x}\in\Nul(A)$，则 $A\boldsymbol{x}=\boldsymbol{0}$，
+即 $A$ 的每一行与 $\boldsymbol{x}$ 的内积为零；而 $\Row(A)$ 是各行张成的空间，
+故 $\Row(A)$ 中任一向量与 $\boldsymbol{x}$ 正交。
+再由维数和为 $n$，得二者正交互补。
+\end{pf}
+
+\begin{lafig}[>=Stealth, line cap=round]{四个基本子空间示意图（Strang 图）：$A$ 把行空间一一映到列空间}
+  % 左块：定义域
+  \draw[qing!45, rounded corners=2mm] (-1.5,-1.5) rectangle (1.5,1.5);
+  \node[font=\small\sffamily, color=qing] at (0,1.78) {定义域 $\Rnum{n}$};
+  \draw[line width=1.1pt, qing!70, ->] (-1.3,0.55) -- (1.3,0.55)
+     node[midway, above, yshift=-1pt]{\small $\Row(A)$ \ 维数 $r$};
+  \draw[line width=1.1pt, dai!75, ->] (-1.3,-0.55) -- (1.3,-0.55)
+     node[midway, below, yshift=1pt]{\small $\Nul(A)$ \ 维数 $n-r$};
+  \node[font=\footnotesize, color=inkl] at (0,-1.85) {$\Row(A)\perp\Nul(A)$};
+  % 映射箭头
+  \draw[zhe, line width=2.0pt, ->] (1.75,0) -- (3.6,0)
+     node[midway, above=2pt]{\small $A$};
+  % 右块：值域
+  \begin{scope}[xshift=5.4cm]
+    \draw[zhe!45, rounded corners=2mm] (-1.5,-1.5) rectangle (1.5,1.5);
+    \node[font=\small\sffamily, color=zhe] at (0,1.78) {值域 $\Rnum{m}$};
+    \draw[line width=1.1pt, zhe!75, ->] (-1.3,0.55) -- (1.3,0.55)
+       node[midway, above, yshift=-1pt]{\small $\Col(A)$ \ 维数 $r$};
+    \draw[line width=1.1pt, lan!75, ->] (-1.3,-0.55) -- (1.3,-0.55)
+       node[midway, below, yshift=1pt]{\small $\Nul(A^{\mathsf T})$ \ 维数 $m-r$};
+    \node[font=\footnotesize, color=inkl] at (0,-1.85) {$\Col(A)\perp\Nul(A^{\mathsf T})$};
+  \end{scope}
+  \node[font=\footnotesize, color=inkl] at (2.7,-2.5)
+    {行空间与零空间正交互补，列空间与左零空间正交互补};
+\end{lafig}
+
+\begin{exmp}{求一个矩阵的四个子空间}{four-spaces}
+设
+$A=\begin{bmatrix}1&2&1&3\\ 2&4&0&4\\ 1&2&1&3\end{bmatrix}$，
+其简化行阶梯形为
+$\begin{bmatrix}1&2&0&1\\ 0&0&1&2\\ 0&0&0&0\end{bmatrix}$，故 $r=2$。
+
+\smallskip
+\textbf{列空间}：主元在第 1、3 列，故取 $A$ 的第 1、3 列（\emph{注意取原矩阵的列}）：
+$\Col(A)=\Span\{(1,2,1)^{\mathsf T},(1,0,1)^{\mathsf T}\}$。
+
+\smallskip
+\textbf{行空间}：取阶梯形的非零行：
+$\Row(A)=\Span\{(1,2,0,1),(0,0,1,2)\}$。
+
+\smallskip
+\textbf{零空间}：解 $A\boldsymbol{x}=\boldsymbol{0}$。自由变量 $x_2=s$，$x_4=t$：
+$x_1=-2s-t$，$x_3=-2t$，故
+\[
+\Nul(A)=\Span\Big\{\begin{bmatrix}-2\\1\\0\\0\end{bmatrix},
+                    \begin{bmatrix}-1\\0\\-2\\1\end{bmatrix}\Big\},
+\qquad \dim\Nul(A)=4-2=2.
+\]
+
+\smallskip
+\textbf{左零空间}：$\dim\Nul(A^{\mathsf T})=3-2=1$，
+由行变换 $R_2\leftarrow R_2-2R_1$，$R_3\leftarrow R_3-R_1$ 的组合系数得到
+$(-1,-2,1)^{\mathsf T}$
+（验证：$-1\cdot$行$1-2\cdot$行$2+1\cdot$行$3=\boldsymbol{0}$）。
+\end{exmp}
+
+\begin{remk}{两个易错点}{common-error}
+\begin{enumerate}[label=(\alph*)]
+\item 求列空间时，\textbf{必须取原矩阵的主元列}，而不是阶梯形里的列——
+      行变换改变了列空间。
+\item 行空间恰恰相反：\textbf{取阶梯形的非零行}即可，因为行变换不改变行空间。
+\end{enumerate}
+\end{remk}
+
+\section{基变换与相似（初步）}
+
+\begin{prop}{不同基下坐标之间的关系}{coord-rel}
+设 $V$ 有两组基 $\mathcal{B},\mathcal{C}$，基变换矩阵分别为 $P,Q$
+（各列为相应基向量），则
+\[
+[\boldsymbol{x}]_{\mathcal{C}}=Q^{-1}P\,[\boldsymbol{x}]_{\mathcal{B}}.
+\]
+\end{prop}
+
+这里出现的 $Q^{-1}P$ 形式将在第五章“相似矩阵”中再次登场。
+基变换并不改变向量本身，改变的只是描述它的“语言”——
+这与同一几何对象在不同坐标系下有不同的方程，是同一件事。
+
+\begin{sidebar}{格拉斯曼与维数的第一次严格化}
+“维数”在今天看来理所当然，但在十九世纪中叶它还只是直观。
+1844 年，德国语言学家出身的数学家\textbf{赫尔曼·格拉斯曼}
+（Hermann Grassmann，1809—1877）出版《线性扩张论》，
+首次把 $n$ 维线性空间作为抽象对象处理，给出了线性相关、基与维数的一般理论。
+由于行文晦涩、又与当时主流的哈密顿四元数思路相左，
+这部著作在生前几乎无人问津；直到皮亚诺于 1888 年给出公理化定义，
+格拉斯曼的工作才被完全承认。今天线性代数教材中“向量空间”的公理体系，
+正是沿着格拉斯曼—皮亚诺这条线索定型的。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 子空间只需验证封闭性，且必含零向量。
+\item 线性相关 $\Leftrightarrow$ 齐次方程组有非零解 $\Leftrightarrow$ 秩不足。
+\item 基 $=$ 无关 $+$ 张成；基中向量个数 $=$ 维数。
+\item 坐标变换：$\boldsymbol{x}=P[\boldsymbol{x}]_{\mathcal{B}}$。
+\item 四个基本子空间维数：$r,\ n-r,\ r,\ m-r$。
+\item 秩—零化度定理：$\rank(A)+\dim\Nul(A)=n$。
+\item $\Row(A)\perp\Nul(A)$，$\Col(A)\perp\Nul(A^{\mathsf T})$。
+\item 列空间取原矩阵主元列，行空间取阶梯形非零行。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 判断下列集合是否为 $\Rnum{3}$ 的子空间并说明理由：
+      (a) $\{(x,y,z):x+y+z=0\}$；(b) $\{(x,y,z):x+y+z=1\}$；
+      (c) $\{(x,y,z):xy=0\}$；(d) $\{(x,2x,3x):x\in\R\}$。
+\item 判断向量组 $(1,2,1)^{\mathsf T},(2,4,2)^{\mathsf T},(1,1,1)^{\mathsf T}$
+      是否线性相关，若相关写出一组非零组合系数。
+\item 求 $A=\begin{bmatrix}1&2&1\\ 2&4&2\\ 3&6&3\end{bmatrix}$
+      的列空间、行空间、零空间及各维数。
+\item 设 $\mathcal{B}=\{(1,1)^{\mathsf T},(1,-1)^{\mathsf T}\}$，
+      求 $\boldsymbol{x}=(5,1)^{\mathsf T}$
+      在 $\mathcal{B}$ 下的坐标。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：若 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_k$ 线性无关，
+      且 $\boldsymbol{v}_{k+1}\notin\Span\{\boldsymbol{v}_1,\dots,\boldsymbol{v}_k\}$，
+      则 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_{k+1}$ 线性无关。
+\item 证明：$\rank(A)=\rank(A^{\mathsf T})$。（提示：主元个数与非零行个数。）
+\item 设 $A$ 为 $m\times n$ 实矩阵。证明：$A\boldsymbol{x}=\boldsymbol{0}$
+      与 $A^{\mathsf T}A\boldsymbol{x}=\boldsymbol{0}$ 同解，
+      进而 $\rank(A^{\mathsf T}A)=\rank(A)$。
+\item 证明：$\dim(U\cap W)+\dim(U+W)=\dim U+\dim W$。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 图像可视为 $\Rnum{mn}$ 中的向量。说明为什么“压缩图像”等价于
+      在某个低维子空间中近似表示它。
+\item 推荐系统中，用户—物品评分矩阵的“列空间”代表什么？
+      试从四个基本子空间的角度解释协同过滤。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 5 章 线性变换 =====================
+\chapter{线性变换}
+\label{ch:trans}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 理解线性映射的定义，学会“一眼看出”一个映射是否线性；
+\item 掌握线性映射与矩阵的对应关系；
+\item 会求核与像，并把秩—零化度定理迁移到映射语言；
+\item 理解复合、逆变换与相似矩阵的几何含义。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+线性映射\quad 核\quad 像\quad 标准矩阵\\
+复合\quad 可逆变换\quad 相似矩阵\quad 基表示
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+10 学时
+\end{multicols}
+\end{chapoutline}
+
+\section{什么是线性变换}
+
+\begin{defn}{线性变换}{lin-map}
+设 $V,W$ 是向量空间，$T:V\to W$ 是一个映射。若对任意
+$\boldsymbol{u},\boldsymbol{v}\in V$ 与 $c\in\R$ 都有
+\[
+T(\boldsymbol{u}+\boldsymbol{v})=T(\boldsymbol{u})+T(\boldsymbol{v}),
+\qquad
+T(c\,\boldsymbol{u})=c\,T(\boldsymbol{u}),
+\]
+则称 $T$ 为\textbf{线性变换}（线性映射）。两条件可合并为
+\[
+T(c_1\boldsymbol{u}+c_2\boldsymbol{v})
+=c_1T(\boldsymbol{u})+c_2T(\boldsymbol{v}).
+\]
+\end{defn}
+
+\begin{keypoint}
+\textbf{两条几何判据}：线性变换把直线映成直线（或压成一点），
+并且\textbf{必须把原点映到原点}。因此平移、平移加旋转都不是线性变换。
+\end{keypoint}
+
+\begin{exmp}{线性与非线性}{linear-vs-not}
+\begin{itemize}[itemsep=1pt]
+\item $T(x,y)=(2x+y,\ x)$：\textbf{线性}；
+\item $T(x,y)=(x+1,\ y)$：\textbf{不线性}（原点被搬到 $(1,0)$）；
+\item $T(x,y)=(x^2,\ y)$：\textbf{不线性}（$T(2,0)=(4,0)\neq 2T(1,0)$）；
+\item 求导算子 $D:f\mapsto f'$：\textbf{线性}
+      （$(f+g)'=f'+g'$，$(cf)'=cf'$）；
+\item 积分算子 $J:f\mapsto\int_0^x f(t)\,\mathrm{d}t$：\textbf{线性}。
+\end{itemize}
+\end{exmp}
+
+\begin{prop}{线性变换的基本性质}{lin-prop}
+设 $T$ 线性，则 $T(\boldsymbol{0})=\boldsymbol{0}$，
+$T(-\boldsymbol{v})=-T(\boldsymbol{v})$，
+且对任意线性组合有 $T\big(\sum c_i\boldsymbol{v}_i\big)=\sum c_iT(\boldsymbol{v}_i)$。
+\end{prop}
+
+\section{五种基本平面变换}
+
+理解线性变换最好的方式，是观察它如何\textbf{扭曲一张网格}。
+
+\begin{lafig}[>=Stealth, line cap=round]{五种基本平面线性变换：网格的形态揭示了矩阵的作用
+（旋转 $\begin{psmallmatrix}\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta\end{psmallmatrix}$、
+剪切 $\begin{psmallmatrix}1&k\\ 0&1\end{psmallmatrix}$、
+伸缩 $\begin{psmallmatrix}s_x&0\\ 0&s_y\end{psmallmatrix}$、
+反射、投影）}
+  \foreach \i in {-2,-1,0,1,2}{
+    \draw[qing!22, very thin] (-1.7,\i*0.85) -- (1.7,\i*0.85);
+    \draw[qing!22, very thin] (\i*0.85,-1.7) -- (\i*0.85,1.7);
+  }
+  \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.05) {原网格};
+  \draw[ink!60, line width=1.2pt, ->] (-1.7,0) -- (1.75,0);
+  \draw[ink!60, line width=1.2pt, ->] (0,-1.7) -- (0,1.75);
+  % ---------- 旋转 ----------
+  \begin{scope}[xshift=4.7cm, rotate=32]
+    \foreach \i in {-2,-1,0,1,2}{
+      \draw[qing!30, very thin] (-1.5,\i*0.85) -- (1.5,\i*0.85);
+      \draw[qing!30, very thin] (\i*0.85,-1.5) -- (\i*0.85,1.5);
+    }
+  \end{scope}
+  \begin{scope}[xshift=4.7cm]
+    \draw[dai, line width=1.6pt, ->] (0,0) -- (0.42,0.68);
+    \draw[zhe, line width=1.6pt, ->] (0,0) -- (-0.68,0.42);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.05) {旋转};
+  \end{scope}
+  % ---------- 剪切 ----------
+  \begin{scope}[xshift=9.4cm]
+    \begin{scope}[cm={1,0.55,0,1,(0,0)}]
+      \foreach \i in {-2,-1,0,1,2}{
+        \draw[qing!30, very thin] (-1.5,\i*0.85) -- (1.5,\i*0.85);
+        \draw[qing!30, very thin] (\i*0.85,-1.5) -- (\i*0.85,1.5);
+      }
+    \end{scope}
+    \draw[dai, line width=1.6pt, ->] (0,0) -- (0.85,0);
+    \draw[zhe, line width=1.6pt, ->] (0,0) -- (0.47,0.85);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.05) {剪切};
+  \end{scope}
+  % ---------- 伸缩 ----------
+  \begin{scope}[yshift=-5.3cm]
+    \begin{scope}[cm={1.45,0,0,0.62,(0,0)}]
+      \foreach \i in {-2,-1,0,1,2}{
+        \draw[qing!30, very thin] (-1.5,\i*0.85) -- (1.5,\i*0.85);
+        \draw[qing!30, very thin] (\i*0.85,-1.5) -- (\i*0.85,1.5);
+      }
+    \end{scope}
+    \draw[dai, line width=1.6pt, ->] (0,0) -- (1.23,0);
+    \draw[zhe, line width=1.6pt, ->] (0,0) -- (0,0.53);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.05) {伸缩};
+  \end{scope}
+  % ---------- 反射 ----------
+  \begin{scope}[xshift=4.7cm, yshift=-5.3cm, cm={0,-1,-1,0,(0,0)}]
+    \foreach \i in {-2,-1,0,1,2}{
+      \draw[qing!30, very thin] (-1.5,\i*0.85) -- (1.5,\i*0.85);
+      \draw[qing!30, very thin] (\i*0.85,-1.5) -- (\i*0.85,1.5);
+    }
+  \end{scope}
+  \begin{scope}[xshift=4.7cm, yshift=-5.3cm]
+    \draw[ink!35, line width=0.8pt, dashed] (-1.6,-1.6) -- (1.6,1.6);
+    \draw[dai, line width=1.6pt, ->] (0,0) -- (0,-0.8);
+    \draw[zhe, line width=1.6pt, ->] (0,0) -- (-0.8,0);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.05) {反射};
+  \end{scope}
+  % ---------- 投影 ----------
+  \begin{scope}[xshift=9.4cm, yshift=-5.3cm]
+    \foreach \i in {-2,-1,0,1,2}{
+      \draw[qing!30, very thin] (-1.5,\i*0.85) -- (1.5,\i*0.85);
+      \draw[qing!30, very thin] (\i*0.85,-1.5) -- (\i*0.85,1.5);
+    }
+    \foreach \i in {-2,-1,0,1,2}{
+      \draw[dai!85, line width=1.15pt] (-1.5,\i*0.85) -- (1.5,\i*0.85);
+    }
+    \draw[ink!45, line width=0.8pt, dashed, ->] (0.85,1.27) -- (0.85,0);
+    \draw[ink!45, line width=0.8pt, dashed, ->] (0,1.7) -- (0,0);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.05) {投影};
+  \end{scope}
+\end{lafig}
+
+\begin{remk}{投影是“有损”的}{proj-lossy}
+前四种变换都可逆——信息没有丢失，面积最多缩放为 $|\det A|$ 倍。
+投影则不可逆：一整条竖直方向的直线被压成同一个点，
+面积缩放因子为 $\det=0$，因此矩阵不可逆。
+“行列式为零”与“信息被压没”，说的是同一件事。
+\end{remk}
+
+\section{矩阵表示}
+
+\begin{thm}{线性映射由基的像唯一决定}{rep-thm}
+设 $T:\Rnum{n}\to\Rnum{m}$ 线性，$\{\boldsymbol{e}_1,\dots,\boldsymbol{e}_n\}$
+是标准基。令 $A=[\,T(\boldsymbol{e}_1)\ \cdots\ T(\boldsymbol{e}_n)\,]\in\R{m\times n}$，
+则对任意 $\boldsymbol{x}\in\Rnum{n}$，
+\[
+T(\boldsymbol{x})=A\boldsymbol{x}.
+\]
+$A$ 称为 $T$ 的\textbf{标准矩阵}。
+\end{thm}
+
+\begin{pf}
+写 $\boldsymbol{x}=x_1\boldsymbol{e}_1+\cdots+x_n\boldsymbol{e}_n$，
+由线性性与 $A\boldsymbol{x}$ 的列组合视角即得。
+\end{pf}
+
+\begin{keypoint}
+\textbf{求标准矩阵的口诀}：把标准基向量一个个喂给 $T$，把得到的像依次排成列。
+例如 $T(x,y)=(2x+y,x)$ 满足 $T(1,0)=(2,1)$，$T(0,1)=(1,0)$，
+故 $A=\begin{bmatrix}2&1\\1&0\end{bmatrix}$。
+\end{keypoint}
+
+\begin{exmp}{旋转矩阵}{rot-mat}
+把平面向量逆时针旋转 $\theta$ 角，则
+$T(1,0)=(\cos\theta,\sin\theta)$，$T(0,1)=(-\sin\theta,\cos\theta)$，故
+\[
+R_\theta=\begin{bmatrix}\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta\end{bmatrix},
+\qquad
+\det R_\theta=1,\qquad R_\theta^{\mathsf T}R_\theta=I.
+\]
+旋转是\textbf{正交矩阵}的典型代表：保长度、保角度、保面积。
+\end{exmp}
+
+\subsection{在一般基下的表示}
+
+若把定义域的基换成 $\mathcal{B}$、值域的基换成 $\mathcal{C}$，则
+\[
+[T]_{\mathcal{C}\leftarrow\mathcal{B}}
+=C^{-1}A P,
+\]
+其中 $P$ 的各列为 $\mathcal{B}$，$C$ 的各列为 $\mathcal{C}$。
+特殊地，当 $V=W$ 且 $\mathcal{B}=\mathcal{C}$ 时，
+$[T]_{\mathcal{B}}=P^{-1}AP$ ——这正是\textbf{相似矩阵}。
+
+\section{核、像与维数公式}
+
+\begin{defn}{核与像}{kernel-image}
+设 $T:V\to W$ 线性。
+\[
+\ker T=\{\boldsymbol{v}\in V:T(\boldsymbol{v})=\boldsymbol{0}\}
+\quad(\text{核，是 } V \text{ 的子空间}),
+\]
+\[
+\operatorname{im}T=\{\,T(\boldsymbol{v}):\boldsymbol{v}\in V\,\}
+\quad(\text{像，是 } W \text{ 的子空间}).
+\]
+$\dim\ker T$ 称为 $T$ 的\textbf{零度}，$\dim\operatorname{im}T$ 称为 $T$ 的\textbf{秩}。
+\end{defn}
+
+\begin{thm}{维数公式（秩—零化度定理的映射形式）}{dim-thm}
+设 $T:V\to W$ 线性且 $\dim V<\infty$，则
+\[
+\dim\ker T+\dim\operatorname{im}T=\dim V.
+\]
+\end{thm}
+
+\begin{pf}
+取 $\ker T$ 的一组基 $\boldsymbol{u}_1,\dots,\boldsymbol{u}_k$，
+扩充为 $V$ 的基 $\boldsymbol{u}_1,\dots,\boldsymbol{u}_k,
+\boldsymbol{w}_1,\dots,\boldsymbol{w}_r$。
+则 $T(\boldsymbol{w}_1),\dots,T(\boldsymbol{w}_r)$ 张成 $\operatorname{im}T$
+且线性无关，故 $\dim\operatorname{im}T=r$，而 $k+r=\dim V$。
+\end{pf}
+
+\begin{remk}{维数公式的直觉}{dim-intuition}
+$\dim V$ 个“自由度”被 $T$ 分成两部分：
+一部分被压到零（核），一部分被完整保留（像）。
+\textbf{压得越狠，像越“瘦”；核越大，像越小。}
+当 $\ker T=\{\boldsymbol{0}\}$ 时 $T$ 是单射，此时像的维数最大。
+\end{remk}
+
+\begin{prop}{单射与满射的判据}{injective}
+设 $T:\Rnum{n}\to\Rnum{m}$ 线性，标准矩阵为 $A$：
+\[
+T\ \text{单射}\Longleftrightarrow\ker T=\{\boldsymbol{0}\}
+\Longleftrightarrow\rank A=n;
+\qquad
+T\ \text{满射}\Longleftrightarrow\operatorname{im}T=\Rnum{m}
+\Longleftrightarrow\rank A=m.
+\]
+因此 $T$ 可逆 $\Leftrightarrow$ $m=n$ 且 $\rank A=n$。
+\end{prop}
+
+\begin{lafig}[>=Stealth, line cap=round]{秩—零化度定理的图示：定义域被 $T$ 分为“压扁的部分”
+（核）与“保留的部分”，后者与像同构}
+  % ================= 左：定义域 =================
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (1.5,2.45) {定义域 $V=\Rnum{3}$};
+    \draw[qing!40, line width=0.8pt, rounded corners=3pt] (-1.4,-1.5) rectangle (4.0,2.0);
+    % 核（一条直线）
+    \fill[dai!12] (-0.9,-1.1) -- (0.6,-1.1) -- (0.6,-0.65) -- (-0.9,-0.65) -- cycle;
+    \draw[dai!60, line width=0.6pt] (-0.9,-1.1) rectangle (0.6,-0.65);
+    \node[dai, font=\scriptsize] at (-0.15,-0.875) {$\ker T$（压到零）};
+    % 补空间
+    \fill[qing!7] (-0.9,-0.45) rectangle (0.6,1.55);
+    \draw[qing!45, line width=0.6pt] (-0.9,-0.45) rectangle (0.6,1.55);
+    \node[qing, font=\scriptsize] at (-0.15,1.28) {$\ker T$ 的补};
+    \foreach \y in {-0.2,0.15,0.5,0.85,1.2}{
+      \draw[qing!35, line width=0.5pt, ->] (0.68,\y) -- (1.55,\y);
+    }
+    \node[font=\scriptsize, color=inkl] at (1.12,0.02) {$T$};
+    % 像
+    \fill[zhe!10] (1.65,-0.45) rectangle (3.55,1.55);
+    \draw[zhe!55, line width=0.6pt] (1.65,-0.45) rectangle (3.55,1.55);
+    \node[zhe, font=\scriptsize] at (2.6,1.28) {$\operatorname{im}T\subseteq W$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.3,-1.85)
+      {$\dim V=3=\underbrace{1}_{\text{核}}+\underbrace{2}_{\text{秩}}$};
+  \end{scope}
+  % ================= 右：三类映射对照 =================
+  \begin{scope}[xshift=9.0cm]
+    \node[font=\small\sffamily, color=qing] at (2.2,2.45) {三类典型情形};
+    \foreach \i/\idim/\col/\lab in {0/3/qing/{满秩：可逆}, 1/2/dai/{投影：压掉一维},
+                                    2/1/zhe/{压缩：只剩一条线}}{
+      \pgfmathsetmacro{\yy}{1.45-\i*1.12}
+      \fill[white] (-0.75,\yy-0.46) rectangle (2.35,\yy+0.46);
+      \draw[line!90, line width=0.5pt, rounded corners=2pt]
+        (-0.75,\yy-0.46) rectangle (2.35,\yy+0.46);
+      \node[font=\scriptsize\sffamily, text=ink, anchor=west] at (-0.58,\yy) {\lab};
+      \fill[\col!14] (1.05,\yy-0.30) rectangle (1.05+0.34*\idim,\yy+0.30);
+      \draw[\col!60, line width=0.5pt]
+        (1.05,\yy-0.30) rectangle (1.05+0.34*\idim,\yy+0.30);
+      \draw[ink!50, line width=0.5pt, ->] (0.62,\yy) -- (0.98,\yy);
+    }
+    \node[font=\footnotesize\sffamily, color=inkl] at (2.2,-2.15)
+      {着色条宽度 $=$ 像的维数；压得越扁，像越窄};
+  \end{scope}
+\end{lafig}
+
+\section{复合、逆与相似}
+
+\begin{prop}{复合对应矩阵乘法}{compose}
+设 $S:U\to V$，$T:V\to W$ 均线性，则 $T\circ S$ 线性，且
+\[
+[T\circ S]=[T]\,[S].
+\]
+\textbf{矩阵乘法之所以“那样”定义，正是为了让它表示复合}——
+这是矩阵乘法最深刻的解释。
+\end{prop}
+
+\begin{remk}{顺序很重要}{order-matters}
+$(T\circ S)(\boldsymbol{x})=T(S(\boldsymbol{x}))$，对应 $[T][S]$，
+右边的先作用。几何上，“先剪切再旋转”的矩阵是 $R_\theta K$，
+而“先旋转再剪切”是 $KR_\theta$，二者一般不等。
+第一章那个 $AB\neq BA$ 的例子，如今有了完整的解释。
+\end{remk}
+
+\begin{defn}{相似矩阵}{similar}
+设 $A,B$ 为 $n$ 阶方阵。若存在可逆矩阵 $P$ 使 $B=P^{-1}AP$，
+则称 $A$ 与 $B$ \textbf{相似}，记作 $A\sim B$。
+\end{defn}
+
+\begin{keypoint}
+相似 $=$ \textbf{同一个线性变换在不同基下的描述}。
+相似矩阵共享一切“与基无关”的量：
+\[
+\det B=\det A,\qquad \tr B=\tr A,\qquad
+\rank B=\rank A,\qquad
+\text{特征多项式与特征值相同}.
+\]
+第六章将利用这一点，通过换基把矩阵化成最简单的形态——对角形。
+\end{keypoint}
+
+\begin{exmp}{用复合解释矩阵乘法}{compose-ex}
+设 $A=\begin{bmatrix}1&1\\0&1\end{bmatrix}$（剪切），
+$R=\begin{bmatrix}0&-1\\1&0\end{bmatrix}$（逆时针 $90^\circ$）。则
+\[
+RA=\begin{bmatrix}0&-1\\1&1\end{bmatrix}
+\qquad\text{与}\qquad
+AR=\begin{bmatrix}1&-1\\1&0\end{bmatrix}
+\]
+不同：前者是“先剪切后旋转”，后者是“先旋转后剪切”。
+用第一章的网格图分别画出这两种效果，差异一目了然。
+\end{exmp}
+
+\begin{lafig}[>=Stealth, line cap=round]{乘法顺序的几何：左为 $RA$（先剪切再旋转），
+右为 $AR$（先旋转再剪切），两图整体形态明显不同}
+  % ============ 左：RA ============
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (1.7,2.6) {先剪切，后旋转\;($RA$)};
+    \draw[line!85, very thin, step=0.55] (-2.2,-1.4) grid (2.2,2.2);
+    \begin{scope}
+      \clip (-2.35,-1.55) rectangle (2.35,2.25);
+      \begin{scope}[cm={0,1,-1,1,(0,0)}]
+        \foreach \i in {-1,0,1,2}{\draw[qing!40, line width=0.6pt] (\i,-1) -- (\i,2);}
+        \foreach \j in {0,1,2}{\draw[qing!40, line width=0.6pt] (-1,\j) -- (2,\j);}
+        \fill[qing!12] (0,0) rectangle (1,1);
+        \draw[qing, line width=1.1pt] (0,0) rectangle (1,1);
+      \end{scope}
+    \end{scope}
+    \draw[qing!45, line width=0.7pt, ->] (-2.4,0) -- (2.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.6) -- (0,2.4);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.7,-1.95)
+      {单位方形 $\to$ 平行四边形 $\to$ 整体翻转立起};
+  \end{scope}
+  % ============ 右：AR ============
+  \begin{scope}[xshift=7.0cm]
+    \node[font=\small\sffamily, color=zhe] at (1.7,2.6) {先旋转，后剪切\;($AR$)};
+    \draw[line!85, very thin, step=0.55] (-2.2,-1.4) grid (2.2,2.2);
+    \begin{scope}
+      \clip (-2.35,-1.55) rectangle (2.35,2.25);
+      \begin{scope}[cm={1,1,-1,0,(0,0)}]
+        \foreach \i in {-1,0,1,2}{\draw[zhe!40, line width=0.6pt] (\i,-1) -- (\i,2);}
+        \foreach \j in {0,1,2}{\draw[zhe!40, line width=0.6pt] (-1,\j) -- (2,\j);}
+        \fill[zhe!10] (0,0) rectangle (1,1);
+        \draw[zhe, line width=1.1pt] (0,0) rectangle (1,1);
+      \end{scope}
+    \end{scope}
+    \draw[qing!45, line width=0.7pt, ->] (-2.4,0) -- (2.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.6) -- (0,2.4);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.7,-1.95)
+      {单位方形 $\to$ 立起 $\to$ 沿新方向剪切};
+  \end{scope}
+\end{lafig}
+
+\begin{sidebar}{从“数表”到“算子”：一次观念的转身}
+十九世纪的矩阵首先是一张\textbf{数表}：它来自行列式，
+用于记录二次型或方程组的系数。真正把它看作\textbf{作用在空间上的算子}，
+是二十世纪的事。1920 年代，量子力学发现物理态的演化由算子支配；
+与此同时，诺特（E.\ Noether）与阿廷（E.\ Artin）把线性代数公理化，
+从此“$A$”不再指代一堆具体的数字，而指代一个抽象的线性映射。
+今天我们说“矩阵乘法不交换”，实质上是在说
+“\emph{先旋转再翻转}不等于\emph{先翻转再旋转}”——
+一句中学生也能听懂的话，只是它需要两千年才被写成公式。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 线性变换必把原点映到原点，且把直线映成直线。
+\item 标准矩阵：把标准基的像依次排成列。
+\item $\dim\ker T+\dim\operatorname{im}T=\dim V$。
+\item 单射 $\Leftrightarrow$ 核只有零解 $\Leftrightarrow$ $\rank A=n$。
+\item 复合对应矩阵乘法，且顺序不可交换。
+\item 相似矩阵共享行列式、迹、秩与特征值。
+\item 投影不可逆，$\det=0$，信息被压没。
+\item 旋转矩阵是正交矩阵，$\det=1$。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 判断下列映射是否线性，并说明理由：
+      (a) $T(x,y)=(x-y,\ 2x)$；(b) $T(x,y)=(x+y,\ 1)$；
+      (c) $T(x,y,z)=(x,\ y,\ 0)$；(d) $T(x,y)=(|x|,\ y)$。
+\item 求下列线性变换的标准矩阵：
+      (a) $T(x,y)=(3x-2y,\ x+4y)$；(b) $T(x,y)=(y,\ x)$；
+      (c) $T(x,y,z)=(x+y,\ y+z,\ z+x)$。
+\item 求把平面向量关于直线 $y=x$ 作反射的标准矩阵，并验证 $A^2=I$。
+\item 设 $T(x,y)=(2x+y,x)$，求 $\ker T$、$\operatorname{im}T$ 与二者的维数。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：$T$ 线性 $\Leftrightarrow T(\boldsymbol{0})=\boldsymbol{0}$
+      且 $T(\boldsymbol{u}-\boldsymbol{v})=T(\boldsymbol{u})-T(\boldsymbol{v})$。
+\item 证明：线性映射 $T:V\to W$ 是单射 $\Leftrightarrow$
+      它把线性无关组映为线性无关组。
+\item 设 $A,B$ 相似。证明：$A^k$ 与 $B^k$ 相似，且 $A+cI$ 与 $B+cI$ 相似。
+\item 证明：不存在线性变换 $T:\Rnum{2}\to\Rnum{3}$ 既是单射又是满射。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 计算机图形学中，屏幕上的图形用齐次坐标 $(x,y,1)$ 表示。
+      查阅资料，说明为什么引入三维齐次坐标后“平移”也能写成矩阵乘法，
+      并写出平移矩阵的形式。
+\item 用 NumPy 对一幅 $8\times 8$ 灰度图像分别施加剪切与投影，
+      观察哪种变换无法恢复原图，并解释原因。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 6 章 特征值与对角化 =====================
+\chapter{特征值、特征向量与对角化}
+\label{ch:eig}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 理解特征值与特征向量的几何含义；
+\item 熟练求特征多项式、特征值与特征向量；
+\item 掌握可对角化的充要条件与对角化步骤；
+\item 会用对角化计算矩阵幂，处理动力系统与马尔可夫链问题。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+特征值\quad 特征向量\quad 特征多项式\\
+代数重数\quad 几何重数\quad 正交对角化\quad 马尔可夫链
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+12 学时（含上机 1 学时）
+\end{multicols}
+\end{chapoutline}
+
+\section{变换中“不变的方向”}
+
+一个线性变换会把大多数向量“掰弯”——改变它们的方向。
+但总有少数特殊方向，变换之后\textbf{方向不变，只被拉伸}。
+
+\begin{defn}{特征值与特征向量}{eig-def}
+设 $A$ 为 $n$ 阶方阵。若存在非零向量 $\boldsymbol{v}$ 与数 $\lambda$ 使
+\[
+A\boldsymbol{v}=\lambda\boldsymbol{v},
+\]
+则称 $\lambda$ 为 $A$ 的\textbf{特征值}，$\boldsymbol{v}$ 为属于 $\lambda$ 的
+\textbf{特征向量}。全体属于 $\lambda$ 的特征向量加上零向量构成
+$\ker(A-\lambda I)$，称为\textbf{特征子空间}。
+\end{defn}
+
+\begin{keypoint}
+\textbf{几何解读：}$A$ 作用在 $\boldsymbol{v}$ 上只是把它伸缩 $\lambda$ 倍。
+$\lambda>0$ 同向拉伸，$\lambda<0$ 反向，$|\lambda|<1$ 压缩，$\lambda=0$ 压到原点。
+因此\textbf{实方阵的实特征向量必然存在当且仅当该变换在某条直线上“只做伸缩”}。
+\end{keypoint}
+
+\begin{exmp}{一个直观例子}{eig-ex1}
+$A=\begin{bmatrix}3&1\\0&2\end{bmatrix}$ 是上三角矩阵。
+直接观察：$A(1,0)^{\mathsf T}=(3,0)^{\mathsf T}=3(1,0)^{\mathsf T}$，
+故 $\lambda_1=3$，$\boldsymbol{v}_1=(1,0)^{\mathsf T}$；
+$A(-1,1)^{\mathsf T}=(-2,2)^{\mathsf T}=2(-1,1)^{\mathsf T}$，
+故 $\lambda_2=2$，$\boldsymbol{v}_2=(-1,1)^{\mathsf T}$。
+\textbf{三角矩阵的特征值就是对角元}——这是一条应当记住的规律。
+\end{exmp}
+
+\begin{lafig}[>=Stealth, line cap=round]{特征向量与普通向量的对比：虚线为特征方向}
+  \draw[line!80, very thin, step=0.5] (-1.6,-1.4) grid (3.2,2.6);
+  \draw[qing!55, line width=0.7pt, ->] (-1.75,0) -- (3.35,0);
+  \draw[qing!55, line width=0.7pt, ->] (0,-1.55) -- (0,2.75);
+  % 特征方向（虚线）
+  \draw[dai!55, dashed, line width=0.9pt] (-1.5,-0.75) -- (3.0,1.5);
+  \draw[zhe!55, dashed, line width=0.9pt] (-0.75,-1.5) -- (1.5,3.0);
+  % 特征向量
+  \draw[dai, line width=1.9pt, ->] (0,0) -- (1.2,0.6)
+     node[midway, above left, xshift=-2pt]{\small $\boldsymbol{v}_1$};
+  \draw[dai!55, line width=1.9pt, ->] (0,0) -- (2.4,1.2)
+     node[right, xshift=1pt]{\small $\lambda_1\boldsymbol{v}_1=2\boldsymbol{v}_1$};
+  \draw[zhe, line width=1.9pt, ->] (0,0) -- (0.5,1.0)
+     node[above left, xshift=1pt]{\small $\boldsymbol{v}_2$};
+  \draw[zhe!55, line width=1.9pt, ->] (0,0) -- (-0.75,-1.5)
+     node[below left, xshift=1pt]{\small $\lambda_2\boldsymbol{v}_2=-1.5\boldsymbol{v}_2$};
+  % 普通向量被掰弯
+  \draw[ink!55, line width=1.5pt, ->] (0,0) -- (1.6,1.6);
+  \draw[ink!35, line width=1.5pt, ->] (0,0) -- (2.1,1.05);
+  \node[font=\footnotesize, color=inkl] at (2.35,-1.0)
+    {普通向量被“掰弯”；特征向量只被伸缩};
+\end{lafig}
+
+\section{特征多项式}
+
+\begin{prop}{求特征值的标准流程}{eig-flow}
+$A\boldsymbol{v}=\lambda\boldsymbol{v}$（$\boldsymbol{v}\neq\boldsymbol{0}$）
+$\Longleftrightarrow(\lambda I-A)\boldsymbol{v}=\boldsymbol{0}$ 有非零解
+$\Longleftrightarrow\det(\lambda I-A)=0$。称
+\[
+p_A(\lambda)=\det(\lambda I-A)
+\]
+为 $A$ 的\textbf{特征多项式}（$n$ 次，首项系数 $1$）。
+\end{prop}
+
+\begin{thm}{特征值的基本量}{eig-quant}
+设 $A$ 的 $n$ 个特征值为 $\lambda_1,\dots,\lambda_n$（计重数），则
+\[
+\lambda_1+\lambda_2+\cdots+\lambda_n=\tr A,\qquad
+\lambda_1\lambda_2\cdots\lambda_n=\det A.
+\]
+因此 $A$ 可逆 $\Leftrightarrow 0$ 不是 $A$ 的特征值。
+\end{thm}
+
+\begin{pf}
+只证 $2$ 阶情形。$p_A(\lambda)=\lambda^2-(a_{11}+a_{22})\lambda+\det A$，
+其两根之和为 $a_{11}+a_{22}=\tr A$，两根之积为 $\det A$。一般情形
+由 $p_A(\lambda)=\lambda^n-\tr A\,\lambda^{n-1}+\cdots+(-1)^n\det A$ 归纳可得。
+\end{pf}
+
+\begin{defn}{代数重数与几何重数}{mult-def}
+$\lambda_0$ 作为 $p_A(\lambda)$ 根的重数称为\textbf{代数重数}；
+特征子空间 $\ker(\lambda_0 I-A)$ 的维数称为\textbf{几何重数}。
+恒有
+\[
+1\le \text{几何重数}\le \text{代数重数}.
+\]
+\end{defn}
+
+\begin{exmp}{几何重数小于代数重数}{mult-ex}
+$A=\begin{bmatrix}2&1\\0&2\end{bmatrix}$：$p_A(\lambda)=(\lambda-2)^2$，
+代数重数为 $2$。但
+$A-2I=\begin{bmatrix}0&1\\0&0\end{bmatrix}$ 的秩为 $1$，
+故几何重数 $=2-1=1<2$。这条“缺口”正是 $A$ 不可对角化的原因。
+\end{exmp}
+
+\begin{prop}{不同特征值的特征向量线性无关}{eig-indep}
+属于\textbf{互不相同}特征值的特征向量必线性无关。
+\end{prop}
+
+\section{对角化}
+
+\begin{defn}{可对角化}{diag-def}
+若存在可逆矩阵 $P$ 使 $P^{-1}AP=D$ 为对角矩阵，则称 $A$ \textbf{可对角化}。
+\end{defn}
+
+\begin{thm}{可对角化的充要条件}{diag-thm}
+$n$ 阶方阵 $A$ 可对角化
+$\Longleftrightarrow$ $A$ 有 $n$ 个线性无关的特征向量
+$\Longleftrightarrow$ 每个特征值的几何重数等于其代数重数。
+此时 $P$ 的各列为特征向量，$D$ 的对角元为相应特征值，即
+\[
+AP=PD,\qquad A=PDP^{-1},\qquad D=P^{-1}AP.
+\]
+\end{thm}
+
+\begin{pf}
+把 $AP=PD$ 按列拆开：$A\boldsymbol{p}_i=\lambda_i\boldsymbol{p}_i$。
+因此 $P$ 可逆且各列为特征向量 $\Leftrightarrow$ 存在 $n$ 个无关特征向量。
+\end{pf}
+
+\begin{keypoint}
+\textbf{对角化三步法：}\quad
+\textbf{第一步}：解 $\det(\lambda I-A)=0$，得全部特征值与各重数；
+\textbf{第二步}：对每个 $\lambda_i$ 解 $(\lambda_i I-A)\boldsymbol{x}=\boldsymbol{0}$，
+得特征子空间的基；
+\textbf{第三步}：把所有特征向量按列排成 $P$，特征值按同样顺序排成 $D$。
+验证 $AP=PD$（比算 $P^{-1}$ 便宜得多）。
+\end{keypoint}
+
+\begin{exmp}{完整的对角化}{diag-ex}
+$A=\begin{bmatrix}1&2\\2&1\end{bmatrix}$。
+\[
+p_A(\lambda)=\det\begin{bmatrix}\lambda-1&-2\\-2&\lambda-1\end{bmatrix}
+=(\lambda-1)^2-4=(\lambda-3)(\lambda+1).
+\]
+$\lambda_1=3$：$(A-3I)=\begin{bmatrix}-2&2\\2&-2\end{bmatrix}$，
+得 $\boldsymbol{p}_1=(1,1)^{\mathsf T}$；
+$\lambda_2=-1$：$(A+I)=\begin{bmatrix}2&2\\2&2\end{bmatrix}$，
+得 $\boldsymbol{p}_2=(1,-1)^{\mathsf T}$。于是
+\[
+P=\begin{bmatrix}1&1\\1&-1\end{bmatrix},\quad
+D=\begin{bmatrix}3&0\\0&-1\end{bmatrix},\quad
+P^{-1}=\tfrac12\begin{bmatrix}1&1\\1&-1\end{bmatrix}.
+\]
+验证 $AP=\begin{bmatrix}3&-1\\3&-1\end{bmatrix}=PD$。\ $\checkmark$
+\end{exmp}
+
+\begin{prop}{矩阵幂的计算}{matpower}
+若 $A=PDP^{-1}$，则
+\[
+A^k=PD^kP^{-1},\qquad
+D^k=\diag(\lambda_1^k,\dots,\lambda_n^k).
+\]
+更一般地，$f(A)=P\,f(D)\,P^{-1}$ 对任意多项式 $f$ 成立。
+\end{prop}
+
+\begin{exmp}{斐波那契数列的封闭公式}{fib}
+斐波那契递推 $F_{k+1}=F_k+F_{k-1}$ 可写成
+$\begin{bmatrix}F_{k+1}\\F_k\end{bmatrix}
+=A\begin{bmatrix}F_k\\F_{k-1}\end{bmatrix}$，
+其中 $A=\begin{bmatrix}1&1\\1&0\end{bmatrix}$。
+$A$ 的特征值为 $\dfrac{1\pm\sqrt5}{2}$（黄金比 $\varphi$ 与 $-1/\varphi$），
+于是
+\[
+F_k=\frac{1}{\sqrt5}\left[\Big(\frac{1+\sqrt5}{2}\Big)^{k}
+-\Big(\frac{1-\sqrt5}{2}\Big)^{k}\right].
+\]
+一个整数数列竟由两个无理数精确描述——这是对角化最令人惊讶的应用之一。
+\end{exmp}
+
+\begin{remk}{不是所有方阵都能对角化}{not-all-diag}
+实\textbf{对称}矩阵一定可对角化（见下节）；
+一般实方阵未必：若某个特征值的几何重数小于代数重数，
+线性无关特征向量不够 $n$ 个，就“缺一不可”。
+补救办法是若尔当标准形或 Schur 分解，本讲义不展开，
+但应记住：\textbf{缺的从来不是特征值，而是特征向量的个数}。
+\end{remk}
+
+\begin{lafig}[>=Stealth, line cap=round]{对角化的几何：在特征基下，同一变换只是“沿两条特征轴的独立拉伸”}
+  % ============ 左：标准基下的 A ============
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (1.9,2.55) {标准基下：$A=\begin{bmatrix}2&1\\ 1&2\end{bmatrix}$};
+    \draw[line!85, very thin, step=0.5] (-1.8,-1.6) grid (2.2,2.0);
+    \begin{scope}
+      \clip (-2.0,-1.75) rectangle (2.35,2.15);
+      \begin{scope}[cm={2,1,1,2,(0,0)}]
+        \foreach \i in {-1,0,1}{\draw[qing!38, line width=0.6pt] (\i,-0.9) -- (\i,1.1);}
+        \foreach \j in {0,1}{\draw[qing!38, line width=0.6pt] (-0.9,\j) -- (1.1,\j);}
+        \fill[qing!10] (0,0) rectangle (1,1);
+        \draw[qing, line width=1.1pt] (0,0) rectangle (1,1);
+      \end{scope}
+    \end{scope}
+    \draw[qing!45, line width=0.7pt, ->] (-2.0,0) -- (2.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.8) -- (0,2.2);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.9,-1.95)
+      {方形被拉伸的同时发生歪斜};
+  \end{scope}
+  % ============ 中：特征方向 ============
+  \begin{scope}[xshift=6.6cm]
+    \node[font=\small\sffamily, color=zhe] at (1.9,2.55) {特征方向：$\boldsymbol{u}_1,\boldsymbol{u}_2$};
+    \draw[line!85, very thin, step=0.5] (-1.8,-1.6) grid (2.2,2.0);
+    \draw[qing!45, line width=0.7pt, ->] (-2.0,0) -- (2.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.8) -- (0,2.2);
+    \draw[zhe, line width=1.6pt, ->] (-1.5,-1.5) -- (1.7,1.7)
+      node[pos=0.86, above right, xshift=-2pt, inner sep=1pt]{\small $\boldsymbol{u}_1$};
+    \draw[dai, line width=1.6pt, ->] (-1.7,1.7) -- (1.5,-1.5)
+      node[pos=0.86, below right, xshift=-2pt, inner sep=1pt]{\small $\boldsymbol{u}_2$};
+    \node[font=\footnotesize, color=zhe] at (2.0,1.35) {$\lambda_1=3$};
+    \node[font=\footnotesize, color=dai] at (2.0,-1.30) {$\lambda_2=1$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.9,-1.95)
+      {两条互相垂直的“不变方向”};
+  \end{scope}
+  % ============ 右：特征基下 ============
+  \begin{scope}[xshift=13.2cm]
+    \node[font=\small\sffamily, color=dai] at (1.9,2.55) {特征基下：$D=\diag(3,1)$};
+    \draw[line!85, very thin, step=0.5] (-1.8,-1.6) grid (2.2,2.0);
+    \begin{scope}[rotate=45]
+      \foreach \i in {-1,0,1,2}{\draw[dai!40, line width=0.6pt] (0.5*\i,-1.3) -- (0.5*\i,1.3);}
+      \foreach \j in {-1,0,1}{\draw[dai!40, line width=0.6pt] (-1.6,0.5*\j) -- (1.6,0.5*\j);}
+      \fill[dai!14] (0,0) rectangle (1.5,0.5);
+      \draw[dai, line width=1.1pt] (0,0) rectangle (1.5,0.5);
+    \end{scope}
+    \draw[qing!45, line width=0.7pt, ->] (-2.0,0) -- (2.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.8) -- (0,2.2);
+    \node[font=\footnotesize\sffamily, color=inkl] at (1.9,-1.95)
+      {沿特征轴纯拉伸（$3$ 倍与 $1$ 倍）：无歪斜};
+  \end{scope}
+\end{lafig}
+
+\section{实对称矩阵的正交对角化}
+
+\begin{thm}{谱定理}{spectral}
+设 $A$ 为实对称矩阵，则
+\begin{enumerate}[label=(\arabic*), itemsep=1pt]
+\item $A$ 的特征值全为实数；
+\item 不同特征值的特征向量相互正交；
+\item 存在\textbf{正交}矩阵 $Q$（$Q^{\mathsf T}Q=I$）使
+      $Q^{\mathsf T}AQ=D$ 为对角矩阵。
+\end{enumerate}
+\end{thm}
+
+\begin{pfsketch}
+只证 (2)。设 $A\boldsymbol{u}=\lambda\boldsymbol{u}$，
+$A\boldsymbol{v}=\mu\boldsymbol{v}$，$\lambda\neq\mu$。由对称性
+\[
+\lambda\,\boldsymbol{u}^{\mathsf T}\boldsymbol{v}
+=(A\boldsymbol{u})^{\mathsf T}\boldsymbol{v}
+=\boldsymbol{u}^{\mathsf T}A\boldsymbol{v}
+=\mu\,\boldsymbol{u}^{\mathsf T}\boldsymbol{v},
+\]
+故 $(\lambda-\mu)\boldsymbol{u}^{\mathsf T}\boldsymbol{v}=0$，
+即 $\boldsymbol{u}\perp\boldsymbol{v}$。(3) 的证明需要格拉姆—施密特正交化，
+见第七章。
+\end{pfsketch}
+
+\begin{keypoint}{对称矩阵的对角化流程}{sym-steps}
+\textbf{①} 求全部特征值；\textbf{②} 对每个特征值求特征向量；
+\textbf{③} 同一特征值内的特征向量用格拉姆—施密特正交化并单位化；
+\textbf{④} 把单位正交特征向量按列排成 $Q$。
+\end{keypoint}
+
+\begin{exmp}{正交对角化}{sym-ex}
+$A=\begin{bmatrix}2&1\\1&2\end{bmatrix}$，
+$p_A(\lambda)=(\lambda-1)(\lambda-3)$。
+$\lambda=1$：$\boldsymbol{u}_1=\frac{1}{\sqrt2}(1,-1)^{\mathsf T}$；
+$\lambda=3$：$\boldsymbol{u}_2=\frac{1}{\sqrt2}(1,1)^{\mathsf T}$。二者已正交，故
+\[
+Q=\frac{1}{\sqrt2}\begin{bmatrix}1&1\\-1&1\end{bmatrix},
+\qquad
+Q^{\mathsf T}AQ=\begin{bmatrix}1&0\\0&3\end{bmatrix}.
+\]
+几何上：先把坐标轴转到特征方向，再分别缩放 $1$ 倍与 $3$ 倍。
+\end{exmp}
+
+\section{应用一：离散动力系统}
+
+\begin{thm}{迭代与主特征值}{dynamical}
+设 $A$ 可对角化，$A=PDP^{-1}$，考察迭代 $\boldsymbol{x}_{k}=A^k\boldsymbol{x}_0$。
+记 $\lambda_1$ 为模最大的特征值（\textbf{主特征值}），则
+\[
+\boldsymbol{x}_k=c_1\lambda_1^k\boldsymbol{p}_1
++c_2\lambda_2^k\boldsymbol{p}_2+\cdots+c_n\lambda_n^k\boldsymbol{p}_n,
+\]
+当 $|\lambda_1|>|\lambda_j|\ (j\ge2)$ 时，
+\[
+\frac{\boldsymbol{x}_k}{\lambda_1^{k}}\longrightarrow c_1\boldsymbol{p}_1
+\qquad(k\to\infty).
+\]
+即：\textbf{无论初值如何，迭代最终都“躺”在主特征方向上}。
+\end{thm}
+
+\begin{lafig}[>=Stealth, line cap=round]{迭代序列收敛到主特征方向（幂法的原理）}
+  \draw[line!80, very thin, step=0.5] (-1.3,-1.3) grid (3.0,2.2);
+  \draw[qing!55, line width=0.7pt, ->] (-1.45,0) -- (3.15,0);
+  \draw[qing!55, line width=0.7pt, ->] (0,-1.45) -- (0,2.35);
+  \draw[dai!45, dashed, line width=0.9pt] (-1.2,-0.4) -- (2.85,0.95);
+  % 迭代点列
+  \fill[qing]  (0.55,0.85)  circle (2.2pt);
+  \fill[qing]  (1.05,0.62)  circle (2.2pt);
+  \fill[qing]  (1.45,0.62)  circle (2.2pt);
+  \fill[qing]  (1.8,0.70)   circle (2.2pt);
+  \fill[qing]  (2.1,0.78)   circle (2.2pt);
+  \draw[qing!60, line width=0.8pt] (0.55,0.85) -- (1.05,0.62) -- (1.45,0.62)
+      -- (1.8,0.70) -- (2.1,0.78);
+  \node[qing] at (0.32,1.02) {\small $\boldsymbol{x}_0$};
+  \node[qing] at (2.35,1.02) {\small $\boldsymbol{x}_5$};
+  \draw[dai, line width=1.7pt, ->] (0,0) -- (2.55,0.85)
+     node[right, xshift=2pt]{\small $\boldsymbol{p}_1$};
+  \node[font=\footnotesize, color=inkl] at (0.9,-1.05)
+    {$\boldsymbol{x}_{k}=A^k\boldsymbol{x}_0$ 逐步靠近主特征方向};
+\end{lafig}
+
+\begin{keypoint}{幂法：求主特征值的实用算法}{power-method}
+任取非零 $\boldsymbol{x}_0$，反复计算 $\boldsymbol{x}_{k+1}=A\boldsymbol{x}_k
+/\norm{A\boldsymbol{x}_k}$。归一化的目的是防止溢出。
+收敛后 $\boldsymbol{x}_k\approx\pm\boldsymbol{p}_1$，
+且 $\norm{A\boldsymbol{x}_k}\approx|\lambda_1|$。
+这是许多大规模特征值算法（如 PageRank）的原型。
+\end{keypoint}
+
+\section{应用二：马尔可夫链}
+
+\begin{defn}{转移矩阵}{markov}
+若矩阵 $P\ge 0$ 且每列（或每行）元素之和为 $1$，则称 $P$ 为\textbf{随机矩阵}。
+以 $P$ 为转移规则的系统称为\textbf{马尔可夫链}。
+\end{defn}
+
+\begin{thm}{平稳分布的存在性}{stationary}
+设 $P$ 为 $n$ 阶随机矩阵且存在 $k$ 使 $P^k>0$（所有元素为正），
+则 $\lambda=1$ 是 $P$ 的特征值且为单根，其余特征值满足 $|\lambda|<1$；
+对应的特征向量（归一化后分量非负、总和为 $1$）称为\textbf{平稳分布} $\boldsymbol{\pi}$，
+满足
+\[
+P\boldsymbol{\pi}=\boldsymbol{\pi},
+\qquad
+P^k\boldsymbol{x}_0\to\boldsymbol{\pi}\quad(k\to\infty).
+\]
+\end{thm}
+
+\begin{exmp}{三城市人口迁移}{markov-ex}
+某地区每年人口在城市 A、B、乡村 C 之间迁移，转移概率（列表示迁出地）：
+\[
+P=\begin{bmatrix}
+0.85 & 0.05 & 0.10\\
+0.05 & 0.90 & 0.05\\
+0.10 & 0.05 & 0.85
+\end{bmatrix},
+\qquad \boldsymbol{x}_{k+1}=P\,\boldsymbol{x}_k.
+\]
+解 $P\boldsymbol{\pi}=\boldsymbol{\pi}$ 且 $\pi_1+\pi_2+\pi_3=1$，
+得 $\boldsymbol{\pi}=(0.375,\ 0.375,\ 0.25)^{\mathsf T}$。
+无论初始人口分布如何，长期来看 A、B 各占 $37.5\%$，C 占 $25\%$。
+\textbf{这就是“平衡态”的代数含义。}
+\end{exmp}
+
+\begin{remk}{谷歌的 PageRank 是一条巨大的马尔可夫链}{pagerank}
+把网页看作状态、超链接看作转移，则“网页重要性”就是随机矩阵的
+平稳分布——也就是 $\lambda=1$ 的特征向量。
+一个 $10^{10}$ 阶的特征值问题，催生了本世纪最有影响的线性代数应用。
+\end{remk}
+
+\begin{remk}{$\triangleright$ 上机：NumPy 求特征值}{eig-code}
+{\small\ttfamily
+import numpy as np\\
+w, v = np.linalg.eig(A)\ \ \# w: eigenvalues, v: eigenvectors\\
+np.allclose(A @ v, v * w)}
+\par\smallskip
+\noindent 对称矩阵请改用 \texttt{np.linalg.eigh}：更快，且保证返回实特征值与正交特征向量。
+\end{remk}
+
+\begin{sidebar}{希尔伯特、庞加莱与“谱”这个词}
+“spectrum”（谱）原是物理学词汇：一束光经棱镜分出的颜色系列。
+把一个算子的全体特征值称为它的谱，源于希尔伯特在积分方程方面的工作
+（1904—1910）。这一命名极为贴切：对自伴算子而言，
+特征值确实像光谱一样，是对象的“指纹”——
+知道了谱，就知道了算子在各特征方向上的全部伸缩行为。
+庞加莱在天体力学中、柯尔莫哥洛夫在概率论中，
+都各自独立地把“谱”推向了应用的核心。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item $A\boldsymbol{v}=\lambda\boldsymbol{v}$：方向不变，只被伸缩。
+\item 特征值由 $\det(\lambda I-A)=0$ 确定。
+\item $\sum\lambda_i=\tr A$，$\prod\lambda_i=\det A$。
+\item 几何重数 $\le$ 代数重数。
+\item 可对角化 $\Leftrightarrow$ 有 $n$ 个无关特征向量 $\Leftrightarrow$ 重数处处相等。
+\item $A^k=PD^kP^{-1}$，这是算矩阵幂的捷径。
+\item 实对称矩阵必可正交对角化，特征向量自动正交。
+\item 迭代终态由主特征值决定；马尔可夫链的平稳分布是 $\lambda=1$ 的特征向量。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 求下列矩阵的特征值与全部特征向量：
+      \[ \begin{bmatrix}4&1\\2&3\end{bmatrix},\qquad
+         \begin{bmatrix}1&-1\\1&3\end{bmatrix},\qquad
+         \begin{bmatrix}0&0&1\\0&1&0\\1&0&0\end{bmatrix}. \]
+\item 判断上题中哪些矩阵可对角化，能对角化的写出 $P,D$。
+\item 设 $A=\begin{bmatrix}1&2\\2&1\end{bmatrix}$，用对角化计算 $A^{10}$。
+\item 已知 $A$ 为 $3$ 阶方阵，$\tr A=5$，$\det A=-6$，且有一个特征值为 $3$，
+      求另外两个特征值。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：$A$ 与 $A^{\mathsf T}$ 有相同的特征值。
+\item 证明：若 $A^2=A$（幂等矩阵），则 $A$ 的特征值只能是 $0$ 或 $1$，
+      且 $A$ 必可对角化。
+\item 证明：属于不同特征值的特征向量线性无关（用归纳法）。
+\item 设 $A$ 为实对称矩阵。证明：$A$ 正定 $\Leftrightarrow$ 全部特征值大于零。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 用幂法编程求
+      $A=\begin{bmatrix}4&1&0\\1&3&1\\0&1&2\end{bmatrix}$ 的主特征值与主特征向量，
+      迭代 20 步，并与 \texttt{numpy.linalg.eig} 的结果比较。
+\item 构造一个 $4$ 状态的马尔可夫链（如“晴天—多云—小雨—大雨”），
+      求其平稳分布，并说明初值对终态的影响。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 7 章 内积、正交性与最小二乘 =====================
+\chapter{内积、正交性与最小二乘}
+\label{ch:ortho}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 掌握内积、范数、正交的概念与几何意义；
+\item 熟练使用格拉姆—施密特正交化并理解 QR 分解；
+\item 掌握正交投影公式，会推导并使用最小二乘法；
+\item 理解“正交 $=$ 计算最省力”这一数值观点。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+内积\quad 范数\quad 正交基\quad 施密特正交化\\
+正交投影\quad 最小二乘\quad QR 分解\quad 法方程
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+12 学时（含上机 1 学时）
+\end{multicols}
+\end{chapoutline}
+
+\section{内积与范数}
+
+\begin{defn}{内积与范数}{inner}
+对 $\boldsymbol{u},\boldsymbol{v}\in\Rnum{n}$，定义
+\[
+\ip{\boldsymbol{u}}{\boldsymbol{v}}
+=\boldsymbol{u}^{\mathsf T}\boldsymbol{v}
+=u_1v_1+u_2v_2+\cdots+u_nv_n,
+\qquad
+\norm{\boldsymbol{v}}=\sqrt{\ip{\boldsymbol{v}}{\boldsymbol{v}}}.
+\]
+$\norm{\boldsymbol{v}}$ 称为 $\boldsymbol{v}$ 的\textbf{长度}（欧氏范数）。
+若 $\ip{\boldsymbol{u}}{\boldsymbol{v}}=0$，则称 $\boldsymbol{u}$ 与 $\boldsymbol{v}$
+\textbf{正交}，记作 $\boldsymbol{u}\perp\boldsymbol{v}$。
+\end{defn}
+
+\begin{prop}{柯西—施瓦茨不等式与三角不等式}{cauchy}
+\[
+\abs{\ip{\boldsymbol{u}}{\boldsymbol{v}}}\le\norm{\boldsymbol{u}}\,\norm{\boldsymbol{v}},
+\qquad
+\norm{\boldsymbol{u}+\boldsymbol{v}}\le\norm{\boldsymbol{u}}+\norm{\boldsymbol{v}}.
+\]
+由此可定义两向量的夹角
+$\cos\theta=\dfrac{\ip{\boldsymbol{u}}{\boldsymbol{v}}}{\norm{\boldsymbol{u}}\norm{\boldsymbol{v}}}$。
+\end{prop}
+
+\begin{prop}{勾股定理的推广}{pythagoras}
+若 $\boldsymbol{u}\perp\boldsymbol{v}$，则
+$\norm{\boldsymbol{u}+\boldsymbol{v}}^2=\norm{\boldsymbol{u}}^2+\norm{\boldsymbol{v}}^2$。
+更一般地，对两两正交的 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_k$，
+\[
+\norm{c_1\boldsymbol{v}_1+\cdots+c_k\boldsymbol{v}_k}^2
+=c_1^2\norm{\boldsymbol{v}_1}^2+\cdots+c_k^2\norm{\boldsymbol{v}_k}^2.
+\]
+\end{prop}
+
+\section{正交基与格拉姆—施密特正交化}
+
+\begin{defn}{正交基与标准正交基}{orthobasis}
+若 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_k$ 两两正交且均非零，则称其为
+\textbf{正交组}；若进一步均单位化，则称\textbf{标准正交组}（orthonormal）。
+若它们还张成子空间 $W$，则称为 $W$ 的\textbf{正交基}（或标准正交基）。
+\end{defn}
+
+\begin{prop}{标准正交基下坐标无须解方程}{easy-coord}
+设 $\{\boldsymbol{q}_1,\dots,\boldsymbol{q}_k\}$ 是 $W$ 的标准正交基，
+$\boldsymbol{w}\in W$，则
+\[
+\boldsymbol{w}=\ip{\boldsymbol{w}}{\boldsymbol{q}_1}\boldsymbol{q}_1
++\cdots+\ip{\boldsymbol{w}}{\boldsymbol{q}_k}\boldsymbol{q}_k,
+\]
+即坐标就是\textbf{逐个作内积}，无须解任何线性方程组。
+这就是“正交 $=$ 计算最省力”的含义。
+\end{prop}
+
+\begin{thm}{格拉姆—施密特正交化}{gram-schmidt}
+设 $\boldsymbol{v}_1,\dots,\boldsymbol{v}_k$ 线性无关。令
+\[
+\boldsymbol{u}_1=\boldsymbol{v}_1,\qquad
+\boldsymbol{u}_j=\boldsymbol{v}_j-\sum_{i=1}^{j-1}
+\frac{\ip{\boldsymbol{v}_j}{\boldsymbol{u}_i}}{\ip{\boldsymbol{u}_i}{\boldsymbol{u}_i}}
+\,\boldsymbol{u}_i\quad(j=2,\dots,k),
+\]
+则 $\boldsymbol{u}_1,\dots,\boldsymbol{u}_k$ 两两正交且与原组张成同一子空间。
+再令 $\boldsymbol{q}_j=\boldsymbol{u}_j/\norm{\boldsymbol{u}_j}$ 即得标准正交基。
+\end{thm}
+
+\begin{remk}{几何图像：逐次“减去影子”}{gs-geo}
+$\boldsymbol{u}_j$ 的构造就是\textbf{把 $\boldsymbol{v}_j$ 中已经属于
+$\Span\{\boldsymbol{u}_1,\dots,\boldsymbol{u}_{j-1}\}$ 的分量减掉}，
+只留下与已有方向都垂直的“新方向”。
+数值上应使用“改进版”（每步立即归一化或做两次正交化）以减小误差累积。
+\end{remk}
+
+\begin{exmp}{三向量正交化}{gs-ex}
+$\boldsymbol{v}_1=(1,1,0)^{\mathsf T}$，
+$\boldsymbol{v}_2=(1,0,1)^{\mathsf T}$，$\boldsymbol{v}_3=(-1,0,0)^{\mathsf T}$。
+\[
+\boldsymbol{u}_1=(1,1,0)^{\mathsf T},
+\]
+\[
+\boldsymbol{u}_2=\boldsymbol{v}_2-\frac{\ip{\boldsymbol{v}_2}{\boldsymbol{u}_1}}
+{\norm{\boldsymbol{u}_1}^{2}}\boldsymbol{u}_1
+=(1,0,1)^{\mathsf T}-\frac{1}{2}(1,1,0)^{\mathsf T}
+=\Big(\tfrac12,-\tfrac12,1\Big)^{\mathsf T},
+\]
+\[
+\boldsymbol{u}_3=\boldsymbol{v}_3
+-\frac{\ip{\boldsymbol{v}_3}{\boldsymbol{u}_1}}{\norm{\boldsymbol{u}_1}^{2}}\boldsymbol{u}_1
+-\frac{\ip{\boldsymbol{v}_3}{\boldsymbol{u}_2}}{\norm{\boldsymbol{u}_2}^{2}}\boldsymbol{u}_2
+=(-1,0,0)^{\mathsf T}+\tfrac12\boldsymbol{u}_1+\tfrac13\boldsymbol{u}_2
+=\Big(-\tfrac13,\tfrac13,\tfrac13\Big)^{\mathsf T}.
+\]
+三个 $\boldsymbol{u}$ 两两正交（可逐一验证内积为零），
+单位化后即得 $\Rnum{3}$ 的一组标准正交基。
+\end{exmp}
+
+\begin{lafig}[>=Stealth, line cap=round]{格拉姆—施密特正交化的两步：减去沿 $\boldsymbol{u}_1$
+的投影得到 $\boldsymbol{u}_2$，再减去沿前两个方向的投影得到 $\boldsymbol{u}_3$}
+  % ============ 左：第二步 ============
+  \begin{scope}
+    \node[font=\small\sffamily, color=qing] at (2.0,2.65) {第二步：从 $\boldsymbol{v}_2$ 中“扣除” $\boldsymbol{u}_1$ 方向};
+    \draw[qing!45, line width=0.7pt, ->] (-2.2,0) -- (3.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.35) -- (0,2.1);
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (2.8,0.7)
+      node[pos=0.62, below, yshift=-2pt]{\small $\boldsymbol{u}_1$};
+    \draw[zhe, line width=1.5pt, ->] (0,0) -- (1.1,1.75)
+      node[pos=0.62, left, xshift=-2pt]{\small $\boldsymbol{v}_2$};
+    % 投影
+    \coordinate (P) at (0.66,0.165);
+    \draw[ink!55, dashed, line width=0.7pt] (1.1,1.75) -- (P);
+    \draw[ink!70, line width=0.6pt] (P) ++(0.1,0.08) -- ++(-0.12,0.096);
+    \draw[qing, line width=1.5pt, ->] (P) -- (1.1,1.75)
+      node[midway, left, xshift=-2pt, inner sep=1pt]{\small $\boldsymbol{u}_2$};
+    \node[font=\footnotesize, color=inkl, below right, xshift=-3pt, yshift=-1pt] at (P)
+      {\small $\proj\nolimits_{W}\boldsymbol{v}_2$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (2.0,-1.75)
+      {扣除后 $\boldsymbol{u}_2\perp\boldsymbol{u}_1$，张成空间不变};
+  \end{scope}
+  % ============ 右：直角化过程 ============
+  \begin{scope}[xshift=8.6cm]
+    \node[font=\small\sffamily, color=qing] at (2.0,2.65) {逐步“扶正”：任意基 $\to$ 正交基};
+    \draw[qing!45, line width=0.7pt, ->] (-2.2,0) -- (3.4,0);
+    \draw[qing!45, line width=0.7pt, ->] (0,-1.35) -- (0,2.1);
+    % 原始斜向量
+    \draw[ink!40, line width=1.1pt, ->] (0,0) -- (1.9,1.15)
+      node[pos=0.75, above, xshift=2pt, inner sep=1pt]{\small $\boldsymbol{v}_1$};
+    \draw[ink!40, line width=1.1pt, ->] (0,0) -- (0.75,1.85)
+      node[pos=0.75, left, xshift=-1pt, inner sep=1pt]{\small $\boldsymbol{v}_2$};
+    \draw[ink!40, line width=1.1pt, ->] (0,0) -- (2.15,-0.75)
+      node[pos=0.7, below, xshift=2pt, inner sep=1pt]{\small $\boldsymbol{v}_3$};
+    % 正交化后
+    \draw[dai, line width=1.6pt, ->] (0,0) -- (2.2,0.55)
+      node[pos=0.7, below right, xshift=-2pt, inner sep=1pt]{\small $\boldsymbol{u}_1$};
+    \draw[zhe, line width=1.6pt, ->] (0,0) -- (-0.5,1.9)
+      node[pos=0.72, left, xshift=-1pt, inner sep=1pt]{\small $\boldsymbol{u}_2$};
+    \draw[qing, line width=1.6pt, ->] (0,0) -- (-0.85,-0.55)
+      node[pos=0.75, below left, xshift=2pt, inner sep=1pt]{\small $\boldsymbol{u}_3$};
+    % 直角记号
+    \draw[ink!55, line width=0.55pt] (0.34,0.085) -- (0.30,0.22) -- (-0.04,0.135);
+    \node[font=\footnotesize\sffamily, color=inkl] at (2.0,-1.75)
+      {灰色为原始向量，彩色为正交化结果};
+  \end{scope}
+\end{lafig}
+
+\begin{keypoint}
+正交化的本质是\textbf{“逐步扣除旧方向上的分量”}：每得到一个新方向，
+就把前面所有方向上的投影一并减掉，剩下的部分自然与它们全部垂直。
+扣除的只是“表示方式”，$\Span\{\boldsymbol{u}_1,\dots,\boldsymbol{u}_k\}
+=\Span\{\boldsymbol{v}_1,\dots,\boldsymbol{v}_k\}$ 始终不变——
+所以正交化是\textbf{换基}，不是换空间。
+数值上应使用其改进版本（修正的格拉姆—施密特或 Householder），见附录 A。
+\end{keypoint}
+
+\section{正交投影}
+
+\begin{thm}{正交分解定理}{proj-thm}
+设 $W$ 是 $\Rnum{n}$ 的子空间，$\boldsymbol{b}\in\Rnum{n}$。则存在唯一的
+$\widehat{\boldsymbol{b}}\in W$ 与 $\boldsymbol{z}\in W^{\perp}$ 使
+$\boldsymbol{b}=\widehat{\boldsymbol{b}}+\boldsymbol{z}$。
+$\widehat{\boldsymbol{b}}$ 称为 $\boldsymbol{b}$ 在 $W$ 上的\textbf{正交投影}。
+\end{thm}
+
+\begin{prop}{投影公式}{proj-formula}
+若 $\{\boldsymbol{q}_1,\dots,\boldsymbol{q}_k\}$ 是 $W$ 的标准正交基，则
+\[
+\widehat{\boldsymbol{b}}
+=\ip{\boldsymbol{b}}{\boldsymbol{q}_1}\boldsymbol{q}_1+\cdots+
+  \ip{\boldsymbol{b}}{\boldsymbol{q}_k}\boldsymbol{q}_k.
+\]
+若 $A$ 的列构成 $W$ 的一组（不必正交的）基，则
+\[
+\widehat{\boldsymbol{b}}=A(A^{\mathsf T}A)^{-1}A^{\mathsf T}\boldsymbol{b}.
+\]
+\end{prop}
+
+\begin{lafig}[>=Stealth, line cap=round]{正交投影：$\boldsymbol{b}$ 在子空间 $W$ 上的“影子” $\widehat{\boldsymbol{b}}$，
+误差向量 $\boldsymbol{b}-\widehat{\boldsymbol{b}}$ 垂直于 $W$}
+  \fill[qing!14] (-2.6,-1.64) -- (2.6,1.64) -- (2.6,1.46) -- (-2.6,-1.46) -- cycle;
+  \draw[qing!55, line width=0.9pt] (-2.75,-1.64) -- (2.75,1.64);
+  \node[qing, font=\small\sffamily] at (-1.85,1.35) {子空间 $W$};
+  \draw[->, qing!55, line width=0.7pt] (-2.6,0) -- (2.7,0);
+  \draw[->, qing!55, line width=0.7pt] (0,-1.55) -- (0,1.6);
+  % 投影
+  \coordinate (B) at (1.7,2.2);
+  \coordinate (H) at (1.7,1.015);
+  \draw[zhe, line width=1.9pt, ->] (0,0) -- (B)
+     node[right, xshift=2pt]{\small $\boldsymbol{b}$};
+  \draw[dai, line width=1.9pt, ->] (0,0) -- (H)
+     node[midway, below right, xshift=-2pt, yshift=1pt]{\small $\widehat{\boldsymbol{b}}$};
+  \draw[ink!55, dashed, line width=1.1pt] (B) -- (H);
+  \node[font=\footnotesize, color=inkl] at (2.55,1.65) {$\boldsymbol{b}-\widehat{\boldsymbol{b}}$};
+  \draw[dai, line width=0.9pt] (1.7,1.115) -- (1.8,1.095) -- (1.8,0.995);
+  % 误差垂直记号
+  \draw[->, ink!45, line width=0.9pt] (-0.9,-1.2) -- (-0.9,-0.7);
+  \node[font=\footnotesize, color=inkl] at (-0.85,-1.45)
+    {$\boldsymbol{b}-\widehat{\boldsymbol{b}}\ \perp\ W$};
+\end{lafig}
+
+\begin{keypoint}
+\textbf{投影的最优性：}在 $W$ 的所有向量中，
+$\widehat{\boldsymbol{b}}$ 是离 $\boldsymbol{b}$ 最近的那个，
+且 $\norm{\boldsymbol{b}-\widehat{\boldsymbol{b}}}
+\le\norm{\boldsymbol{b}-\boldsymbol{w}}$ 对一切 $\boldsymbol{w}\in W$ 成立。
+这一句话就是整个最小二乘法的理论基础。
+\end{keypoint}
+
+\section{最小二乘法}
+
+实际数据往往“没有解”。设 $A\in\R{m\times n}$（$m>n$），
+方程组 $A\boldsymbol{x}=\boldsymbol{b}$ 通常无解——
+$\boldsymbol{b}$ 不在列空间里。我们退而求其次：\textbf{找使残差最小的 $\boldsymbol{x}$}。
+
+\begin{defn}{最小二乘问题}{ls-def}
+求 $\widehat{\boldsymbol{x}}$ 使
+\[
+\norm{A\boldsymbol{x}-\boldsymbol{b}}\ \text{达到最小}.
+\]
+\end{defn}
+
+\begin{thm}{法方程}{normal-eq}
+$\widehat{\boldsymbol{x}}$ 是最小二乘解
+$\Longleftrightarrow A\boldsymbol{x}=\boldsymbol{b}$ 的残差
+$\boldsymbol{b}-A\widehat{\boldsymbol{x}}$ 垂直于 $\Col(A)$
+$\Longleftrightarrow$
+\[
+A^{\mathsf T}A\,\widehat{\boldsymbol{x}}=A^{\mathsf T}\boldsymbol{b}.
+\]
+当 $A$ 各列线性无关时 $A^{\mathsf T}A$ 可逆，解唯一：
+$\widehat{\boldsymbol{x}}=(A^{\mathsf T}A)^{-1}A^{\mathsf T}\boldsymbol{b}$。
+\end{thm}
+
+\begin{pf}
+残差 $\boldsymbol{r}=\boldsymbol{b}-A\widehat{\boldsymbol{x}}$ 垂直于 $\Col(A)$
+等价于 $\boldsymbol{r}\in\Nul(A^{\mathsf T})$，
+即 $A^{\mathsf T}(\boldsymbol{b}-A\widehat{\boldsymbol{x}})=\boldsymbol{0}$，
+整理即得法方程。
+\end{pf}
+
+\begin{exmp}{直线拟合}{ls-fit}
+测得四组数据 $(-1,0),(0,1),(1,2),(2,4)$，拟合 $y=mx+c$。
+设计矩阵与观测向量：
+\[
+A=\begin{bmatrix}-1&1\\0&1\\1&1\\2&1\end{bmatrix},\qquad
+\boldsymbol{b}=\begin{bmatrix}0\\1\\2\\4\end{bmatrix}.
+\]
+计算 $A^{\mathsf T}A=\begin{bmatrix}6&2\\2&4\end{bmatrix}$，
+$A^{\mathsf T}\boldsymbol{b}=\begin{bmatrix}10\\7\end{bmatrix}$。
+解法方程
+$\begin{bmatrix}6&2\\2&4\end{bmatrix}\widehat{\boldsymbol{x}}
+=\begin{bmatrix}10\\7\end{bmatrix}$
+得 $\widehat{\boldsymbol{x}}=(6/5,\,23/20)^{\mathsf T}$，即
+\[
+\widehat{y}=1.2\,x+1.15.
+\]
+残差平方和为 $\norm{A\widehat{\boldsymbol{x}}-\boldsymbol{b}}^2=0.45$。
+\begin{lafig}[>=Stealth, line cap=round]{最小二乘直线拟合：不要求穿过每个点，只要求残差平方和最小}
+  \begin{axis}[
+      width=0.86\textwidth, height=4.9cm,
+      axis lines=left, axis line style={qing!55, line width=0.7pt},
+      xmin=-1.6, xmax=2.7, ymin=-0.5, ymax=4.9,
+      xtick={-1,0,1,2}, ytick={0,1,2,3,4},
+      tick label style={font=\footnotesize, color=inkl},
+      label style={font=\small, color=ink},
+      xlabel={$x$}, ylabel={$y$},
+      grid=major, grid style={line!70, very thin},
+    ]
+    \addplot[only marks, mark=*, mark size=1.9pt, color=dai!85] coordinates
+      {(-1,0) (0,1) (1,2) (2,4)};
+    \addplot[zhe, domain=-1.5:2.5, samples=2, line width=1.5pt] {1.2*x+1.15};
+    \node[font=\footnotesize, color=zhe, anchor=west] at (axis cs:-1.35,0.55) {$\widehat{y}=1.2x+1.15$};
+  \end{axis}
+\end{lafig}
+\end{exmp}
+
+\begin{remk}{为什么叫“最小二乘”}{why-ls}
+因为目标函数是\textbf{残差的平方}之和。
+用平方而非绝对值，好处是可导、有唯一解、且与正交投影的几何天然契合；
+代价是对离群点（outlier）非常敏感。
+实践中常用加权最小二乘或鲁棒回归来缓解。
+\end{remk}
+
+\section{QR 分解}
+
+\begin{thm}{QR 分解}{qr}
+设 $A\in\R{m\times n}$（$m\ge n$）各列线性无关。则存在
+$Q\in\R{m\times n}$（各列为标准正交组）与上三角矩阵 $R\in\R{n\times n}$ 使
+\[
+A=QR.
+\]
+对 $A$ 的各列做格拉姆—施密特正交化即得 $Q$；
+$R$ 的元素恰为正交化过程中减去的系数与各 $\boldsymbol{u}_j$ 的长度。
+\end{thm}
+
+\begin{prop}{用 QR 解最小二乘}{qr-ls}
+把 $A=QR$ 代入法方程：
+\[
+A^{\mathsf T}A\widehat{\boldsymbol{x}}=A^{\mathsf T}\boldsymbol{b}
+\ \Longrightarrow\
+R\widehat{\boldsymbol{x}}=Q^{\mathsf T}\boldsymbol{b},
+\]
+只需一次回代，\textbf{无须构造 $A^{\mathsf T}A$，也无须求逆}。
+这是数值线性代数推荐的标准做法：
+$A^{\mathsf T}A$ 的条件数是 $A$ 的平方，直接解法方程会放大误差。
+\end{prop}
+
+\begin{remk}{$\triangleright$ 上机：三种解法对比}{ls-code}
+{\small\ttfamily
+import numpy as np\\
+x1 = np.linalg.lstsq(A, b, rcond=None)[0]\\
+Q, R = np.linalg.qr(A)\ \ ; x2 = np.linalg.solve(R, Q.T @ b)\\
+x3 = np.linalg.solve(A.T @ A, A.T @ b)}
+\par\smallskip
+\noindent 三者在理想算术下相同；把 $A$ 的元素乘以 $10^{-6}$ 后再比较，
+会发现 \texttt{x3} 的误差明显更大。
+\end{remk}
+
+\section{应用：傅里叶与正交多项式}
+
+把函数看作“无穷维向量”，正交性的威力立刻放大。取区间 $[-\pi,\pi]$，
+定义 $\ip{f}{g}=\int_{-\pi}^{\pi}f g\,\mathrm{d}x$，则
+$\{1,\cos x,\sin x,\cos 2x,\sin 2x,\dots\}$ 是一组正交基，于是
+\[
+f(x)\approx\frac{a_0}{2}+\sum_{k\ge1}\bigl(a_k\cos kx+b_k\sin kx\bigr),
+\qquad
+a_k=\frac{1}{\pi}\int_{-\pi}^{\pi}f\cos kx\,\mathrm{d}x,
+\]
+系数\textbf{逐个由内积给出}——正是“标准正交基下坐标无须解方程”的无限维版本。
+有限维的对应物是离散余弦变换（DCT），它是 JPEG 压缩的核心。
+
+\begin{sidebar}{勒让德、傅里叶与“函数也是向量”}
+把 $\cos kx$、$\sin kx$ 当作“坐标轴”，把函数当作“向量”——
+这套观点在 1807 年\textbf{傅里叶}提出热传导理论时曾遭到严格质疑
+（拉格朗日就认为任意函数不能这样展开）。
+真正的澄清要等到二十世纪的希尔伯特空间理论。
+有趣的是，\textbf{勒让德}多项式、切比雪夫多项式、厄米特多项式……
+这一整族“正交多项式”，本质上都是在不同内积下做
+格拉姆—施密特正交化的产物。第七章的方法，在无穷维依然成立。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item $\ip{\boldsymbol{u}}{\boldsymbol{v}}=\boldsymbol{u}^{\mathsf T}\boldsymbol{v}$，
+      正交即内积为零。
+\item 标准正交基下坐标 $=$ 逐个内积，无须解方程。
+\item 施密特正交化：逐次减去已有方向上的“影子”。
+\item 投影：$\widehat{\boldsymbol{b}}=A(A^{\mathsf T}A)^{-1}A^{\mathsf T}\boldsymbol{b}$。
+\item 最小二乘 $\Leftrightarrow$ 法方程 $A^{\mathsf T}A\widehat{\boldsymbol{x}}=A^{\mathsf T}\boldsymbol{b}$。
+\item QR 分解后只需 $R\widehat{\boldsymbol{x}}=Q^{\mathsf T}\boldsymbol{b}$。
+\item 数值上优先用 QR，避免 $A^{\mathsf T}A$ 的条件数平方效应。
+\item 正交变换保长度、保角度：$Q^{\mathsf T}Q=I$。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 求 $\boldsymbol{u}=(1,2,2)^{\mathsf T}$ 与
+      $\boldsymbol{v}=(-2,1,0)^{\mathsf T}$ 的内积、夹角，并验证勾股定理。
+\item 用格拉姆—施密特把 $(1,1,1)^{\mathsf T},(1,0,1)^{\mathsf T}$ 正交化并单位化。
+\item 求 $\boldsymbol{b}=(1,2,3)^{\mathsf T}$ 在子空间
+      $W=\Span\{(1,1,0)^{\mathsf T},(0,1,1)^{\mathsf T}\}$
+      上的正交投影。
+\item 用最小二乘法拟合下列数据点：
+      $(-1,4),(0,2),(1,1),(2,1)$，求所得直线。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：若 $Q$ 为正交矩阵，则 $\norm{Q\boldsymbol{x}}=\norm{\boldsymbol{x}}$，
+      且 $(Q\boldsymbol{x})\cdot(Q\boldsymbol{y})=\boldsymbol{x}\cdot\boldsymbol{y}$。
+\item 证明：$(A^{\mathsf T}A)$ 对称，且当 $A$ 各列无关时正定。
+\item 证明：最小二乘解必满足 $\norm{\boldsymbol{b}}^2
+      =\norm{\widehat{\boldsymbol{b}}}^2+\norm{\boldsymbol{b}-\widehat{\boldsymbol{b}}}^2$。
+\item 设 $A=QR$。证明：$\rank A=\rank R$，且 $\abs{\det(A^{\mathsf T}A)}
+      =(\det R)^2$。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 用二次多项式 $y=ax^2+bx+c$ 拟合上题第 4 小题的数据，
+      比较残差平方和，并讨论是否“次数越高越好”。
+\item 实现（或调用）Gram—Schmidt，对一个条件数较大的矩阵做 QR，
+      观察 $Q^{\mathsf T}Q-I$ 的范数；再做“两次正交化”并比较。
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 8 章 二次型与正定矩阵 =====================
+\chapter{二次型与正定矩阵}
+\label{ch:quad}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 把二次齐次式写成矩阵形式 $\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}$；
+\item 掌握配方法与正交变换法化标准形；
+\item 理解惯性定理与合同变换，熟练判定正定性；
+\item 从几何上理解二次曲线、二次曲面与极值问题。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+二次型\quad 标准形\quad 惯性定理\quad 合同\\
+正定\quad 顺序主子式\quad 二次曲面\quad 瑞利商
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+10 学时
+\end{multicols}
+\end{chapoutline}
+
+\section{二次型及其矩阵表示}
+
+\begin{defn}{二次型}{quad-def}
+含 $n$ 个变量的\textbf{二次齐次多项式}
+\[
+f(x_1,\dots,x_n)=\sum_{i=1}^{n}\sum_{j=1}^{n}a_{ij}x_ix_j
+=\boldsymbol{x}^{\mathsf T}A\boldsymbol{x},
+\qquad A^{\mathsf T}=A,
+\]
+称为 $n$ 元\textbf{二次型}，$A$ 称为它的\textbf{矩阵}。
+约定 $A$ 取对称矩阵（$a_{ij}=a_{ji}$），此时表示唯一。
+\end{defn}
+
+\begin{exmp}{写出二次型的矩阵}{quad-ex}
+\[
+f=2x_1^2+4x_1x_2-6x_2^2
+=\begin{bmatrix}x_1&x_2\end{bmatrix}
+\begin{bmatrix}2&2\\2&-6\end{bmatrix}
+\begin{bmatrix}x_1\\x_2\end{bmatrix}.
+\]
+\textbf{易错点}：交叉项 $x_1x_2$ 的系数要\emph{对半分}到 $a_{12}$ 与 $a_{21}$。
+\end{exmp}
+
+\section{标准形与配方法}
+
+\begin{defn}{标准形}{canonical}
+只含平方项的二次型
+$f=d_1y_1^2+d_2y_2^2+\cdots+d_ny_n^2$
+称为\textbf{标准形}，其矩阵为对角矩阵 $\diag(d_1,\dots,d_n)$。
+\end{defn}
+
+\begin{thm}{配方法（拉格朗日法）}{lagrange}
+任何实二次型都可用可逆线性替换 $\boldsymbol{x}=C\boldsymbol{y}$ 化为标准形。
+要点：
+\begin{enumerate}[label=(\arabic*), itemsep=1pt]
+\item 若含 $x_i^2$ 项，先把含 $x_i$ 的项全部配成完全平方；
+\item 若不含任何平方项但有 $x_ix_j$，先作替换
+      $x_i=y_i+y_j$，$x_j=y_i-y_j$ 制造平方项；
+\item 重复直至只剩平方项。
+\end{enumerate}
+\end{thm}
+
+\begin{exmp}{配方法全过程}{complete-square}
+\[
+f=x_1^2+2x_2^2+2x_1x_2+2x_1x_3
+=x_1^2+2x_1(x_2+x_3)+2x_2^2
+\]
+\[
+=(x_1+x_2+x_3)^2+x_2^2-2x_2x_3-x_3^2
+=(x_1+x_2+x_3)^2+(x_2-x_3)^2-2x_3^2.
+\]
+令 $y_1=x_1+x_2+x_3$，$y_2=x_2-x_3$，$y_3=x_3$，
+则 $f=y_1^2+y_2^2-2y_3^2$，系数为 $1,1,-2$。
+\end{exmp}
+
+\begin{thm}{正交变换法}{orth-quad}
+对实对称矩阵 $A$，由谱定理存在正交矩阵 $Q$ 使 $Q^{\mathsf T}AQ=\diag(\lambda_1,\dots,\lambda_n)$。
+作替换 $\boldsymbol{x}=Q\boldsymbol{y}$，则
+\[
+\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}
+=\boldsymbol{y}^{\mathsf T}\diag(\lambda_i)\boldsymbol{y}
+=\sum_{i=1}^{n}\lambda_i y_i^2.
+\]
+\textbf{标准形的系数恰为特征值}，且正交变换不改变几何形状
+（它只是转轴）。
+\end{thm}
+
+\begin{remk}{配方与转轴的区别}{two-ways}
+配方法得到的标准形系数一般\textbf{不是}特征值，
+对应的线性替换也非正交，因此\textbf{会改变几何形状}；
+正交变换法保持形状，只是把坐标轴转到特征方向。
+讨论\emph{代数}问题时用配方（快），讨论\emph{几何}问题时用正交变换（真）。
+\end{remk}
+
+\section{惯性定理与合同}
+
+\begin{thm}{惯性定理}{sylvester}
+设实二次型 $f$ 经两个可逆线性替换分别化为标准形，则
+\textbf{正系数的个数}与\textbf{负系数的个数}分别相同。
+正、负、零系数的个数分别记为 $p,\,q,\,n-p-q$，
+称 $(p,q)$ 为 $f$ 的\textbf{符号差}（正惯性指数、负惯性指数）。
+\end{thm}
+
+\begin{defn}{合同}{congruent}
+若存在可逆矩阵 $C$ 使 $B=C^{\mathsf T}AC$，则称 $A$ 与 $B$ \textbf{合同}。
+合同保持对称性与惯性指数，但不保持特征值。
+\end{defn}
+
+\begin{keypoint}
+\textbf{三者的关系要分清}：
+相似 $B=P^{-1}AP$ 保特征值；合同 $B=C^{\mathsf T}AC$ 保惯性指数；
+当 $C$ 为正交矩阵时二者重合（$C^{-1}=C^{\mathsf T}$）。
+对实对称矩阵，“相似 $\Leftrightarrow$ 合同 $\Leftrightarrow$ 特征值相同”。
+\end{keypoint}
+
+\section{正定及其判定}
+
+\begin{defn}{正定与半正定}{pd-def}
+设 $A$ 对称。若对任意 $\boldsymbol{x}\neq\boldsymbol{0}$ 都有
+$\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}>0$，则称 $A$ \textbf{正定}；
+若 $\ge 0$ 则称\textbf{半正定}；若 $-\!A$ 正定则称 $A$ \textbf{负定}；
+若两种符号都出现则称\textbf{不定}。
+\end{defn}
+
+\begin{thm}{正定的等价条件}{pd-thm}
+设 $A$ 为 $n$ 阶实对称矩阵，则下列条件等价：
+\begin{enumerate}[label=(\alph*), itemsep=1pt]
+\item $A$ 正定；
+\item 全部特征值 $\lambda_i>0$；
+\item 全部\textbf{顺序主子式} $\Delta_k=\det A_k>0$（$k=1,\dots,n$）；
+\item 存在可逆矩阵 $C$ 使 $A=C^{\mathsf T}C$；
+\item 正惯性指数 $p=n$；
+\item 存在列满秩矩阵 $B$ 使 $A=B^{\mathsf T}B$。
+\end{enumerate}
+\end{thm}
+
+\begin{keypoint}
+\textbf{手算首选顺序主子式判别法}（Sylvester 准则），
+\textbf{理论分析首选特征值}。
+注意顺序主子式全为正只能判定正定，
+\emph{不能}用来判定负定；负定要求 $(-1)^k\Delta_k>0$ 对所有 $k$ 成立。
+\end{keypoint}
+
+\begin{exmp}{判定正定性}{pd-ex}
+判断 $A=\begin{bmatrix}2&1&1\\1&3&0\\1&0&1\end{bmatrix}$ 是否正定。
+\[
+\Delta_1=2>0,\qquad
+\Delta_2=\begin{vmatrix}2&1\\1&3\end{vmatrix}=5>0,\qquad
+\Delta_3=\det A=2(3)-1(1)+1(-3)=2>0.
+\]
+三个顺序主子式均为正，故 $A$ 正定。
+（验证：$\tr A=6$，$\det A=2$，特征值均为正。）
+\end{exmp}
+
+\section{几何：二次曲线与二次曲面}
+
+\begin{exmp}{二次曲线的分类}{conic}
+考察 $\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}=1$，其中
+$A=\diag(\lambda_1,\lambda_2)$：
+\begin{itemize}[itemsep=1pt]
+\item $\lambda_1,\lambda_2>0$：椭圆，半轴长 $1/\sqrt{\lambda_1},\,1/\sqrt{\lambda_2}$；
+\item 一正一负：双曲线；
+\item $\lambda_2=0$：两条平行直线；
+\item $\lambda_1,\lambda_2<0$：无实轨迹。
+\end{itemize}
+\begin{lafig}[>=Stealth, line cap=round]{$\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}=1$ 的几何形状由特征值的符号决定}
+  \begin{scope}
+    \draw[qing!55, line width=0.7pt, ->] (-2.0,0) -- (2.1,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.7) -- (0,1.85);
+    \draw[qing, line width=1.7pt] (0,0) ellipse (1.6 and 1.0);
+    \draw[dai, line width=1.4pt] (-1.6,0) -- (1.6,0);
+    \draw[dai, line width=1.4pt] (0,-1.0) -- (0,1.0);
+    \node[dai, above=1pt] at (0.8,0) {\scriptsize $1/\sqrt{\lambda_1}$};
+    \node[dai, left=2pt] at (0,0.5) {\scriptsize $1/\sqrt{\lambda_2}$};
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.1)
+      {正定：椭圆（$\lambda_1,\lambda_2>0$）};
+  \end{scope}
+  \begin{scope}[xshift=5.2cm]
+    \draw[qing!55, line width=0.7pt, ->] (-2.0,0) -- (2.1,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.7) -- (0,1.85);
+    \draw[zhe, line width=1.7pt, domain=0.46:2.05, smooth, variable=\x]
+      plot ({\x},{0.62*sqrt(\x*\x-0.18)});
+    \draw[zhe, line width=1.7pt, domain=0.46:2.05, smooth, variable=\x]
+      plot ({\x},{-0.62*sqrt(\x*\x-0.18)});
+    \draw[zhe, line width=1.7pt, domain=-2.05:-0.46, smooth, variable=\x]
+      plot ({\x},{0.62*sqrt(\x*\x-0.18)});
+    \draw[zhe, line width=1.7pt, domain=-2.05:-0.46, smooth, variable=\x]
+      plot ({\x},{-0.62*sqrt(\x*\x-0.18)});
+    \draw[dai, line width=1.1pt] (-1.95,-1.35) -- (1.95,1.35);
+    \draw[dai, line width=1.1pt] (-1.95,1.35) -- (1.95,-1.35);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.1)
+      {不定：双曲线（一正一负）};
+  \end{scope}
+  \begin{scope}[xshift=10.4cm]
+    \draw[qing!55, line width=0.7pt, ->] (-2.0,0) -- (2.1,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.7) -- (0,1.85);
+    \draw[dai, line width=1.7pt] (0,0) ellipse (1.55 and 1.0);
+    \draw[dai!55, line width=1.7pt] (0,0) ellipse (0.95 and 0.62);
+    \draw[dai!30, line width=1.7pt] (0,0) ellipse (0.45 and 0.29);
+    \foreach \i in {1.55,0.95,0.45}{
+      \fill[dai] (\i,0) circle (1.7pt);
+    }
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-2.1)
+      {半正定：退化为一条线（$\lambda_2=0$）};
+  \end{scope}
+\end{lafig}
+\end{exmp}
+
+\begin{remk}{为什么椭圆的半轴是 $1/\sqrt{\lambda_i}$}{ellipse-axis}
+在特征方向 $\boldsymbol{p}_i$ 上取 $\boldsymbol{x}=t\boldsymbol{p}_i$，
+则 $\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}=t^2\lambda_i=1$，
+故 $t=1/\sqrt{\lambda_i}$。
+\textbf{特征值越大，等高线在该方向上越“窄”。}
+这正是“大特征值对应大能量方向”的几何来源。
+\end{remk}
+
+\begin{lafig}[>=Stealth, line cap=round]{三维情形：二次型 $f(\boldsymbol{x})=\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}$
+的正、负、零特征值分别造出“碗”“鞍”与“谷”}
+\begin{axis}[name=ax1, width=5.1cm, height=4.6cm, view={35}{18},
+  axis lines=none, ticks=none, title style={font=\small\sffamily, text=qing},
+  title={正定：椭圆抛物面},
+  colormap={qmap}{rgb255=(247,248,246) rgb255=(150,185,196) rgb255=(42,88,102)},
+  declare function={f1(\x,\y)=0.55*(\x*\x+\y*\y);}]
+  \addplot3[surf, shader=interp, domain=-1.5:1.5, y domain=-1.5:1.5,
+            samples=19, z buffer=sort] {f1(x,y)};
+\end{axis}
+\begin{axis}[name=ax2, width=5.1cm, height=4.6cm, view={35}{18},
+  at={(ax1.east)}, anchor=west, xshift=10pt,
+  axis lines=none, ticks=none, title style={font=\small\sffamily, text=zhe},
+  title={不定：双曲抛物面（鞍面）},
+  colormap={zmap}{rgb255=(247,248,246) rgb255=(196,178,150) rgb255=(152,100,64)},
+  declare function={f2(\x,\y)=0.42*(\x*\x-\y*\y);}]
+  \addplot3[surf, shader=interp, domain=-1.5:1.5, y domain=-1.5:1.5,
+            samples=19, z buffer=sort] {f2(x,y)};
+\end{axis}
+\begin{axis}[name=ax3, width=5.1cm, height=4.6cm, view={35}{18},
+  at={(ax2.east)}, anchor=west, xshift=10pt,
+  axis lines=none, ticks=none, title style={font=\small\sffamily, text=dai},
+  title={半正定：抛物柱面},
+  colormap={dmap}{rgb255=(247,248,246) rgb255=(160,190,175) rgb255=(84,110,98)},
+  declare function={f3(\x,\y)=0.55*\x*\x;}]
+  \addplot3[surf, shader=interp, domain=-1.5:1.5, y domain=-1.5:1.5,
+            samples=19, z buffer=sort] {f3(x,y)};
+\end{axis}
+\end{lafig}
+
+\begin{remk}{从曲面回到矩阵}{surface-to-matrix}
+三幅图分别是正定（$A\succ 0$，两个正特征值）、
+不定（特征值一正一负，原点是\textbf{鞍点}）与
+半正定（有一个零特征值，曲面沿一个方向“平”掉）的标准像。
+第 8.6 节的极值判据说的正是：$H$ 正定 $\Rightarrow$ 谷底（极小值），
+$H$ 不定 $\Rightarrow$ 鞍点，$H$ 半定 $\Rightarrow$ 需要进一步判别。
+\end{remk}
+
+\section{应用：极值与瑞利商}
+
+\begin{thm}{多元函数极值的二阶判据}{hessian}
+设 $f$ 在 $\boldsymbol{x}_0$ 处梯度为零，Hessian 矩阵 $H=\nabla^2 f(\boldsymbol{x}_0)$
+对称。则
+\[
+H\ \text{正定}\Rightarrow\text{极小值；}\qquad
+H\ \text{负定}\Rightarrow\text{极大值；}\qquad
+H\ \text{不定}\Rightarrow\text{鞍点}.
+\]
+\end{thm}
+
+\begin{defn}{瑞利商}{rayleigh}
+对对称矩阵 $A$ 与 $\boldsymbol{x}\neq\boldsymbol{0}$，称
+\[
+R(\boldsymbol{x})=\frac{\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}}
+                      {\boldsymbol{x}^{\mathsf T}\boldsymbol{x}}
+\]
+为\textbf{瑞利商}。在单位球面上，
+\[
+\lambda_{\min}\le R(\boldsymbol{x})\le\lambda_{\max},
+\]
+且最值分别在最小、最大特征向量处取得。
+\end{defn}
+
+\begin{keypoint}
+瑞利商把“特征值”重新解释为\textbf{广义能量的极值}。
+主成分分析（第 9 章）中“方差最大的方向就是最大特征向量”，
+本质上是瑞利商最大化的结论。
+\end{keypoint}
+
+\begin{exmp}{一个鞍点的识别}{saddle-ex}
+$f(x,y)=x^2-y^2$，矩阵 $A=\diag(1,-1)$，$(0,0)$ 是临界点。
+$A$ 不定，故 $(0,0)$ 是鞍点：沿 $x$ 方向是极小，沿 $y$ 方向是极大。
+等高线正是双曲线 $x^2-y^2=c$，$c=0$ 时退化为一对相交直线。
+\end{exmp}
+
+\begin{sidebar}{从柯西到西尔维斯特：主子式判别法}
+正定的顺序主子式判别法以\textbf{西尔维斯特}（J.\ J.\ Sylvester，1814—1897）命名，
+但柯西早在 1829 年就给出了二次型惯性定理的雏形。
+西尔维斯特一生跌宕：因宗教原因无法取得剑桥学位，
+靠保险精算与律师职业谋生，五十岁后才在约翰斯·霍普金斯大学
+获得平生第一个教职，却在晚年成为英国最负盛名的数学家之一。
+他发明了大量今天仍在使用的术语——矩阵（matrix）、
+约化行列式（minor）、判别式（discriminant）都出自他的笔下。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 二次型 $\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}$，$A$ 取对称矩阵。
+\item 交叉项系数要对半分到 $a_{ij}$ 与 $a_{ji}$。
+\item 正交变换化标准形，系数恰为特征值。
+\item 惯性定理：正、负系数个数在可逆替换下不变。
+\item 合同保惯性指数，相似保特征值；正交时二者一致。
+\item 正定 $\Leftrightarrow$ 特征值全正 $\Leftrightarrow$ 顺序主子式全正。
+\item 椭圆半轴长 $=1/\sqrt{\lambda_i}$。
+\item 瑞利商在特征方向上取到极值。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 写出下列二次型的矩阵：
+      $f=3x_1^2+2x_2^2-x_3^2+4x_1x_2-2x_2x_3$。
+\item 用配方法把 $f=x_1^2+2x_2^2+4x_3^2+2x_1x_2+2x_1x_3$ 化为标准形。
+\item 用正交变换把 $f=5x_1^2+5x_2^2+x_3^2-2x_1x_2$ 化为标准形。
+\item 判断下列矩阵是否正定：
+      $\begin{bmatrix}2&1\\1&2\end{bmatrix}$，
+      $\begin{bmatrix}1&2\\2&1\end{bmatrix}$，
+      $\begin{bmatrix}1&0\\0&0\end{bmatrix}$。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：若 $A$ 正定，则 $A$ 可逆且 $A^{-1}$ 也正定。
+\item 证明：若 $A,B$ 均为 $n$ 阶正定矩阵，则 $A+B$ 正定。
+      问 $AB$ 何时正定？
+\item 证明：实对称矩阵 $A$ 正定 $\Leftrightarrow$ 存在列满秩矩阵 $B$ 使 $A=B^{\mathsf T}B$。
+\item 证明：二次型 $f=\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}$ 在
+      $\norm{\boldsymbol{x}}=1$ 上的最大值等于 $A$ 的最大特征值。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 用 pgfplots 或 Python 绘制
+      $f(x,y)=x^2+2y^2+2xy$ 的等高线，
+      并说明该二次型是否正定、形状如何随系数变化。
+\item 投资组合理论中，协方差矩阵 $\Sigma$ 的正定性有什么含义？
+      若 $\Sigma$ 半正定而非正定，说明组合中存在什么关系？
+\end{enumerate}
+\end{multicols}
+
+% ===================== 第 9 章 奇异值分解与应用 =====================
+\chapter{奇异值分解与应用}
+\label{ch:svd}
+
+\begin{chapoutline}
+\small
+\begin{multicols}{2}
+\textbf{学习目标}
+\begin{itemize}[leftmargin=1.5em, itemsep=1.5pt]
+\item 理解任意矩阵都有奇异值分解，并掌握其构造；
+\item 用“单位圆变成椭圆”的几何图像理解 SVD；
+\item 由 SVD 读出四个基本子空间的正交基；
+\item 掌握最优低秩逼近与主成分分析（PCA）。
+\end{itemize}
+\columnbreak
+\textbf{关键词}
+\par\smallskip
+奇异值\quad 奇异向量\quad 伪逆\quad 最优低秩逼近\\
+Eckart--Young 定理\quad PCA\quad 数据压缩
+\par\smallskip
+\textbf{建议学时}
+\par\smallskip
+10 学时（含上机 2 学时）
+\end{multicols}
+\end{chapoutline}
+
+\section{为什么要 SVD}
+
+特征分解 $A=PDP^{-1}$ 有两个限制：只对方阵有效，
+且即便有效也要求可对角化。而\textbf{奇异值分解对任意矩阵都存在}——
+长方形的、奇异的、甚至全零的。它是线性代数的“万能分解”，
+也是当今数据科学中使用最频繁的矩阵工具。
+
+\begin{thm}{奇异值分解}{svd-thm}
+设 $A\in\R{m\times n}$。则存在正交矩阵
+$U\in\R{m\times m}$、$V\in\R{n\times n}$ 与非负数
+$\sigma_1\ge\sigma_2\ge\cdots\ge\sigma_r>0$（$r=\rank A$），使
+\[
+A=U\,\Sigma\,V^{\mathsf T},
+\qquad
+\Sigma=\begin{bmatrix}\diag(\sigma_1,\dots,\sigma_r)&O\\O&O\end{bmatrix}.
+\]
+$\sigma_i$ 称为\textbf{奇异值}，$U,V$ 的列分别称为左、右\textbf{奇异向量}。
+\end{thm}
+
+\begin{prop}{奇异值与特征值的关系}{svd-eig}
+$\sigma_i^2$ 是 $A^{\mathsf T}A$ 与 $AA^{\mathsf T}$ 的非零特征值；
+$V$ 的列是 $A^{\mathsf T}A$ 的特征向量，$U$ 的列是 $AA^{\mathsf T}$ 的特征向量，
+且 $A\boldsymbol{v}_i=\sigma_i\boldsymbol{u}_i$。
+因此
+\[
+\sigma_i=\sqrt{\lambda_i(A^{\mathsf T}A)},\qquad
+\sigma_1\sigma_2\cdots\sigma_r=\text{$A$ 各行（列）体积的缩放因子}.
+\]
+\end{prop}
+
+\section{几何图像：圆如何变成椭圆}
+
+SVD 最漂亮的地方在于它可以\textbf{一步一步画出来}。
+把 $A$ 分解成“旋转—拉伸—旋转”：
+\[
+A=U\,\Sigma\,V^{\mathsf T},
+\]
+其中 $U$ 与 $V^{\mathsf T}$ 是旋转（或反射），$\Sigma$ 是沿坐标轴的拉伸。
+
+\begin{lafig}[>=Stealth, line cap=round]{SVD 的四步几何：单位圆经 $V^{\mathsf T}$ 转正、被 $\Sigma$ 沿坐标轴拉伸、
+再经 $U$ 转到最终方向，得到椭圆 $\sigma_1\boldsymbol{u}_1,\ \sigma_2\boldsymbol{u}_2$}
+  % 1) 单位圆
+  \begin{scope}
+    \draw[line!80, very thin, step=0.5] (-1.7,-1.4) grid (1.7,1.7);
+    \draw[qing!55, line width=0.7pt, ->] (-1.85,0) -- (1.85,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.55) -- (0,1.85);
+    \draw[qing, line width=1.7pt] (0,0) circle (1.25);
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (0.884,0.884);
+    \draw[zhe, line width=1.5pt, ->] (0,0) -- (-0.884,0.884);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-1.85) {① 单位圆};
+  \end{scope}
+  % 2) V^T 旋转
+  \begin{scope}[xshift=4.55cm, rotate=-28]
+    \draw[line!80, very thin, step=0.5] (-1.7,-1.4) grid (1.7,1.7);
+    \draw[qing, line width=1.7pt] (0,0) circle (1.25);
+  \end{scope}
+  \begin{scope}[xshift=4.55cm]
+    \draw[qing!55, line width=0.7pt, ->] (-1.85,0) -- (1.85,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.55) -- (0,1.85);
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (1.104,-0.587);
+    \draw[zhe, line width=1.5pt, ->] (0,0) -- (0.587,1.104);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0,-1.85) {② $V^{\mathsf T}$：转正};
+  \end{scope}
+  % 3) Sigma 拉伸
+  \begin{scope}[xshift=9.1cm]
+    \draw[line!80, very thin, step=0.5] (-1.9,-1.4) grid (2.3,1.7);
+    \draw[qing!55, line width=0.7pt, ->] (-2.05,0) -- (2.45,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.55) -- (0,1.85);
+    \draw[zhe, line width=1.7pt] (0,0) ellipse (1.95 and 0.72);
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (1.95,0);
+    \draw[zhe, line width=1.5pt, ->] (0,0) -- (0,0.72);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0.2,-1.85) {③ $\Sigma$：拉伸};
+  \end{scope}
+  % 4) U 旋转
+  \begin{scope}[xshift=13.65cm, rotate=17]
+    \draw[line!80, very thin, step=0.5] (-1.9,-1.4) grid (2.3,1.7);
+    \draw[qing!55, line width=0.7pt, ->] (-2.05,0) -- (2.45,0);
+    \draw[qing!55, line width=0.7pt, ->] (0,-1.55) -- (0,1.85);
+    \draw[zhe, line width=1.7pt] (0,0) ellipse (1.95 and 0.72);
+  \end{scope}
+  \begin{scope}[xshift=13.65cm]
+    \draw[dai, line width=1.5pt, ->] (0,0) -- (1.866,0.571);
+    \draw[zhe, line width=1.5pt, ->] (0,0) -- (-0.211,0.690);
+    \node[font=\footnotesize\sffamily, color=inkl] at (0.2,-1.85) {④ $U$：再转};
+  \end{scope}
+\end{lafig}
+
+\begin{keypoint}
+\textbf{奇异值就是椭圆的半轴长。}
+最大的 $\sigma_1$ 告诉我们：这个变换在\textbf{哪个方向}上拉伸得最厉害、
+拉伸了多少倍。因此
+\[
+\norm{A}_2=\sigma_1,\qquad
+\kappa(A)=\sigma_1/\sigma_n
+\]
+分别是矩阵的谱范数与条件数。$\sigma_n=0$ 当且仅当 $A$ 不可逆。
+\end{keypoint}
+
+\section{由 SVD 读出四个基本子空间}
+
+把 $A=U\Sigma V^{\mathsf T}$ 按列展开：
+\[
+A=\sum_{i=1}^{r}\sigma_i\boldsymbol{u}_i\boldsymbol{v}_i^{\mathsf T}.
+\]
+于是\textbf{四个基本子空间的正交基全部现成}：
+
+\begin{latab}{由 SVD 读出四个基本子空间的正交基}
+\small\centering
+\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\sffamily 子空间 & \sffamily 正交基 & \sffamily 来源\\
+\midrule
+列空间 $\Col(A)$ & $\boldsymbol{u}_1,\dots,\boldsymbol{u}_r$ & $U$ 的前 $r$ 列\\
+左零空间 $\Nul(A^{\mathsf T})$ & $\boldsymbol{u}_{r+1},\dots,\boldsymbol{u}_{m}$ & $U$ 的后 $m-r$ 列\\
+行空间 $\Row(A)$ & $\boldsymbol{v}_1,\dots,\boldsymbol{v}_r$ & $V$ 的前 $r$ 列\\
+零空间 $\Nul(A)$ & $\boldsymbol{v}_{r+1},\dots,\boldsymbol{v}_n$ & $V$ 的后 $n-r$ 列\\
+\bottomrule
+\end{tabular}
+\end{latab}
+
+这正是第四章 Strang 图的“SVD 版本”：$V$ 与 $U$ 分别把
+$\Rnum{n}$ 与 $\Rnum{m}$ 分解成两两正交的两块，
+而 $A$ 把 $V$ 的前 $r$ 个方向一一映到 $U$ 的前 $r$ 个方向，并放大 $\sigma_i$ 倍。
+
+\section{最优低秩逼近}
+
+\begin{thm}{Eckart--Young 定理}{eckart}
+在所有秩不超过 $k$ 的矩阵中，取 $A$ 的前 $k$ 项截断
+\[
+A_k=\sum_{i=1}^{k}\sigma_i\boldsymbol{u}_i\boldsymbol{v}_i^{\mathsf T}
+\]
+使误差的谱范数与 Frobenius 范数同时最小，且
+\[
+\norm{A-A_k}_2=\sigma_{k+1},\qquad
+\norm{A-A_k}_F^2=\sigma_{k+1}^2+\sigma_{k+2}^2+\cdots+\sigma_r^2.
+\]
+\end{thm}
+
+\begin{keypoint}
+\textbf{用 $k$ 个奇异值就能“最好地”概括整个矩阵。}
+误差由被丢弃的奇异值平方和刻画。
+若奇异值衰减得快（多数真实数据如此），
+那么保留前几项就能还原几乎全部信息——这就是\textbf{低秩压缩}。
+\end{keypoint}
+
+\begin{exmp}{一个手算的小例子}{svd-ex}
+$A=\begin{bmatrix}4&0\\0&2\end{bmatrix}$ 已经是对角的，故
+$\Sigma=\diag(4,2)$，$U=V=I$，$\sigma_1=4$，$\sigma_2=2$。
+取 $k=1$ 的逼近 $A_1=\begin{bmatrix}4&0\\0&0\end{bmatrix}$，
+误差 $\norm{A-A_1}_2=2=\sigma_2$。
+\end{exmp}
+
+\begin{remk}{$\triangleright$ 上机：奇异值衰减}{svd-code}
+{\small\ttfamily
+import numpy as np\\
+U, s, Vt = np.linalg.svd(A, full\_matrices=False)\\
+k = 10\\
+Ak = (U[:, :k] * s[:k]) @ Vt[:k]}
+\par\smallskip
+\noindent 先画 \texttt{plt.semilogy(s)}：若奇异值在 $10$ 附近骤降，
+说明数据本质上是 $10$ 维的。
+\end{remk}
+
+\begin{lafig}[>=Stealth, line cap=round]{奇异值衰减与逼近误差：左为典型数据的奇异值谱，
+右为保留 $k$ 项后的相对误差 $\bigl(\sum_{i>k}\sigma_i^2\bigr)^{1/2}/\norm{A}_F$}
+\begin{axis}[name=sx1, width=7.0cm, height=5.1cm,
+  xlabel={序号 $i$}, ylabel={$\sigma_i$},
+  label style={font=\small\sffamily, text=ink},
+  tick label style={font=\footnotesize},
+  axis lines=left, xtick={1,3,5,7,9,11,13,15},
+  ymin=0, ymax=105, xmin=0.4, xmax=15.6,
+  every axis plot/.append style={line width=1.1pt}]
+  \addplot[qing, mark=*, mark size=1.25pt] coordinates {
+    (1,100)(2,63)(3,38)(4,21)(5,12.5)(6,8.2)(7,5.6)(8,3.9)
+    (9,2.7)(10,1.9)(11,1.3)(12,0.9)(13,0.6)(14,0.4)(15,0.25)};
+  \draw[zhe!70, dashed, line width=0.7pt] (axis cs:5,0) -- (axis cs:5,100)
+    node[pos=0.90, right=2pt, font=\scriptsize\sffamily, text=zhe] {取 $k=5$};
+\end{axis}
+\begin{axis}[name=sx2, width=7.0cm, height=5.1cm,
+  at={(sx1.east)}, anchor=west, xshift=14pt,
+  xlabel={保留个数 $k$}, ylabel={相对误差},
+  label style={font=\small\sffamily, text=ink},
+  tick label style={font=\footnotesize},
+  axis lines=left, xtick={1,5,10,15}, ytick={0,25,50,75,100},
+  ymin=0, ymax=105, xmin=0.4, xmax=15.6,
+  every axis plot/.append style={line width=1.1pt}]
+  \addplot[dai, thick, mark=square*, mark size=1.15pt] coordinates {
+    (1,93.7)(2,77.5)(3,63.6)(4,50.4)(5,38.9)(6,29.7)(7,22.3)
+    (8,16.2)(9,11.4)(10,7.8)(11,5.1)(12,3.2)(13,1.8)(14,0.9)(15,0)};
+  \draw[qing!60, dashed, line width=0.7pt] (axis cs:0.4,10) -- (axis cs:15.6,10)
+    node[pos=0.06, above=1pt, font=\scriptsize\sffamily, text=inkl] {$10\%$ 容差};
+  \draw[ink!60, dotted, line width=0.7pt] (axis cs:5,0) -- (axis cs:5,38.9);
+\end{axis}
+\end{lafig}
+
+\begin{remk}{如何读这两幅图}{read-decay}
+左图是“谱”：奇异值从 $\sigma_1=100$ 一路衰减到 $0.25$，
+说明该数据虽然名义上有 15 个坐标，能量却集中在最前面几个方向。
+右图是“账单”：保留 $k=5$ 时相对误差约 $39\%$，保留 $k=10$ 时已不足 $8\%$；
+若业务容差为 $10\%$，则只需存储前 9 个奇异分量。
+\textbf{衰减越陡，压缩越狠}——这就是第 9.6 节图像压缩的全部原理。
+\end{remk}
+
+\section{主成分分析（PCA）}
+
+设有一组中心化后的数据点
+$\boldsymbol{x}_1,\dots,\boldsymbol{x}_m\in\Rnum{n}$
+（即每个坐标都已减去均值），把它们按行排成矩阵 $X\in\R{m\times n}$。
+样本协方差矩阵为
+\[
+S=\frac{1}{m-1}X^{\mathsf T}X,
+\]
+它是对称半正定矩阵。设 $S$ 的特征分解为
+$S=Q\diag(\lambda_1\ge\lambda_2\ge\cdots\ge\lambda_n)Q^{\mathsf T}$。
+
+\begin{thm}{主成分的方向}{pca-dir}
+数据在单位向量 $\boldsymbol{w}$ 上的投影方差为
+$\boldsymbol{w}^{\mathsf T}S\boldsymbol{w}$。
+由瑞利商（第八章），方差最大的方向是\textbf{最大特征值对应的特征向量}，
+最大方差就是 $\lambda_1$。
+依次类推：第 $k$ 个主成分是第 $k$ 大特征向量，方差为 $\lambda_k$。
+\end{thm}
+
+\begin{lafig}[>=Stealth, line cap=round]{主成分分析：$\boldsymbol{v}_1$ 是方差最大的方向，
+$\boldsymbol{v}_2$ 与之正交并承接剩余方差}
+  \begin{axis}[
+      width=0.80\textwidth, height=6.4cm,
+      axis lines=left, axis line style={qing!55, line width=0.7pt},
+      xmin=-3.6, xmax=4.2, ymin=-2.6, ymax=2.9,
+      xtick={-3,-2,-1,0,1,2,3,4}, ytick={-2,-1,0,1,2},
+      tick label style={font=\footnotesize, color=inkl},
+      label style={font=\small, color=ink},
+      xlabel={$x_1$}, ylabel={$x_2$},
+      grid=major, grid style={line!70, very thin},
+    ]
+    \addplot[only marks, mark=*, mark size=1.35pt, color=qing!75,
+             mark options={fill=qing!30}] coordinates {
+      (-3.1,-1.05) (-2.5,-0.55) (-2.0,-0.95) (-1.5,-0.25) (-1.1,-0.75)
+      (-0.6,-0.10) (-0.2,-0.45) (0.3,0.20) (0.7,-0.15) (1.2,0.45)
+      (1.6,0.05) (2.0,0.75) (2.5,0.45) (2.9,1.05) (3.4,0.85) (3.7,1.45)};
+    \addplot[dai, domain=-3.4:4.0, samples=2, line width=1.7pt] {0.335*x+0.10};
+    \addplot[zhe, domain=-1.55:1.95, samples=2, line width=1.5pt]
+      {-2.97*x+0.95};
+    \node[dai, font=\footnotesize] at (axis cs:3.35,1.62) {$\boldsymbol{v}_1$};
+    \node[zhe, font=\footnotesize] at (axis cs:1.62,2.35) {$\boldsymbol{v}_2$};
+    \node[font=\footnotesize, color=inkl, anchor=south west] at (axis cs:-3.5,-2.45)
+      {$\sigma_1$ 方向：数据最“长”的方向；$\sigma_2$ 方向：剩余方差的方向};
+  \end{axis}
+\end{lafig}
+
+\begin{prop}{PCA 就是 SVD}{pca-svd}
+对中心化数据矩阵 $X$ 作 SVD：$X=U\Sigma V^{\mathsf T}$。
+则
+\[
+V\ \text{的各列}=\text{主成分方向，}\qquad
+\sigma_i^2/(m-1)=\text{第 } i \text{ 主成分的方差}.
+\]
+\textbf{因此 PCA 无须显式构造 $X^{\mathsf T}X$，直接对 $X$ 做 SVD 即可}——
+这既更快也更稳定。
+\end{prop}
+
+\begin{remk}{PCA 在做什么}{pca-meaning}
+PCA 寻找一个\textbf{新的正交坐标系}，使数据在这个坐标系下各方向互不相关，
+并且方差按从大到小排列。保留前 $k$ 个坐标，
+就是\textbf{在所有 $k$ 维线性子空间中，投影误差最小的一个}——
+这正是一次 Eckart--Young 逼近。
+图像压缩、人脸识别（特征脸）、降噪、可视化，用的都是这同一个动作。
+\end{remk}
+
+\section{应用：图像压缩}
+
+一张灰度图像就是一个非负矩阵 $A\in\R{m\times n}$。
+取前 $k$ 个奇异值，只需存储
+$k(m+n+1)$ 个数（$U_k$、$\Sigma_k$、$V_k^{\mathsf T}$），
+而原图要 $mn$ 个。压缩比约为
+\[
+\rho=\frac{k(m+n+1)}{mn}.
+\]
+
+\begin{latab}{一幅 $512\times 512$ 图像在不同秩下的存储量与误差}
+\small\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\sffamily 秩 $k$ & \sffamily 存储数 & \sffamily 压缩比 $\rho$ &
+\sffamily 相对误差 $\norm{A-A_k}_F/\norm{A}_F$ & \sffamily 视觉效果\\
+\midrule
+5    & 5\,165   & 2.0\%  & 0.31 & 轮廓可辨，细节丢失\\
+20   & 20\,660  & 7.9\%  & 0.17 & 主要结构清晰\\
+50   & 51\,650  & 19.7\% & 0.10 & 接近原图\\
+100  & 103\,300 & 39.4\% & 0.06 & 肉眼难辨差异\\
+512  & 262\,144 & 100\%  & 0    & 原图\\
+\bottomrule
+\end{tabular}
+\end{latab}
+
+（表中误差为示意值，实际取决于图像的奇异值衰减速度。
+关键观察是：\textbf{误差由被丢弃的奇异值决定，而非由像素数量决定}。）
+
+\begin{sidebar}{贝尔特拉米与若尔当：SVD 的两条发现路径}
+奇异值分解通常归于贝尔特拉米（E.\ Beltrami，1873）与若尔当（C.\ Jordan，1874），
+二人几乎同时独立给出双线性形式的分解。
+但真正让 SVD 成为计算利器的，是 1936 年 Eckart--Young 定理
+给出了“截断即最优”的保证，
+以及 1965 年 Golub 提出的稳定算法（基于对双边 Jacobi 或 Householder 变换）。
+今天，从 Google 的 PageRank 到 Netflix 的推荐系统，
+从人脸识别到引力波信号的去噪，背后都是同一条分解式
+$A=U\Sigma V^{\mathsf T}$。
+\end{sidebar}
+
+\begin{chapkeys}
+\small
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+\item 任意矩阵都有 SVD：$A=U\Sigma V^{\mathsf T}$。
+\item $\sigma_i=\sqrt{\lambda_i(A^{\mathsf T}A)}$，即椭圆半轴长。
+\item $A\boldsymbol{v}_i=\sigma_i\boldsymbol{u}_i$。
+\item $U,V$ 的列给出四个基本子空间的正交基。
+\item $A=\sum_i\sigma_i\boldsymbol{u}_i\boldsymbol{v}_i^{\mathsf T}$。
+\item Eckart--Young：截断 $A_k$ 是最优低秩逼近，误差 $=\sigma_{k+1}$。
+\item PCA：主成分方向 $=$ 协方差矩阵的特征向量 $=$ $V$ 的列。
+\item 条件数 $\kappa(A)=\sigma_1/\sigma_n$。
+\end{itemize}
+\end{multicols}
+\end{chapkeys}
+
+\exhead
+\begin{multicols}{2}
+\small
+\textbf{A 组（基础计算）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+\item 求 $A=\begin{bmatrix}3&0\\0&2\end{bmatrix}$ 与
+      $B=\begin{bmatrix}2&0\\0&3\end{bmatrix}$ 的奇异值，并说明
+      它们的特征值与奇异值有何不同。
+\item 求 $A=\begin{bmatrix}1&1\\0&0\end{bmatrix}$ 的 SVD。
+\item 设 $\sigma_1\ge\sigma_2\ge\sigma_3$ 为某矩阵的奇异值，
+      求秩 $1$ 最佳逼近的谱范数误差与 Frobenius 误差。
+\item 已知 $A$ 为 $4\times 3$ 矩阵，$\rank A=2$。写出 $\Sigma$ 的形状，
+      并指出 $U$、$V$ 的哪些列张成 $\Nul(A^{\mathsf T})$。
+\end{enumerate}
+\textbf{B 组（推理证明）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=5]
+\item 证明：$\sigma_i^2$ 是 $A^{\mathsf T}A$ 的特征值，
+      且 $V$ 的列是相应的特征向量。
+\item 证明：$\norm{A}_F^2=\sigma_1^2+\cdots+\sigma_r^2$。
+\item 证明：$\rank(A)=r$（非零奇异值的个数）。
+\item 设 $A$ 对称正定。证明 $A$ 的奇异值就是它的特征值。
+\end{enumerate}
+\textbf{C 组（应用与建模）}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, start=9]
+\item 用 NumPy 对一幅灰度图做 SVD，分别取 $k=5,20,50$ 重构并保存图像，
+      计算压缩比与相对误差，画出奇异值的半对数图。
+\item 对一组二维人工数据（沿某方向拉长的椭圆分布）做 PCA，
+      画出主成分方向，并验证第一主成分的方差等于最大特征值。
+\end{enumerate}
+\end{multicols}
+
+
+\appendix
+% ===================== 附录 =====================
+\chapter{常用公式速查}
+\label{app:formula}
+
+\begin{center}
+{\small\sffamily\color{inkl}本附录将全书主要公式按章汇总，供考前与做题时快速查阅。}
+\end{center}
+
+\begin{multicols}{2}
+\small\sloppy
+\setstretch{1.2}
+
+\minihead{向量与矩阵运算}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item $(AB)_{ij}=\sum_k a_{ik}b_{kj}$，要求 $(m\times n)(n\times p)$
+\item $(AB)^{\mathsf T}=B^{\mathsf T}A^{\mathsf T}$，
+      $(AB)^{-1}=B^{-1}A^{-1}$
+\item $A^{\mathsf T}=A$ 对称；$A^{\mathsf T}=-A$ 反对称
+\item $A^k=PD^kP^{-1}$（可对角化时）
+\end{itemize}
+
+\minihead{方程组与秩}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 有解 $\Leftrightarrow \rank(A\,|\,\boldsymbol{b})=\rank(A)$
+\item 解集 $=\boldsymbol{x}_p+\Nul(A)$
+\item 主元个数 $=\rank$；自由变量 $=n-\rank$
+\item $\rank(A)+\dim\Nul(A)=n$
+\item $\rank(A)=\rank(A^{\mathsf T})\le\min(m,n)$
+\end{itemize}
+
+\minihead{行列式}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item $\det A=\sum_{\sigma}\sign(\sigma)\prod_i a_{i\sigma(i)}$
+\item 上三角：$\det A=\prod_i a_{ii}$
+\item $\det(AB)=\det A\,\det B$，$\det(A^{\mathsf T})=\det A$
+\item $\det(A^{-1})=1/\det A$，$\det(cA)=c^n\det A$
+\item 按行展开：$\det A=\sum_k a_{ik}A_{ik}$
+\item 异乘变零：$\sum_k a_{ik}A_{jk}=0\ (i\neq j)$
+\item 克拉默：$x_j=\det A_j/\det A$
+\end{itemize}
+
+\minihead{四个基本子空间}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item $\Col(A)\subset\Rnum{m}$，维数 $r$
+\item $\Nul(A)\subset\Rnum{n}$，维数 $n-r$
+\item $\Row(A)=\Col(A^{\mathsf T})\subset\Rnum{n}$，维数 $r$
+\item $\Nul(A^{\mathsf T})\subset\Rnum{m}$，维数 $m-r$
+\item $\Row(A)\perp\Nul(A)$，$\Col(A)\perp\Nul(A^{\mathsf T})$
+\end{itemize}
+
+\minihead{线性变换}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 标准矩阵 $A=[\,T\boldsymbol{e}_1\ \cdots\ T\boldsymbol{e}_n\,]$
+\item $\dim\ker T+\dim\operatorname{im}T=\dim V$
+\item $[T\circ S]=[T][S]$
+\item 相似 $B=P^{-1}AP$：保 $\det$、$\tr$、秩、特征值
+\end{itemize}
+
+\minihead{特征值}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item $p_A(\lambda)=\det(\lambda I-A)$
+\item $\sum\lambda_i=\tr A$，$\prod\lambda_i=\det A$
+\item 几何重数 $\le$ 代数重数
+\item 可对角化 $\Leftrightarrow$ $n$ 个无关特征向量
+\item 对称矩阵：$Q^{\mathsf T}AQ=D$，$Q^{\mathsf T}Q=I$
+\item 瑞利商：$\lambda_{\min}\le\dfrac{\boldsymbol{x}^{\mathsf T}A\boldsymbol{x}}
+      {\boldsymbol{x}^{\mathsf T}\boldsymbol{x}}\le\lambda_{\max}$
+\end{itemize}
+
+\minihead{内积与正交}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item $\norm{\boldsymbol{v}}=\sqrt{\boldsymbol{v}^{\mathsf T}\boldsymbol{v}}$
+\item 柯西—施瓦茨：$\abs{\boldsymbol{u}\cdot\boldsymbol{v}}
+      \le\norm{\boldsymbol{u}}\norm{\boldsymbol{v}}$
+\item 投影：$\widehat{\boldsymbol{b}}=A(A^{\mathsf T}A)^{-1}A^{\mathsf T}\boldsymbol{b}$
+\item 法方程：$A^{\mathsf T}A\widehat{\boldsymbol{x}}=A^{\mathsf T}\boldsymbol{b}$
+\item $A=QR$：$R\widehat{\boldsymbol{x}}=Q^{\mathsf T}\boldsymbol{b}$
+\end{itemize}
+
+\minihead{二次型与正定}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 正定 $\Leftrightarrow$ $\lambda_i>0$ $\Leftrightarrow$ $\Delta_k>0$
+      $\Leftrightarrow$ $A=C^{\mathsf T}C$
+\item 负定：$(-1)^k\Delta_k>0$ 对一切 $k$
+\item 惯性定理：符号差 $(p,q)$ 不变
+\item 椭圆半轴长 $1/\sqrt{\lambda_i}$
+\end{itemize}
+
+\minihead{奇异值分解}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item $A=U\Sigma V^{\mathsf T}$，$\sigma_i=\sqrt{\lambda_i(A^{\mathsf T}A)}$
+\item $A\boldsymbol{v}_i=\sigma_i\boldsymbol{u}_i$
+\item $A=\sum_{i=1}^{r}\sigma_i\boldsymbol{u}_i\boldsymbol{v}_i^{\mathsf T}$
+\item $\norm{A}_2=\sigma_1$，$\norm{A}_F^2=\sum\sigma_i^2$
+\item $\norm{A-A_k}_2=\sigma_{k+1}$
+\item $\kappa(A)=\sigma_1/\sigma_n$
+\end{itemize}
+
+\end{multicols}
+
+% ===================== 附录 B =====================
+\chapter{Python 与 MATLAB 命令对照}
+\label{app:code}
+
+\begin{center}
+{\small\sffamily\color{inkl}
+约定：\texttt{A}, \texttt{b} 为已定义的矩阵与向量；下表为最常用的核心操作。}
+\end{center}
+
+\begin{multicols}{2}
+\small\sloppy
+\setstretch{1.22}
+
+\minihead{基本操作}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 建矩阵：
+      \texttt{np.array([[1,2],[3,4]])} \ / \ \texttt{[1 2; 3 4]}
+\item 转置：\texttt{A.T} \ / \ \texttt{A'}
+\item 乘法：\texttt{A @ B} \ / \ \texttt{A*B}
+\item 逐元素：\texttt{A * B} \ / \ \texttt{A.*B}
+\item 单位阵：\texttt{np.eye(n)} \ / \ \texttt{eye(n)}
+\item 零矩阵：\texttt{np.zeros((m,n))} \ / \ \texttt{zeros(m,n)}
+\end{itemize}
+
+\minihead{解方程组}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item \texttt{np.linalg.solve(A, b)} \ / \ \texttt{A\textbackslash b}
+\item LU：
+      \texttt{scipy.linalg.lu\_factor}，\texttt{lu\_solve}
+      \ / \ \texttt{[L,U,P] = lu(A)}
+\item 逆：\texttt{np.linalg.inv(A)} \ / \ \texttt{inv(A)}
+\item 伪逆：\texttt{np.linalg.pinv(A)} \ / \ \texttt{pinv(A)}
+\end{itemize}
+
+\minihead{秩与阶梯形}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 秩：\texttt{np.linalg.matrix\_rank(A)} \ / \ \texttt{rank(A)}
+\item RREF（Python 需 \texttt{sympy}）：
+      \texttt{sympy.Matrix(A).rref()}
+\item 行列式：\texttt{np.linalg.det(A)} \ / \ \texttt{det(A)}
+\end{itemize}
+
+\minihead{特征值}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 一般矩阵：
+      \texttt{np.linalg.eig(A)} \ / \ \texttt{eig(A)}
+\item 对称矩阵：
+      \texttt{np.linalg.eigh(A)} \ / \ \texttt{eig(A)}
+\item 特征多项式：
+      \texttt{np.poly(A)} \ / \ \texttt{poly(A)}
+\end{itemize}
+
+\minihead{正交化与最小二乘}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item QR：\texttt{np.linalg.qr(A)} \ / \ \texttt{[Q,R] = qr(A)}
+\item 最小二乘：
+      \texttt{np.linalg.lstsq(A, b)} \ / \ \texttt{A\textbackslash b}
+      （NumPy 须加 \texttt{rcond=None}）
+\item 投影：\texttt{A @ np.linalg.solve(A.T@A, A.T @ b)}
+\end{itemize}
+
+\minihead{奇异值分解}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item \texttt{np.linalg.svd(A)} \ / \ \texttt{[U,S,V]=svd(A)}
+\item 截断：\texttt{(U[:,:k]*s[:k]) @ Vt[:k]}
+\item 条件数：\texttt{np.linalg.cond(A)} \ / \ \texttt{cond(A)}
+\item 范数：\texttt{np.linalg.norm(A)} \ / \ \texttt{norm(A)}
+\end{itemize}
+
+\minihead{作图（Python）}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+\item 散点：\texttt{plt.scatter(x, y)}
+\item 拟合线：\texttt{plt.plot(x, m*x+c)}
+\item 奇异值衰减：\texttt{plt.semilogy(s)}
+\item 等高线：\texttt{plt.contour(X, Y, F, levels=12)}
+\end{itemize}
+
+\end{multicols}
+
+\begin{keypoint}
+\textbf{三条数值经验}：
+(1) 解方程组用 \texttt{solve}，不要用 \texttt{inv(A)@b}；
+(2) 对称矩阵用 \texttt{eigh}，不要用 \texttt{eig}；
+(3) 判断相等一律用 \texttt{np.allclose}，不要用 \texttt{==}。
+浮点运算的舍入误差，是理论数学与计算数学之间最常见的一条鸿沟。
+\end{keypoint}
+
+% ===================== 附录 C =====================
+\chapter{中英术语对照}
+\label{app:terms}
+
+\begin{multicols}{2}
+\small
+\setstretch{1.18}
+\begin{itemize}[leftmargin=1.2em, itemsep=1.5pt, label={}]
+\item 向量空间 \hfill vector space
+\item 子空间 \hfill subspace
+\item 线性组合 \hfill linear combination
+\item 张成 \hfill span
+\item 线性相关 / 无关 \hfill linearly dependent / independent
+\item 基 \hfill basis
+\item 维数 \hfill dimension
+\item 坐标 \hfill coordinates
+\item 行阶梯形 \hfill echelon form
+\item 简化行阶梯形 \hfill reduced echelon form (RREF)
+\item 主元 \hfill pivot
+\item 自由变量 \hfill free variable
+\item 秩 \hfill rank
+\item 增广矩阵 \hfill augmented matrix
+\item 初等行变换 \hfill elementary row operations
+\item 可逆矩阵 \hfill invertible matrix
+\item 行列式 \hfill determinant
+\item 余子式 / 代数余子式 \hfill minor / cofactor
+\item 伴随矩阵 \hfill adjugate matrix
+\item 克拉默法则 \hfill Cramer's rule
+\item 列空间 \hfill column space
+\item 零空间 \hfill null space
+\item 行空间 \hfill row space
+\item 左零空间 \hfill left null space
+\item 秩—零化度定理 \hfill rank--nullity theorem
+\item 线性变换 \hfill linear transformation
+\item 核 \hfill kernel
+\item 像 \hfill image / range
+\item 复合 \hfill composition
+\item 相似矩阵 \hfill similar matrices
+\item 特征值 / 特征向量 \hfill eigenvalue / eigenvector
+\item 特征多项式 \hfill characteristic polynomial
+\item 代数重数 / 几何重数 \hfill algebraic / geometric multiplicity
+\item 对角化 \hfill diagonalization
+\item 谱定理 \hfill spectral theorem
+\item 正交矩阵 \hfill orthogonal matrix
+\item 内积 \hfill inner product
+\item 范数 \hfill norm
+\item 标准正交基 \hfill orthonormal basis
+\item 格拉姆—施密特 \hfill Gram--Schmidt
+\item 正交投影 \hfill orthogonal projection
+\item 最小二乘 \hfill least squares
+\item 法方程 \hfill normal equations
+\item 二次型 \hfill quadratic form
+\item 惯性定理 \hfill Sylvester's law of inertia
+\item 合同 \hfill congruent
+\item 正定 \hfill positive definite
+\item 顺序主子式 \hfill leading principal minor
+\item 瑞利商 \hfill Rayleigh quotient
+\item 奇异值分解 \hfill singular value decomposition
+\item 奇异值 / 奇异向量 \hfill singular value / vector
+\item 条件数 \hfill condition number
+\item 低秩逼近 \hfill low-rank approximation
+\item 主成分分析 \hfill principal component analysis
+\end{itemize}
+\end{multicols}
+
+% ===================== 参考文献 =====================
+
+% ---- YangTex 补注（唯一新增文字）：原稿列了参考文献但正文未引用，
+%      补一句以便 PDF 上的引用编号可以悬停反查；原稿文字一字未删改。 ----
+\par\noindent 延伸阅读可参见~\cite{tongji,lay,strang}。\par
+\begin{thebibliography}{9}
+\small
+\setstretch{1.15}
+
+\bibitem{tongji}
+同济大学数学系. 线性代数（第六版）. 高等教育出版社, 2014.
+
+\bibitem{lay}
+David C.\ Lay, Steven R.\ Lay, Judi J.\ McDonald.
+\emph{Linear Algebra and Its Applications} (5th ed.). Pearson, 2015.
+（中译本：线性代数及其应用，机械工业出版社.）
+
+\bibitem{strang}
+Gilbert Strang. \emph{Introduction to Linear Algebra} (6th ed.).
+Wellesley-Cambridge Press, 2023.
+
+\bibitem{axler}
+Sheldon Axler. \emph{Linear Algebra Done Right} (4th ed.). Springer, 2024.
+
+\bibitem{horn}
+Roger A.\ Horn, Charles R.\ Johnson.
+\emph{Matrix Analysis} (2nd ed.). Cambridge University Press, 2013.
+
+\bibitem{trefethen}
+Lloyd N.\ Trefethen, David Bau III.
+\emph{Numerical Linear Algebra}. SIAM, 1997.
+
+\bibitem{goodfellow}
+Ian Goodfellow, Yoshua Bengio, Aaron Courville.
+\emph{Deep Learning}. MIT Press, 2016.（第 2 章为线性代数速览.）
+
+\end{thebibliography}
+
+\vspace{0.6cm}
+\begin{flushright}
+\cjkkai
+线性代数的全部内容，可以压缩成一句话：\\
+\emph{看清一个变换在哪些方向上只做伸缩。}\\[4pt]
+{\sffamily\footnotesize\color{inkl}—— 全书完 ——}
+\end{flushright}
+
+
+\end{document}

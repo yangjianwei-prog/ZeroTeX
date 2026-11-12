@@ -1,0 +1,72 @@
+---
+title: PDE 混排笔记 · 能量方法
+author: 杨建伟
+lang: zh
+---
+# 模型与记号
+
+用 **Markdown** 写结构与说明，用 `:::latex` 区块写定理和公式——
+这就是 YangTex 的 LaTeX / Markdown 混排模板。设
+
+$$
+  u_t - \nu\Delta u + (u\cdot\nabla)u + \nabla p = f,
+  \qquad \nabla\cdot u = 0 .
+$$
+
+其中 $u$ 为速度、$p$ 为压力、$\nu>0$ 为粘性系数。
+
+## 记号对照
+
+| 记号 | 含义 | 空间 |
+| --- | --- | --- |
+| $u$ | 速度场 | $H^1_0(\Omega)$ |
+| $p$ | 压力 | $L^2(\Omega)$ |
+| $\|u\|$ | $L^2$ 范数 | $\mathbb{R}^{+}$ |
+
+## 主要结论
+
+:::latex
+\begin{theorem}[能量不等式]
+设 $u_0 \in L^2_\sigma(\Omega)$，$f \in L^2(0,T;H^{-1})$，则任意弱解满足
+\begin{align}
+  \frac{1}{2}\frac{d}{dt}\|u(t)\|_{L^2}^2
+    + \nu\|\nabla u(t)\|_{L^2}^2
+  &= (f(t), u(t)) \\
+  &\le \frac{\nu}{2}\|\nabla u(t)\|_{L^2}^2
+     + \frac{C_P^2}{2\nu}\|f(t)\|_{L^2}^2 .
+\end{align}
+\end{theorem}
+
+\begin{proof}
+对方程与 $u$ 作 $L^2$ 内积，利用 $\nabla\cdot u = 0$ 消去对流项与压力项，
+再对右端用 Cauchy 不等式与 Poincare 不等式即可。
+\end{proof}
+:::
+
+> 重点：常数必须与 $u$ 无关，否则 Gronwall 论证不成立。
+
+## 推导清单
+
+- 第一步：*检验函数* 取 $u$ 本身
+- 第二步：分部积分，边界项因 $u=0$ 消失
+- 第三步：Young 不等式吸收梯度项
+
+:::latex
+\begin{definition}[弱解]
+称 $u \in L^\infty(0,T;L^2_\sigma) \cap L^2(0,T;H^1_0)$ 为弱解，
+若对任意 $\varphi \in C_c^\infty([0,T)\times\Omega)$ 且 $\nabla\cdot\varphi=0$ 有
+\begin{equation}
+  -\int_0^T (u,\partial_t\varphi)\,dt + \nu\int_0^T(\nabla u,\nabla\varphi)\,dt
+  = (u_0,\varphi(0)) + \int_0^T(f,\varphi)\,dt .
+\end{equation}
+\end{definition}
+:::
+
+## 待办
+
+- [ ] 补上 $n=3$ 的 Serrin 条件
+- [ ] 对照教材第 5 章重写证明
+
+---
+
+套用后得到的是标准 LaTeX，`实时编译` 与 `双向逐行同步` 均照常可用。

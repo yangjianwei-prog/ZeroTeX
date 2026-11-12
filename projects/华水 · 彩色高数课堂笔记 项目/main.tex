@@ -1,0 +1,398 @@
+% =====================================================================
+%  华水 · 彩色高数课堂笔记 (article)
+%  12 种彩色 tcolorbox（定义/定理/例题/提示/警示/小结）、渐变封面、彩色圆点列表；适合课堂笔记
+%  来源：高等数学课堂笔记 main0729.tex + gdsxbj.tex（由用户原始工程精简为单文件模板）
+%  精简说明：删除编译产物 PDF、digest.lock 与长篇章节正文；完整保留配色、
+%            自定义盒子 / 环境、章节样式、页眉页脚与封面设计。
+%  字体：已删除原工程的 macOS 专有字体声明，统一由 ctex fontset=fandol
+%        配置中文字体，Mac / Windows / Linux 均无需额外安装字体即可编译。
+%        在 macOS 上如需还原原设计，可改回 fontset=mac 并重新指定系统字体。
+%  编译：xelatex（目录 / 交叉引用建议编译两遍）
+% =====================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[fontset=fandol]{ctex}
+\usepackage{fontspec}
+
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shadows,positioning,decorations.pathmorphing,arrows.meta,calc,patterns,shapes.callouts,shapes.geometric}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{unicode-math}  % 仅在 XeLaTeX 下
+
+\usepackage{geometry}
+\geometry{left=2.2cm,right=2.2cm,top=2.4cm,bottom=2.2cm,headheight=15pt,footskip=1.2cm}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{dashrule}
+\usepackage{pagecolor}
+\usepackage{eso-pic}
+\usepackage{hyperref}
+
+\definecolor{cBlue}{HTML}{1565C0}      % 明亮宝蓝
+\definecolor{cBlueL}{HTML}{E3F2FD}     % 冰蓝底
+\definecolor{cBlueLL}{HTML}{BBDEFB}    % 中间蓝
+\definecolor{cPink}{HTML}{D81B60}      % 鲜艳玫红
+\definecolor{cPinkL}{HTML}{FCE4EC}
+\definecolor{cPurple}{HTML}{8E24AA}    % 亮紫
+\definecolor{cPurpleL}{HTML}{F3E5F5}
+\definecolor{cTeal}{HTML}{00838F}      % 翠青
+\definecolor{cTealL}{HTML}{E0F7FA}
+\definecolor{cOrange}{HTML}{E64A19}    % 烈焰橙
+\definecolor{cOrangeL}{HTML}{FBE9E7}
+\definecolor{cYellow}{HTML}{FFA000}    % 金黄
+\definecolor{cYellowL}{HTML}{FFF8E1}
+\definecolor{cGreen}{HTML}{2E7D32}     % 翠绿
+\definecolor{cGreenL}{HTML}{E8F5E9}
+\definecolor{cInk}{HTML}{1A1A2E}       % 深墨
+\definecolor{cIndigo}{HTML}{4527A0}    % 深靛蓝
+\definecolor{cIndigoL}{HTML}{EDE7F6}   % 淡靛蓝
+\definecolor{cPaper}{HTML}{FAFAFF}     % 纸色
+\definecolor{nCyan}{HTML}{00E5FF}
+\definecolor{nMagenta}{HTML}{FF1744}
+\definecolor{nGold}{HTML}{FFD600}
+\definecolor{nPurple}{HTML}{D500F9}
+\definecolor{nOrange}{HTML}{FF6D00}
+\definecolor{nLime}{HTML}{76FF03}
+
+\pagecolor{cPaper}
+\color{cInk}
+
+\hypersetup{colorlinks=true,linkcolor=cBlue,urlcolor=cPurple,citecolor=cTeal}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\renewcommand{\headrule}{%
+  \vspace{-2pt}%
+  \tikz{%
+    \shade[left color=cBlue, right color=cPurple]
+      (0,0) rectangle (\linewidth, 2.5pt);%
+    \fill[cBlue]      (0.03*\linewidth, 1.25pt) circle (2pt);%
+    \fill[cPink]      (0.25*\linewidth, 1.25pt) circle (1.5pt);%
+    \fill[cYellow]    (0.50*\linewidth, 1.25pt) circle (1.5pt);%
+    \fill[cTeal]      (0.75*\linewidth, 1.25pt) circle (1.5pt);%
+    \fill[cPurple]    (0.97*\linewidth, 1.25pt) circle (2pt);%
+  }%
+  \vspace{-4pt}%
+}
+
+\fancyhead[L]{%
+  \tikz[baseline=-0.5ex]{
+    \fill[cBlue] (0,0) circle (3pt);
+    \fill[cPink] (0.45,0) circle (2pt);
+  }%
+  \;\small\sffamily\bfseries\color{cBlue}高等数学课堂笔记%
+}
+\fancyhead[R]{%
+  \small\sffamily\bfseries\color{cPurple}杨建伟%
+  \;\tikz[baseline=-0.5ex]{
+    \fill[cPurple] (0,0) circle (3pt);
+    \fill[cTeal] (0.45,0) circle (2pt);
+  }%
+}
+
+\fancyfoot[C]{%
+  \begin{tikzpicture}
+    \node[fill=cBlue, text=white, circle, inner sep=2pt, minimum size=24pt, font=\small\bfseries]
+      {\thepage};
+  \end{tikzpicture}}
+\fancyfoot[L]{\small\color{gray}华北水利水电大学 · 数学与统计学院}
+\fancyfoot[R]{\small\color{gray}\rightmark}
+
+\titleformat{\section}
+  {\sffamily\bfseries\LARGE\color{cBlue}}
+  {\tikz[baseline=-0.6ex]\node[fill=cPink, text=white, rounded corners=6pt, inner xsep=10pt, inner ysep=3pt, font=\bfseries\large]{\thesection};}
+  {0.7em}
+  {\color{cBlue}}
+  [\vspace{3pt}{\color{cBlue!50}\titlerule[1.5pt]}]
+
+\titleformat{\subsection}
+  {\sffamily\bfseries\large\color{cPurple}}
+  {\tikz[baseline=-0.5ex]\node[fill=cYellow, text=cInk, rounded corners=5pt, inner xsep=8pt, inner ysep=2.5pt, font=\bfseries]{\thesubsection};}
+  {0.55em}{}
+
+\titlecontents{section}
+  [0pt]
+  {\addvspace{8pt}\sffamily\bfseries\normalsize}
+  {\tikz[baseline=-0.55ex]\node[fill=cBlue, text=white, rounded corners=4pt,
+     inner xsep=6pt, inner ysep=2pt, font=\normalsize\bfseries]{\thecontentslabel};\hspace{0.7em}}
+  {}
+  {\;\color{gray!60}\titlerule*[6pt]{.}\;\contentspage}
+
+\titlecontents{subsection}
+  [1.6cm]
+  {\addvspace{3pt}\sffamily\small}
+  {\textcolor{cPurple}{\thecontentslabel}\hspace{0.5em}}
+  {\color{cInk}}
+  {\;\color{gray!60}\titlerule*[6pt]{.}\;\contentspage}
+
+\tcbset{
+  defbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cBlue, right color=cBlue!75!black},
+    boxrule=1.2pt, colframe=cBlue!50,
+    interior style={top color=cBlue!40, bottom color=cBlue!12},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  thmbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cPurple, right color=cPurple!75!black},
+    boxrule=1.2pt, colframe=cPurple!50,
+    interior style={top color=cPurple!38, bottom color=cPurple!10},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  egbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cTeal, right color=cTeal!75!black},
+    boxrule=1.2pt, colframe=cTeal!50,
+    interior style={top color=cTeal!38, bottom color=cTeal!10},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  tipbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cOrange, right color=cOrange!75!black},
+    boxrule=1.2pt, colframe=cOrange!50,
+    interior style={top color=cOrange!35, bottom color=cOrange!10},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  warnbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cPink, right color=cPink!75!black},
+    boxrule=1.2pt, colframe=cPink!50,
+    interior style={top color=cPink!35, bottom color=cPink!10},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  sumbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cGreen, right color=cGreen!75!black},
+    boxrule=1.2pt, colframe=cGreen!50,
+    interior style={top color=cGreen!35, bottom color=cGreen!10},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  eggbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=cInk,
+    title style={left color=cYellow, right color=cOrange!80},
+    boxrule=1.2pt, colframe=cYellow!60,
+    interior style={top color=cYellow!45, bottom color=cYellow!12},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  plainbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=gray!60, right color=gray!45},
+    boxrule=1.2pt, colframe=gray!40,
+    interior style={top color=gray!22, bottom color=gray!8},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  proofbase/.style={
+    enhanced, breakable,
+    arc=12pt, outer arc=14pt,
+    drop fuzzy shadow=gray!40,
+    fonttitle=\sffamily\bfseries,
+    coltitle=white,
+    title style={left color=cIndigo, right color=cIndigo!75!black},
+    boxrule=1.2pt, colframe=cIndigo!50,
+    interior style={top color=cIndigo!35, bottom color=cIndigo!10},
+    attach boxed title to top left={xshift=8pt, yshift=-7pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=3pt, bottom=3pt, left=8pt, right=8pt},
+    top=14pt, bottom=8pt, left=10pt, right=10pt,
+    before skip=12pt, after skip=10pt,
+  },
+  leadbase/.style={
+    enhanced, breakable,
+    arc=14pt, outer arc=16pt,
+    boxrule=0pt,
+    drop fuzzy shadow=cBlue!30,
+    fonttitle=\sffamily\bfseries\Large,
+    coltitle=white,
+    title style={left color=cBlue, right color=cPurple},
+    boxrule=1.5pt, colframe=cBlue!40,
+    interior style={top color=cBlue!25, bottom color=cPurple!8},
+    attach boxed title to top left={xshift=10pt, yshift=-8pt},
+    boxed title style={arc=8pt, boxrule=0pt, top=4pt, bottom=4pt, left=10pt, right=10pt},
+    top=16pt, bottom=10pt, left=12pt, right=12pt,
+    before skip=14pt, after skip=12pt,
+  }
+}
+
+\newtcolorbox[auto counter, number within=section]{defbox}[1][]{defbase, title={定义 \thetcbcounter\quad #1}}
+\newtcolorbox{defbox*}[1][]{defbase, title={#1}}
+
+\newtcolorbox[auto counter, number within=section]{thmbox}[1][]{thmbase, title={定理 \thetcbcounter\quad #1}}
+\newtcolorbox{thmbox*}[1][]{thmbase, title={#1}}
+
+\newtcolorbox[auto counter, number within=section]{egbox}[1][]{egbase, title={例 \thetcbcounter\quad #1}}
+\newtcolorbox{egbox*}[1][]{egbase, title={#1}}
+
+\newtcolorbox{tipbox}[1][]{tipbase, title={#1}}
+\newtcolorbox{warnbox}[1][]{warnbase, title={#1}}
+\newtcolorbox{sumbox}[1][]{sumbase, title={#1}}
+\newtcolorbox{eggbox}[1][]{eggbase, title={#1}}
+\newtcolorbox{plainbox}[1][]{plainbase, title={#1}}
+\newtcolorbox{proofbox}[1][]{proofbase, title={#1}}
+\newtcolorbox{leadbox}[1][]{leadbase, title={#1}}
+
+\newtcolorbox{eqbox}{
+  enhanced, breakable=false,
+  arc=8pt,
+  boxrule=0.8pt, colframe=cBlue!35,
+  interior style={top color=cBlue!22, bottom color=cBlue!6},
+  left=12pt, right=12pt, top=5pt, bottom=5pt,
+  before skip=4pt, after skip=4pt,
+}
+
+\newtcolorbox{quotebox}{
+  enhanced, breakable,
+  arc=8pt,
+  boxrule=0pt,
+  borderline west={4pt}{0pt}{cBlue!50},
+  interior style={top color=cBlue!15, bottom color=cPurple!6},
+  left=18pt, right=16pt, top=10pt, bottom=10pt,
+  before skip=14pt, after skip=14pt,
+  fontupper=\itshape
+}
+\newcommand{\qattr}[1]{{\normalfont\upshape\small\par\raggedleft—— #1\par}}
+
+\newlist{cndot}{itemize}{1}
+\setlist[cndot]{label={\tikz\fill[cBlue] (0,0) circle (2.2pt);}, leftmargin=1.4em, itemsep=4pt}
+
+\newlist{pkdot}{itemize}{1}
+\setlist[pkdot]{label={\tikz\fill[cPink] (0,0) circle (2.2pt);}, leftmargin=1.4em, itemsep=4pt}
+
+\newlist{orngdot}{itemize}{1}
+\setlist[orngdot]{label={\tikz\fill[cOrange] (0,0) circle (2.2pt);}, leftmargin=1.4em, itemsep=4pt}
+
+\newcommand{\keyw}[1]{\colorbox{cYellowL}{\textbf{\color{cOrange}#1}}}
+\newcommand{\hl}[1]{\colorbox{cYellow!40}{#1}}
+
+\newlist{ppdot}{itemize}{1}
+\setlist[ppdot]{label={\tikz\fill[cPurple] (0,0) circle (2.2pt);}, leftmargin=1.4em, itemsep=4pt}
+\newlist{tldot}{itemize}{1}
+\setlist[tldot]{label={\tikz\fill[cTeal] (0,0) circle (2.2pt);}, leftmargin=1.4em, itemsep=4pt}
+\newlist{gndot}{itemize}{1}
+\setlist[gndot]{label={\tikz\fill[cGreen] (0,0) circle (2.2pt);}, leftmargin=1.4em, itemsep=4pt}
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{2.4cm}
+{\sffamily\bfseries\fontsize{30}{38}\selectfont\color{cBlue} 高等数学课堂笔记\par}
+\vspace{0.6cm}
+{\large\color{cPurple} 极限 · 导数 · 积分\par}
+\vspace{1.2cm}
+\begin{tcolorbox}[enhanced,width=0.72\textwidth,colback=cYellowL,colframe=cOrange,
+  arc=6pt,boxrule=0.8pt,drop fuzzy shadow=cYellow!60]
+\centering 色彩多变 · 个性张扬 \quad\keyw{重点} \quad \hl{高亮}
+\end{tcolorbox}
+\vspace{1.4cm}
+{\small 华北水利水电大学 \quad 数学与统计学院 \quad 杨建伟\par}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\section{极限与连续}
+
+\begin{defbox}[函数极限]
+设 $f$ 在 $x_0$ 的去心邻域内有定义。若存在常数 $A$，对任意
+$\varepsilon>0$ 都存在 $\delta>0$，使得当 $0<\lvert x-x_0\rvert<\delta$ 时
+$\lvert f(x)-A\rvert<\varepsilon$，则称
+\begin{equation}\label{eq:limit}
+  \lim_{x\to x_0}f(x)=A .
+\end{equation}
+\end{defbox}
+
+式 \eqref{eq:limit} 是全部微分学的起点；经典处理方式可参见~\cite{Evans,Rudin}。
+
+\begin{tipbox}[记忆口诀]
+「$\varepsilon$ 先来，$\delta$ 后到」：先给定精度，再找半径。
+\end{tipbox}
+
+\section{导数与中值定理}
+
+\begin{thmbox}[拉格朗日中值定理]
+若 $f\in C[a,b]$ 且在 $(a,b)$ 可导，则存在 $\xi\in(a,b)$ 使
+\begin{equation}\label{eq:mvt}
+  f'(\xi)=\frac{f(b)-f(a)}{b-a} .
+\end{equation}
+\end{thmbox}
+
+由 \eqref{eq:mvt} 立刻得到单调性判别法与误差估计，详见~\cite{Rudin}。
+
+\begin{sumbox}[本节小结]
+极限刻画局部行为，导数刻画变化率，中值定理把二者联系起来。
+\end{sumbox}
+
+\begin{thebibliography}{9}
+\bibitem{Evans} L. C. Evans, \emph{Partial Differential Equations}, AMS, 2010.
+\bibitem{Rudin} W. Rudin, \emph{Principles of Mathematical Analysis},
+  McGraw-Hill, 1976.
+\end{thebibliography}
+
+\end{document}

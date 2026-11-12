@@ -1,0 +1,90 @@
+% Springer 数学期刊模板 —— svjour3（J. Evol. Equ. / Math. Ann. 等）
+% 引擎：pdflatex
+% 官方类 svjour3 已安装时自动使用正式期刊格式；未安装时降级为 article 预览排版。
+\IfFileExists{svjour3.cls}{%
+  \documentclass[smallextended]{svjour3}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\ifdefined\YTfallback
+  \newcommand{\smartqed}{}
+  \newcommand{\journalname}[1]{}
+  \newcommand{\institute}[1]{}
+  \newcommand{\at}{, }
+  \newcommand{\email}[1]{}
+  \newcommand{\keywords}[1]{\par\small\textbf{Keywords: } #1}
+  \newcommand{\PACS}[1]{}
+  \newcommand{\subclass}[1]{}
+  \newenvironment{acknowledgements}
+    {\par\medskip\noindent\textbf{Acknowledgements. }}{\par}
+\else
+  \smartqed
+\fi
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+
+\journalname{Journal of Evolution Equations}
+
+\title{On a class of nonlocal diffusion equations with measure data}
+\author{Yang Jianwei \and Co-author Name}
+\institute{Y.~Jianwei \at School of Mathematics and Statistics,
+North China University of Water Resources and Electric Power,
+Zhengzhou 450046, P.R. China\\
+Tel.: +86-371-00000000\\
+\email{yangjianwei@example.edu.cn}}
+
+\begin{document}
+\maketitle
+
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official \texttt{svjour3.cls} is not installed, so this document uses a
+generic article class. Install it with \texttt{tlmgr install springer} or copy
+the class from the journal's LaTeX template package, then recompile to obtain
+the real Springer layout.}}
+\bigskip
+\fi
+
+\begin{abstract}
+We prove existence and uniqueness of renormalized solutions to a
+nonlocal diffusion equation with a bounded Radon measure as right-hand
+side. The proof relies on a comparison principle and truncation
+techniques.
+\keywords{Nonlocal diffusion \and Measure data \and Renormalized solution}
+\PACS{02.30.Jr \and 02.60.Lj}
+\subclass{35R11 \and 35D99}
+\end{abstract}
+
+\section{Introduction and main result}
+
+Let $\Om\subset\R^n$ be a bounded open set and let $\mu$ be a bounded
+Radon measure on $\Om$. We consider
+\begin{equation}\label{eq:nl}
+  (-\Delta)^s u = \mu \ \text{ in } \Om, \qquad u = 0 \ \text{ in } \R^n\setminus\Om,
+\end{equation}
+with $s\in(0,1)$.
+
+\begin{theorem}
+For every bounded Radon measure $\mu$ there exists a unique
+renormalized solution $u$ of \eqref{eq:nl}, and
+$u\in L^q(\R^n)$ for all $q<n/(n-2s)$.
+\end{theorem}
+\begin{lemma}
+\end{lemma}
+\section{Proof}
+Approximate $\mu$ by smooth functions, derive uniform estimates via
+the fractional Sobolev embedding, and pass to the limit using
+compactness.
+
+\begin{acknowledgements}
+Supported by NSFC (Grant No.\ 00000000).
+\end{acknowledgements}
+
+\end{document}

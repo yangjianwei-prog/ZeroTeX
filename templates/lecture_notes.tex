@@ -1,0 +1,97 @@
+% 研究生课程讲义 / 自学笔记模板
+% 引擎：xelatex（中英混排）
+\documentclass[11pt,a4paper,UTF8,fontset=fandol]{ctexart}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue}
+
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{example}[theorem]{例}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{注记}
+\renewcommand{\proofname}{\bfseries 证明}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\Lp}[1]{L^{#1}}
+\newcommand{\Hs}[1]{H^{#1}}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{《偏微分方程现代方法》讲义}
+\author{杨建伟 \quad 第 1 讲}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\bigskip\hrule\bigskip
+
+\section{Sobolev 空间回顾}
+
+\begin{definition}[弱导数]
+设 $u,v\in L^1_{\mathrm{loc}}(\Om)$，$\alpha$ 为多重指标。若对任意
+$\varphi\in C_c^\infty(\Om)$ 有
+\begin{equation}\label{eq:weak-deriv}
+  \int_{\Om} u\, D^\alpha\varphi\,\dd x
+  = (-1)^{|\alpha|}\int_{\Om} v\,\varphi\,\dd x ,
+\end{equation}
+则称 $v$ 是 $u$ 的 $\alpha$ 阶弱导数，记作 $D^\alpha u=v$。
+\end{definition}
+
+\begin{definition}[Sobolev 空间]
+$W^{k,p}(\Om)=\{u\in\Lp{p}(\Om): D^\alpha u\in\Lp{p}(\Om),\ |\alpha|\le k\}$，
+配备范数 $\|u\|_{W^{k,p}}=\bigl(\sum_{|\alpha|\le k}\|D^\alpha u\|_{\Lp p}^p\bigr)^{1/p}$。
+当 $p=2$ 时记为 $\Hs{k}(\Om)$。
+\end{definition}
+
+\begin{theorem}[Sobolev 嵌入]\label{thm:embed}
+设 $\Om\subset\R^n$ 为有界 Lipschitz 区域，$1\le p<n$，则
+$W^{1,p}(\Om)\hookrightarrow\Lp{p^*}(\Om)$ 连续嵌入，其中
+$p^*=np/(n-p)$；若 $p>n$，则进一步有
+$W^{1,p}(\Om)\hookrightarrow C^{0,1-n/p}(\overline\Om)$。
+\end{theorem}
+
+\begin{example}
+取 $n=3,\ p=2$，则 $p^*=6$，即 $\Hs1(\Om)\hookrightarrow\Lp6(\Om)$。
+这正是处理三维半线性波动方程临界增长时常用的嵌入。
+\end{example}
+
+\begin{remark}
+嵌入 $W^{1,n}(\Om)\hookrightarrow L^\infty(\Om)$ 一般不成立，
+需要 Orlicz 空间（Trudinger 不等式）替代。
+\end{remark}
+
+\section{弱解与 Lax--Milgram 定理}
+
+考虑 Dirichlet 问题
+\begin{equation}\label{eq:dirichlet}
+  -\Delta u = f \ \text{ in } \Om,\qquad u=0 \ \text{ on } \partial\Om .
+\end{equation}
+
+\begin{theorem}[存在唯一性]
+对任意 $f\in\Lp2(\Om)$，\eqref{eq:dirichlet} 存在唯一弱解
+$u\in\Hs1_0(\Om)$，且 $\|u\|_{\Hs1}\le C\|f\|_{\Lp2}$。
+\end{theorem}
+
+\begin{proof}
+定义双线性型 $a(u,v)=\int_{\Om}\nabla u\cdot\nabla v\,\dd x$。
+由 Poincaré 不等式 $a(u,u)\ge c\|u\|_{\Hs1}^2$，故 $a$ 强制；
+Cauchy--Schwarz 给出有界性。Lax--Milgram 定理立即给出结论。
+\end{proof}
+
+\section*{习题}
+\begin{enumerate}
+  \item 证明 \eqref{eq:weak-deriv} 中弱导数若存在则唯一（几乎处处意义下）。
+  \item 验证 $W^{1,p}_0(\Om)$ 在 $W^{1,p}(\Om)$ 中是闭子空间。
+  \item 用定理 \ref{thm:embed} 说明 $n=2$ 时 $\Hs1(\Om)\hookrightarrow\Lp q(\Om)$
+        对所有 $q<\infty$ 成立，但对 $q=\infty$ 不成立。
+\end{enumerate}
+
+\end{document}

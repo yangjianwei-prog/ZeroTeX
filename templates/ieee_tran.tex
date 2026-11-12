@@ -1,0 +1,77 @@
+% IEEE Transactions 双栏期刊模板
+% 引擎：pdflatex
+\documentclass[journal,11pt]{IEEEtran}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{cite}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{Stability Analysis of Distributed Parameter Systems with Delay}
+\author{Yang~Jianwei,~\IEEEmembership{Member,~IEEE}}
+
+\markboth{IEEE Transactions on Automatic Control,~Vol.~XX, No.~X, 2026}%
+{Yang: Stability Analysis of Distributed Parameter Systems}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper addresses the exponential stability of a class of
+distributed parameter systems subject to time-varying delays. A
+Lyapunov--Krasovskii functional is constructed in the Hilbert space
+framework, and a delay-dependent stability criterion is derived in
+terms of linear matrix inequalities. A numerical example illustrates
+the effectiveness of the proposed method.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Distributed parameter systems, time delay, exponential stability,
+Lyapunov--Krasovskii functional, linear matrix inequality.
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+\IEEEPARstart{C}{onsider} the semilinear evolution equation
+\begin{equation}\label{eq:sys}
+  \frac{\partial u}{\partial t}(x,t)
+  = A u(x,t) + B u(x,t-\tau(t)) + F(u(x,t)),
+\end{equation}
+where $A$ generates a $C_0$-semigroup on a Hilbert space $H$,
+$\tau(t)\in[0,\bar\tau]$ is a bounded time-varying delay, and
+$F:H\to H$ is Lipschitz continuous.
+
+\begin{theorem}
+If there exist positive definite operators $P,Q$ and a scalar
+$\gamma>0$ such that
+\begin{equation}\label{eq:lmi}
+  \begin{bmatrix}
+    PA + A^*P + Q + \gamma I & PB \\
+    B^*P & -(1-\dot\tau_{\max})Q
+  \end{bmatrix} < 0,
+\end{equation}
+then the zero solution of \eqref{eq:sys} is exponentially stable.
+\end{theorem}
+
+\begin{proof}
+Choose $V(t)=\langle u(t),Pu(t)\rangle+\int_{t-\tau(t)}^t\langle u(s),Qu(s)\rangle\,\dd s$.
+Differentiating along \eqref{eq:sys} and using \eqref{eq:lmi} gives
+$\dot V(t)\le -\gamma\|u(t)\|^2$, whence exponential stability follows.
+\end{proof}
+
+\section{Numerical Example}
+Let $A=\partial_{xx}$ on $(0,\pi)$ with Dirichlet boundary conditions.
+For $\bar\tau=0.5$ the criterion \eqref{eq:lmi} is feasible, and
+simulation confirms the theoretical decay rate.
+
+\section{Conclusion}
+A delay-dependent stability criterion for distributed parameter systems
+has been presented. Future work will address sampled-data control.
+
+\end{document}

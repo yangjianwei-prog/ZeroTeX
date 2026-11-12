@@ -1,0 +1,68 @@
+% AMS 会议文集 / Contemporary Mathematics —— amsproc
+% 引擎：pdflatex
+\documentclass{amsproc}
+
+\usepackage{amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+
+\title[Short running title]{A note on the asymptotic behavior of solutions}
+\author{Yang Jianwei}
+\address{School of Mathematics and Statistics, NCWU, Zhengzhou 450046, China}
+\email{yangjianwei@example.edu.cn}
+
+\begin{document}
+
+\begin{abstract}
+We present a short proof of the long-time asymptotic behavior of solutions
+to a damped semilinear wave equation. The argument is based on a
+Lyapunov functional and the {\L}ojasiewicz--Simon inequality.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $\Om\subset\R^n$ be a bounded smooth domain. We consider
+\begin{equation}\label{eq:wave}
+  u_{tt} + u_t - \Delta u + g(u) = 0 , \qquad (x,t)\in\Om\times(0,\infty),
+\end{equation}
+subject to the Dirichlet boundary condition $u=0$ on $\partial\Om$.
+
+\begin{theorem}
+Assume $g\in C^1(\R)$ is real analytic and satisfies the growth condition
+$|g'(s)|\le C(1+|s|^{p-1})$ with $p<n/(n-2)$. Then every global bounded
+solution of \eqref{eq:wave} converges to a single stationary state as
+$t\to\infty$.
+\end{theorem}
+
+\section{Proof sketch}
+
+\begin{proof}
+The energy functional
+\begin{equation}
+  E(u,u_t)=\int_{\Om}\Bigl(\tfrac12|u_t|^2+\tfrac12|\nabla u|^2+G(u)\Bigr)\,dx,
+  \qquad G(s)=\int_0^s g(r)\,dr,
+\end{equation}
+is nonincreasing along trajectories. Since $g$ is analytic, the
+{\L}ojasiewicz--Simon inequality applies to $E$ near any stationary point,
+which yields the convergence.
+\end{proof}
+
+\section*{Acknowledgment}
+This note was prepared for the conference proceedings volume.
+
+For the classical background and related results, see~\cite{Si}.
+
+\begin{thebibliography}{9}
+\bibitem{Si} L.~Simon, \emph{Asymptotics for a class of nonlinear evolution
+equations, with applications to geometric problems}, Ann. of Math. \textbf{118} (1983), 525--571.
+\end{thebibliography}
+
+\end{document}

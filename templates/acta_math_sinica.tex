@@ -1,0 +1,47 @@
+% === 数学学报 (Acta Mathematica Sinica) === 中文数学期刊排版模板（YangTex 内置）
+% 引擎：xelatex + ctex；按期刊投稿规范整理，非期刊官方 .cls 文件。
+% 分类：中文数学期刊
+\documentclass[UTF8,fontset=fandol,11pt]{ctexart}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\title{加权 Morrey 空间上奇异积分算子的有界性}
+\author{杨建伟}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+证明 Calderón–Zygmund 算子在与 Muckenhoupt 权相关的 Morrey 空间上的加权范数不等式，并讨论 BMO 交换子。
+\end{abstract}
+\paragraph{关键词} 奇异积分；Morrey 空间；Muckenhoupt 权；加权不等式
+
+\section{引言}
+设 $w\in A_p$，$T$ 为满足标准尺寸与消去条件的 Calderón–Zygmund 算子。
+经典背景与相关结果可参见~\cite{Evans,Brezis}。
+
+\begin{theorem}
+对 $1<p<\infty$、$0<\lambda<n$，$T$ 在加权 Morrey 空间 $L^{p,\lambda}(w)$ 上有界。
+\end{theorem}
+
+\begin{proof}
+借助尖锐极大函数控制与加权 Fefferman–Stein 不等式，化归加权 $L^p$ 理论。
+\end{proof}
+
+\section{主要估计}
+\begin{equation}
+\|Tf\|_{L^{p,\lambda}(w)}\le C[w]_{A_p}^{\max\{1,1/(p-1)\}}\|f\|_{L^{p,\lambda}(w)},
+\end{equation}
+BMO 函数交换子可用同一方法处理。
+
+\section{结论}
+本文的结果可推广到更一般的区域与边界条件，相关讨论将在后续工作中给出。
+
+\begin{thebibliography}{9}
+\bibitem{Evans} 伍卓群、尹景学、王春朋，\emph{椭圆与抛物型方程引论}, 科学出版社, 2013.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}

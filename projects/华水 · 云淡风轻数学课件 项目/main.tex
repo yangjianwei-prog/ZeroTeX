@@ -1,0 +1,3465 @@
+% =====================================================================
+%  ncwu_beamer_cloud
+%  来源：实变函数与泛函分析基础课件（云淡风轻，原 253 帧）（YangTex 模板库 · 用户原稿全量保留版）
+%  处理：仅删除编译产物 PDF / digest.lock，把 \input 递归展开为单文件；
+%        正文、章节、例题、每张幻灯片、封面与参考文献一字未改。
+%  字体：原稿的 macOS 字体声明全部保留，外加 \IfFontExistsTF 存在性判断；
+%        在 Mac 上视觉与原 PDF 完全一致，在 Windows / Linux 上字体缺失时
+%        自动跳过该声明改用默认字体，仍能正常编译。
+%  编译：xelatex（目录 / 交叉引用需连续编译 2~3 遍，产品已自动处理）
+% =====================================================================
+
+% !TEX program = xelatex
+% =====================================================================
+%  实变函数与泛函分析基础（程其襄 第四版）前3章 · 创新驱动型教学课件
+%  模板：云淡风轻 · 数学 Beamer 演示文稿（ctexbeamer）
+%  编译：xelatex 连续运行两次（第二次用于生成目录与总页数）
+% =====================================================================
+\documentclass[aspectratio=169,11pt]{ctexbeamer}
+
+% ------------------------------ 宏包 ------------------------------
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% --------------------------- 配色方案 ---------------------------
+\definecolor{cloudbg}{HTML}{F7FAFD}    % 云白
+\definecolor{cloudblue}{HTML}{7BA7D7}  % 晴空蓝
+\definecolor{clouddeep}{HTML}{2F5D8A}  % 远山蓝
+\definecolor{cloudsand}{HTML}{B58900}  % 暖沙金
+\definecolor{cloudtext}{HTML}{2B3A47}  % 墨色
+\definecolor{cloudgray}{HTML}{8C9BA8}  % 烟灰
+
+% --------------------------- 全局样式 ---------------------------
+\setbeamercolor{normal text}{fg=cloudtext,bg=cloudbg}
+\setbeamercolor{structure}{fg=clouddeep}
+\setbeamercolor{alerted text}{fg=cloudsand}
+\setbeamertemplate{navigation symbols}{}
+\setbeamerfont{normal text}{size=\normalsize}
+
+\setbeamercolor{itemize item}{fg=cloudblue}
+\setbeamercolor{itemize subitem}{fg=cloudsand}
+\setbeamertemplate{itemize item}{\small$\bullet$}
+\setbeamertemplate{itemize subitem}{\scriptsize$\circ$}
+\setbeamercolor{enumerate item}{fg=clouddeep}
+
+% ---------------------------- 背景 ----------------------------
+\setbeamertemplate{background canvas}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \shade[top color=white, bottom color=cloudblue!12]
+      (current page.north west) rectangle (current page.south east);
+  \end{tikzpicture}%
+}
+
+% --------------------- 数学进度条（多彩微屏，帧标题右侧） ---------------------
+\newcommand{\progressbar}{%
+  \begin{tikzpicture}[baseline=(current bounding box.center)]
+    \pgfmathsetmacro{\prog}{\insertframenumber/max(1,\inserttotalframenumber)}%
+    \pgfmathtruncatemacro{\lit}{round(10*\prog)}%
+    \def\cellw{0.21}
+    \def\cellh{0.16}
+    \def\cellgap{0.033}
+    \foreach \i in {1,...,10}{%
+      \pgfmathtruncatemacro{\colidx}{mod(\i-1,4)}%
+      \ifcase\colidx
+        \def\cellcol{cloudblue}%
+      \or
+        \def\cellcol{cloudsand}%
+      \or
+        \def\cellcol{clouddeep}%
+      \or
+        \def\cellcol{cloudgray!80}%
+      \fi
+      \pgfmathsetmacro{\x}{(\i-1)*(\cellw+\cellgap)}%
+      \ifnum\i>\lit\relax
+        \fill[cloudgray!18,rounded corners=0.6pt]
+          (\x,0) rectangle ++(\cellw,\cellh);
+      \else
+        \fill[\cellcol,rounded corners=0.6pt]
+          (\x,0) rectangle ++(\cellw,\cellh);
+      \fi
+    }%
+    \draw[cloudgray!45,line width=0.25pt] (0,-0.035) -- (2.397,-0.035);
+  \end{tikzpicture}%
+}
+
+% --------------------------- 帧标题 ---------------------------
+\newlength{\halflinewidth}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamercolor{frametitle}{fg=clouddeep,bg=}
+\setbeamertemplate{frametitle}{%
+  \vspace*{0.26cm}%
+  \begin{minipage}{\dimexpr\textwidth-0.7cm\relax}
+    \begin{minipage}[c]{0.62\textwidth}
+      \raggedright
+      {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}%
+       \insertframetitle}\\[-5.5pt]
+      {\color{cloudsand}\rule{\linewidth}{1.2pt}}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{0.32\textwidth}
+      \raggedleft
+      \progressbar
+    \end{minipage}
+  \end{minipage}
+  \vspace{0.08cm}
+}
+
+% ---------------------------- 页脚 ----------------------------
+\setbeamercolor{footline}{fg=cloudgray,bg=}
+\setbeamertemplate{footline}{%
+  \leavevmode
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.6ex,dp=1.6ex,
+                          leftskip=0.8cm,rightskip=0.8cm]{footline}
+      \usebeamercolor[fg]{footline}%
+      \scriptsize 实变函数与泛函分析基础 · 教学课件\hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}%
+  }%
+}
+
+% ---------------------------- 区块 ----------------------------
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor{block title}{bg=cloudblue!22,fg=clouddeep}
+\setbeamercolor{block body}{bg=cloudblue!8,fg=cloudtext}
+\setbeamercolor{block title alerted}{bg=cloudsand!25,fg=cloudtext}
+\setbeamercolor{block body alerted}{bg=cloudsand!10,fg=cloudtext}
+\setbeamercolor{block title example}{bg=cloudgray!22,fg=cloudtext}
+\setbeamercolor{block body example}{bg=cloudgray!8,fg=cloudtext}
+
+% ============ 练习环境（自动编号：按讲次连号 章.序） ============
+\newcounter{exercnt}[section]
+\newenvironment{题}[1][]{%
+  \refstepcounter{exercnt}%
+  \setbeamercolor{block title}{bg=cloudblue!24,fg=clouddeep}%
+  \setbeamercolor{block body}{bg=cloudblue!9,fg=cloudtext}%
+  \begin{block}{练习~\thesection.\arabic{exercnt}
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+% ================== 独立编号的定理类环境 ==================
+\newcounter{thmcnt}
+\newcounter{defcnt}
+\newcounter{lemcnt}
+\newcounter{corcnt}
+\newcounter{propcnt}
+\newcounter{expcnt}
+ 
+\newenvironment{thm}[1][]{%
+  \refstepcounter{thmcnt}%
+  \setbeamercolor{block title}{bg=clouddeep!22,fg=clouddeep}%
+  \setbeamercolor{block body}{bg=clouddeep!7,fg=cloudtext}%
+  \begin{block}{定理~\thethmcnt
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+\newenvironment{defn}[1][]{%
+  \refstepcounter{defcnt}%
+  \setbeamercolor{block title}{bg=cloudsand!28,fg=cloudtext}%
+  \setbeamercolor{block body}{bg=cloudsand!12,fg=cloudtext}%
+  \begin{block}{定义~\thedefcnt
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+\newenvironment{lem}[1][]{%
+  \refstepcounter{lemcnt}%
+  \setbeamercolor{block title}{bg=cloudblue!28,fg=clouddeep}%
+  \setbeamercolor{block body}{bg=cloudblue!12,fg=cloudtext}%
+  \begin{block}{引理~\thelemcnt
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+\newenvironment{cor}[1][]{%
+  \refstepcounter{corcnt}%
+  \setbeamercolor{block title}{bg=cloudblue!28,fg=clouddeep}%
+  \setbeamercolor{block body}{bg=cloudblue!12,fg=cloudtext}%
+  \begin{block}{推论~\thecorcnt
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+\newenvironment{prop}[1][]{%
+  \refstepcounter{propcnt}%
+  \setbeamercolor{block title}{bg=cloudblue!28,fg=clouddeep}%
+  \setbeamercolor{block body}{bg=cloudblue!12,fg=cloudtext}%
+  \begin{block}{命题~\thepropcnt
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+\newenvironment{exmp}[1][]{%
+  \refstepcounter{expcnt}%
+  \setbeamercolor{block title}{bg=cloudgray!28,fg=cloudtext}%
+  \setbeamercolor{block body}{bg=cloudgray!12,fg=cloudtext}%
+  \begin{block}{例~\theexpcnt
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{\end{block}}
+
+\newenvironment{pf}[1][]{%
+  \setbeamercolor{block title}{bg=cloudgray!22,fg=cloudtext}%
+  \setbeamercolor{block body}{bg=cloudgray!7,fg=cloudtext}%
+  \begin{block}{证明
+    \ifx\relax#1\relax\else\ \textnormal{\itshape(#1)}\fi}%
+}{%
+  \hfill$\blacksquare$\end{block}%
+}
+
+% ================ 章节过渡页图形（按编号切换为实变主题） ================
+\newcommand{\sectiongraphic}[1]{%
+  \begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+    \ifcase#1\relax
+    \or
+      % 1：集合 —— 韦恩图
+      \begin{scope}[scale=0.95]
+        \fill[cloudblue!26] (-0.95,0) circle (1.3);
+        \fill[cloudsand!26] (0.95,0) circle (1.3);
+        \draw[clouddeep,thick] (-0.95,0) circle (1.3);
+        \draw[clouddeep,thick] (0.95,0) circle (1.3);
+        \node[clouddeep] at (-1.65,1.0) {$A$};
+        \node[clouddeep] at (1.65,1.0) {$B$};
+        \node[cloudtext,font=\scriptsize] at (0,0) {$A\cap B$};
+        \node[cloudgray,font=\scriptsize] at (0,-1.75) {并集 $\cup$\quad 交集 $\cap$};
+      \end{scope}
+    \or
+      % 2：点集 —— 直线上互不相交开区间之并
+      \begin{scope}[scale=0.95,yshift=-0.15cm]
+        \draw[->,cloudgray,thick] (-2.5,0)--(2.7,0) node[right]{\scriptsize $\mathbb{R}$};
+        \foreach \a/\b in {-2.3/-1.35,-0.75/0.15,0.45/1.25,1.7/2.4}{
+          \draw[cloudblue!35,line width=7pt] (\a,0)--(\b,0);
+          \draw[clouddeep,thick] (\a,0)--(\b,0);
+        }
+        \foreach \a/\b in {-2.3/-1.35,-0.75/0.15,0.45/1.25,1.7/2.4}{
+          \draw[clouddeep,fill=cloudbg] (\a,0) circle (2pt);
+          \draw[clouddeep,fill=cloudbg] (\b,0) circle (2pt);
+        }
+        \node[cloudtext,font=\scriptsize] at (0,-0.75) {$\bigcup_i (a_i,b_i)$};
+      \end{scope}
+    \or
+      % 3：测度 —— 用开区间覆盖集合求外测度
+      \begin{scope}[scale=0.95,yshift=-0.1cm]
+        \draw[->,cloudgray,thick] (-2.5,0)--(2.7,0) node[right]{\scriptsize $\mathbb{R}$};
+        \draw[clouddeep,line width=3pt] (-1.7,0)--(1.9,0);
+        \foreach \a/\b in {-2.2/-1.2,-0.95/0.05,0.15/0.95,0.8/1.75,1.6/2.5}{
+          \draw[cloudblue!30,line width=5pt] (\a,0.3)--(\b,0.3);
+        }
+        \node[cloudtext,font=\scriptsize] at (0,-0.8) {$m^*(E)=\inf\sum |I_k|$};
+      \end{scope}
+    \fi
+  \end{tikzpicture}%
+}
+
+% -------------------------- 云朵绘制宏 --------------------------
+\newcommand{\drawcloud}[4]{%
+  \begin{scope}[shift={#1},scale=#2,opacity=#4]
+    \fill[#3] (0,0) circle (0.5);
+    \fill[#3] (0.6,0.1) circle (0.6);
+    \fill[#3] (1.2,0) circle (0.45);
+    \fill[#3] (0.6,-0.3) circle (0.5);
+  \end{scope}
+}
+
+% -------------------------- 章节过渡页（重新设计） --------------------------
+\setbeamertemplate{section page}{%
+  \ifcase\insertsectionnumber
+    \def\sectioncolor{cloudblue}%
+  \or
+    \def\sectioncolor{cloudblue}%
+  \or
+    \def\sectioncolor{cloudsand}%
+  \or
+    \def\sectioncolor{cloudgray}%
+  \else
+    \def\sectioncolor{cloudblue}%
+  \fi
+  \begin{tikzpicture}[remember picture, overlay]
+    \foreach \x in {0,0.5,...,16.5} {
+      \draw[cloudgray!18, line width=0.15pt]
+        (current page.north west) ++(\x,0) -- ++(0,-\paperheight);
+    }
+    \foreach \y in {0,0.5,...,9.5} {
+      \draw[cloudgray!18, line width=0.15pt]
+        (current page.north west) ++(0,-\y) -- ++(\paperwidth,0);
+    }
+    \node[opacity=0.06, clouddeep, font=\fontsize{120}{120}\selectfont]
+      at ($(current page.center)+(3,0)$) {$\displaystyle\int$};
+    \node[opacity=0.05, cloudsand, font=\fontsize{80}{80}\selectfont]
+      at ($(current page.center)+(-4,-2)$) {$\displaystyle\sum$};
+    \node[opacity=0.10, clouddeep, font=\fontsize{160}{160}\selectfont\bfseries]
+      at ($(current page.west)+(2.8cm,0.8cm)$) {\insertsectionnumber};
+
+    \node[align=center, text=clouddeep, font=\huge\bfseries, inner sep=0pt]
+      (title) at ($(current page.center)+(0,0.5cm)$) {\insertsectionhead};
+
+    \drawcloud{($(title.north west)+(-0.6cm,0.3cm)$)}{0.6}{\sectioncolor}{0.40}
+    \drawcloud{($(title.north east)+(0.4cm,0.4cm)$)}{0.5}{\sectioncolor}{0.35}
+    \drawcloud{($(title.south west)+(-0.4cm,-0.4cm)$)}{0.7}{\sectioncolor}{0.45}
+    \drawcloud{($(title.south east)+(0.6cm,-0.3cm)$)}{0.55}{\sectioncolor}{0.40}
+    \drawcloud{($(title.north)+(0,0.8cm)$)}{0.4}{\sectioncolor}{0.30}
+
+    \node[anchor=south east] at ($(current page.south east)+(-1.2cm,1.2cm)$) {
+      \scalebox{0.65}{\sectiongraphic{\insertsectionnumber}}
+    };
+  \end{tikzpicture}
+}
+\AtBeginSection[]{%
+  \begin{frame}[plain,noframenumbering]
+    \sectionpage
+  \end{frame}
+}
+
+% =====================================================================
+\begin{document}
+
+% ----------------------------- 封面 -----------------------------
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \begin{scope}[shift={($(current page.north east)+(-3.6cm,-1.9cm)$)},opacity=0.55]
+      \fill[cloudblue!40] (0,0) circle (0.55);
+      \fill[cloudblue!40] (0.78,0.14) circle (0.78);
+      \fill[cloudblue!40] (1.65,0) circle (0.5);
+      \fill[cloudblue!40] (0.82,-0.42) circle (0.55);
+    \end{scope}
+    \begin{scope}[shift={($(current page.south west)+(2.6cm,2.1cm)$)},opacity=0.35]
+      \fill[cloudblue!50] (0,0) circle (0.38);
+      \fill[cloudblue!50] (0.52,0.1) circle (0.52);
+      \fill[cloudblue!50] (1.1,0) circle (0.34);
+    \end{scope}
+  \end{tikzpicture}
+  \vspace{1.0cm}
+  \begin{center}
+    {\color{cloudgray}\small\itshape 核心课程教学课件}\\[0.5cm]
+    {\color{clouddeep}\fontsize{30}{36}\selectfont\bfseries 实变函数与泛函分析基础}\\[0.35cm]
+    {\color{cloudblue}\large 第1-3 章\quad 集合 \,\textperiodcentered\, 点集 \,\textperiodcentered\, 测度}\\[1.05cm]
+    {\color{cloudtext}\small 配套教材：程其襄 等 编《实变函数与泛函分析基础》（第四版）\\[0.25cm]
+     主讲\quad 实变函数课程组\quad|\quad \today}
+  \end{center}
+\end{frame}
+
+% ================== 目录样式 ==================
+\setbeamertemplate{section in toc}{%
+  \leavevmode
+  \vspace{0.55cm}%
+  \hspace{0.1cm}%
+  \colorbox{cloudblue!30}{%
+    \makebox[0.65cm][c]{\color{clouddeep}\bfseries\inserttocsectionnumber}%
+  }%
+  \hspace{0.42cm}%
+  {\color{clouddeep}\large\bfseries\inserttocsection}%
+  \par
+}
+\setbeamertemplate{subsection in toc}{}
+
+% ----------------------------- 目录 -----------------------------
+\begin{frame}{课程导航}
+  \vspace{0.3cm}
+  \tableofcontents
+\end{frame}
+
+% =====================================================================
+% =====================================================================
+%  第一章 集合
+% =====================================================================
+\section{第一章\quad 集合}
+
+% ---------- 1.1 集合与子集合 ----------
+\subsection{1.1\ 集合与子集合}
+
+\begin{frame}{本章导学：我们为什么需要集合}
+  \begin{itemize}
+    \item 实变函数研究“函数”与“集合”的测度，\alert{集合}是一切论述的语言。
+    \item 这一章要回答三个根本问题：
+      \begin{enumerate}
+        \item “多少？”——怎样比较两个集合元素的“个数”（基数）；
+        \item “无穷也有大小吗？”——可数集与不可数集；
+        \item “部分能等于整体吗？”——无穷集合的反直觉性质。
+      \end{enumerate}
+    \item 学习主线：\alert{集合运算 $\to$ 映射与对等 $\to$ 可数集 $\to$ 不可数集}。
+  \end{itemize}
+  \begin{block}{本章目标}
+    能熟练进行集合运算；掌握可数集与不可数集的判定与证明；理解基数比较与康托尔定理。
+  \end{block}
+\end{frame}
+
+\begin{frame}{创新视角：集合论是“无穷的算术”}
+  \begin{itemize}
+    \item 在有限世界里，“整体大于部分”是常识；但在\alert{无穷集合}中，一个集合可以与其真子集一一对应。
+    \item 伽利略悖论（1638）：正整数与它们的平方一样多。
+      \[ 1,2,3,4,\dots \quad\leftrightarrow\quad 1,4,9,16,\dots \]
+    \item 集合论（康托尔，1874）把这种“一样多”严格化，使无穷第一次可以被“计数”。
+    \item 本章的创新点：用\alert{对等（一一对应）}取代“数数”，重新定义“大小”。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{集合的概念}
+  \begin{defn}[集合]
+    具有某种确定性质的事物的\alert{总体}称为一个\alert{集合}（set）；组成集合的个别事物称为该集合的\alert{元素}（element）。
+  \end{defn}
+  \begin{itemize}
+    \item 习惯记号：大写字母 $A,B,E,X$ 表示集合；小写字母 $a,b,x$ 表示元素。
+    \item $a\in A$ 表示“$a$ 属于 $A$”；$a\notin A$ 表示“$a$ 不属于 $A$”。
+    \item 集合的\alert{确定性}：对任意对象，能判定它是否属于该集合。
+    \item 集合的\alert{互异性}与\alert{无序性}：重复与顺序不改变集合。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small “整体”思想贯穿全书：点集、可测集、函数定义域都是集合。
+  \end{center}
+\end{frame}
+
+\begin{frame}{子集与集合相等}
+  \begin{defn}[子集]
+    若集合 $A$ 的每一个元素都属于 $B$，即
+    \[ x\in A \Longrightarrow x\in B, \]
+    则称 $A$ 是 $B$ 的\alert{子集}，记作 $A\subset B$（或 $B\supset A$）。
+  \end{defn}
+  \begin{defn}[集合相等]
+    若 $A\subset B$ 且 $B\subset A$，则 $A$ 与 $B$ 含有完全相同的元素，称
+    \[ A=B. \]
+  \end{defn}
+  \begin{exmp}
+    $\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset\mathbb{R}$；而 $\{1,2\}=\{2,1\}=\{1,1,2\}$。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{空集、全集与幂集}
+  \begin{defn}[空集]
+    不含任何元素的集合称为\alert{空集}，记作 $\varnothing$。对任意集合 $A$，恒有 $\varnothing\subset A$。
+  \end{defn}
+  \begin{defn}[全集]
+    在所讨论的问题中，包含所有涉及元素的集合称为\alert{全集}，记作 $X$（或 $\Omega$）。
+  \end{defn}
+  \begin{defn}[幂集]
+    设 $A$ 为集合，由 $A$ 的\alert{所有子集}组成的集合称为 $A$ 的\alert{幂集}，记作
+    \[ \mathcal{P}(A)=\{B\mid B\subset A\}. \]
+  \end{defn}
+  \begin{exmp}
+    若 $A=\{1,2\}$，则 $\mathcal{P}(A)=\{\varnothing,\{1\},\{2\},\{1,2\}\}$。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{集合的表示法与罗素悖论（历史一瞥）}
+  \begin{itemize}
+    \item \alert{列举法}：$A=\{1,2,3\}$；\alert{描述法}：$A=\{x\mid P(x)\}$。
+    \item 描述法直观，但“所有不以自身为元素的集合”会导致矛盾：
+  \end{itemize}
+  \begin{block}{罗素悖论（1901）}
+    令 $R=\{x\mid x\notin x\}$。问 $R\in R$ 是否成立？
+    \begin{itemize}
+      \item 若 $R\in R$，则由定义 $R\notin R$；
+      \item 若 $R\notin R$，则由定义 $R\in R$。
+    \end{itemize}
+    矛盾！这说明“任意性质都定义集合”不安全——现代集合论用\alert{公理化}（如 ZF）规避。
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 实变函数中涉及的集合均由已存在集合经运算得到，不会触及此悖论。
+  \end{center}
+\end{frame}
+
+\begin{frame}{子集关系的性质}
+  \begin{prop}[$\subset$ 是偏序]
+    集合的包含关系满足：
+    \begin{enumerate}
+      \item \alert{自反性}：$A\subset A$；
+      \item \alert{反对称性}：若 $A\subset B$ 且 $B\subset A$，则 $A=B$；
+      \item \alert{传递性}：若 $A\subset B,\ B\subset C$，则 $A\subset C$。
+    \end{enumerate}
+  \end{prop}
+  \begin{pf}
+    三条均直接由 $x\in A\Rightarrow x\in B$ 的逻辑蕴含关系推出，是谓词逻辑的平凡结论。
+    其中反对称性正是“集合相等”的定义。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{幂集的基数定理}
+  \begin{thm}[幂集基数]
+    若有限集 $A$ 含有 $n$ 个元素，则其幂集 $\mathcal{P}(A)$ 含有 $2^{n}$ 个元素，即
+    \[ |\mathcal{P}(A)|=2^{n}. \]
+  \end{thm}
+  \begin{pf}
+    构造 $\mathcal{P}(A)\leftrightarrow\{0,1\}^{n}$：对每个子集 $B\subset A$，令特征函数
+    \[ \chi_B(a_i)=\begin{cases}1,&a_i\in B,\\0,&a_i\notin B.\end{cases} \]
+    每个元素“在/不在”$B$ 中各有 2 种选择，共 $2^{n}$ 种，且互不相同。故 $|\mathcal{P}(A)|=2^{n}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{课堂练习 1.1（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 设 $A=\{x\in\mathbb{Z}\mid -2\le x\le 3\}$，写出 $A$ 的全部元素，并求其幂集元素个数。
+      \item 判断并说明：$\{1\}\in\mathcal{P}(\{1,2\})$ 与 $\{1\}\subset\mathcal{P}(\{1,2\})$ 哪个成立？
+      \item 证明：若 $A\subset B$ 且 $B\subset C$，则 $A\subset C$。
+      \item 用描述法表示“所有分母为 1 或 2 的有理数”。
+    \end{enumerate}
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 提示：注意 $\in$ 与 $\subset$ 的区别；幂集元素个数为 $2^{|A|}$。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 1.1（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $A=\{-2,-1,0,1,2,3\}$，$|\mathcal{P}(A)|=2^{6}=64$。
+    \item 2. $\{1\}\in\mathcal{P}(\{1,2\})$ 成立（因 $\{1\}\subset\{1,2\}$）；而 $\{1\}\subset\mathcal{P}(\dots)$ 要求 $1\in\mathcal{P}(\dots)$，不成立。
+    \item 3. 任取 $x\in A$，由 $A\subset B$ 得 $x\in B$，再由 $B\subset C$ 得 $x\in C$，故 $A\subset C$。
+    \item 4. $\bigl\{ \frac{m}{1},\frac{m}{2}\mid m\in\mathbb{Z}\bigr\}$，亦可写为 $\{\frac{k}{2}\mid k\in\mathbb{Z}\}$。
+  \end{itemize}
+\end{frame}
+
+% ---------- 1.2 集合的运算 ----------
+\subsection{1.2\ 集合的运算}
+
+\begin{frame}{并集与交集}
+  \begin{defn}[并集与交集]
+    设 $A,B$ 为集合。
+    \begin{itemize}
+      \item \alert{并集} $A\cup B=\{x\mid x\in A\ \text{或}\ x\in B\}$；
+      \item \alert{交集} $A\cap B=\{x\mid x\in A\ \text{且}\ x\in B\}$；
+      \item 若 $A\cap B=\varnothing$，称 $A,B$\alert{不相交}。
+    \end{itemize}
+  \end{defn}
+  \begin{exmp}
+    $\{1,2,3\}\cup\{2,3,4\}=\{1,2,3,4\}$；$\{1,2,3\}\cap\{2,3,4\}=\{2,3\}$。
+  \end{exmp}
+  \begin{center}
+    \color{cloudgray}\small 并取“或”，交取“且”——与逻辑联结词一一对应。
+  \end{center}
+\end{frame}
+
+\begin{frame}{差集、补集与对称差}
+  \begin{defn}[差集、补集、对称差]
+    \begin{itemize}
+      \item \alert{差集} $A\setminus B=\{x\mid x\in A\ \text{且}\ x\notin B\}$；
+      \item 在全集 $X$ 中，$A$ 的\alert{补集} $A^{c}=X\setminus A=\{x\in X\mid x\notin A\}$；
+      \item \alert{对称差} $A\triangle B=(A\setminus B)\cup(B\setminus A)$，即“恰属于其一”的元素集。
+    \end{itemize}
+  \end{defn}
+  \begin{exmp}
+    若 $X=\{1,2,3,4\}$，$A=\{1,2\}$，则 $A^{c}=\{3,4\}$，$A\triangle A^{c}=X$。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{集族与广义并、交}
+  \begin{defn}[集族与广义运算]
+    以集合为元素的集合称为\alert{集族}，常记为 $\{A_{\alpha}\}_{\alpha\in I}$，其中 $I$ 为\alert{指标集}。
+    \[ \bigcup_{\alpha\in I}A_{\alpha}=\{x\mid \exists\alpha\in I,\ x\in A_{\alpha}\}, \]
+    \[ \bigcap_{\alpha\in I}A_{\alpha}=\{x\mid \forall\alpha\in I,\ x\in A_{\alpha}\}. \]
+  \end{defn}
+  \begin{exmp}
+    取 $A_{n}=[-n,n]\subset\mathbb{R}$（$n\in\mathbb{N}$），则 $\bigcup_{n}A_{n}=\mathbb{R}$，$\bigcap_{n}A_{n}=[-1,1]$。
+  \end{exmp}
+  \begin{center}
+    \color{cloudgray}\small 指标集可以是无穷的——这正是处理“全体开区间”等对象的关键工具。
+  \end{center}
+\end{frame}
+
+\begin{frame}{基本运算律}
+  \begin{prop}[交换律、结合律、幂等律]
+    \begin{itemize}
+      \item 交换：$A\cup B=B\cup A$，$A\cap B=B\cap A$；
+      \item 结合：$(A\cup B)\cup C=A\cup(B\cup C)$，$(A\cap B)\cap C=A\cap(B\cap C)$；
+      \item 幂等：$A\cup A=A$，$A\cap A=A$。
+    \end{itemize}
+  \end{prop}
+  \begin{prop}[同一律与零律]
+    \[ A\cup\varnothing=A,\quad A\cap X=A;\qquad A\cap\varnothing=\varnothing,\quad A\cup X=X. \]
+  \end{prop}
+  \begin{center}
+    \color{cloudgray}\small 这些律均可由“元素判属”直接验证，是后续推导的基石。
+  \end{center}
+\end{frame}
+
+\begin{frame}{分配律}
+  \begin{thm}[分配律]
+    \begin{itemize}
+      \item 交对并分配：$A\cap(B\cup C)=(A\cap B)\cup(A\cap C)$；
+      \item 并对交分配：$A\cup(B\cap C)=(A\cup B)\cap(A\cup C)$。
+    \end{itemize}
+  \end{thm}
+  \begin{pf}
+    证第一式。若 $x\in A\cap(B\cup C)$，则 $x\in A$ 且 $x\in B\cup C$，即 $x\in A$ 且（$x\in B$ 或 $x\in C$）。由逻辑分配律，这等价于（$x\in A$ 且 $x\in B$）或（$x\in A$ 且 $x\in C$），即 $x\in(A\cap B)\cup(A\cap C)$。反向同理。故两集合相等。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{德·摩根律（对偶律）}
+  \begin{thm}[德·摩根律 De Morgan]
+    在全集 $X$ 中，对任意集族 $\{A_{\alpha}\}_{\alpha\in I}$ 有
+    \[ \Bigl(\bigcup_{\alpha\in I}A_{\alpha}\Bigr)^{c}
+       =\bigcap_{\alpha\in I}A_{\alpha}^{c},\qquad
+       \Bigl(\bigcap_{\alpha\in I}A_{\alpha}\Bigr)^{c}
+       =\bigcup_{\alpha\in I}A_{\alpha}^{c}. \]
+    特别地，对两集合：$ (A\cup B)^{c}=A^{c}\cap B^{c}$，$(A\cap B)^{c}=A^{c}\cup B^{c}$。
+  \end{thm}
+  \begin{center}
+    \color{clouddeep}\small “并的补 = 补的交；交的补 = 补的并”——求补与并、交互换。
+  \end{center}
+\end{frame}
+
+\begin{frame}{德·摩根律证明（一）}
+  \begin{pf}
+    证 $\bigl(\bigcup_{\alpha}A_{\alpha}\bigr)^{c}=\bigcap_{\alpha}A_{\alpha}^{c}$。
+    \begin{align*}
+      x\in\Bigl(\bigcup_{\alpha}A_{\alpha}\Bigr)^{c}
+      &\Longleftrightarrow x\notin \bigcup_{\alpha}A_{\alpha} \\
+      &\Longleftrightarrow \neg(\exists\alpha,\ x\in A_{\alpha}) \\
+      &\Longleftrightarrow \forall\alpha,\ x\notin A_{\alpha} \\
+      &\Longleftrightarrow \forall\alpha,\ x\in A_{\alpha}^{c} \\
+      &\Longleftrightarrow x\in \bigcap_{\alpha}A_{\alpha}^{c}.
+    \end{align*}
+    故两集合相等。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{德·摩根律证明（二）· 第二式}
+  \begin{pf}
+    证 $\bigl(\bigcap_{\alpha}A_{\alpha}\bigr)^{c}=\bigcup_{\alpha}A_{\alpha}^{c}$。
+    \begin{align*}
+      x\in\Bigl(\bigcap_{\alpha}A_{\alpha}\Bigr)^{c}
+      &\Longleftrightarrow x\notin \bigcap_{\alpha}A_{\alpha} \\
+      &\Longleftrightarrow \neg(\forall\alpha,\ x\in A_{\alpha}) \\
+      &\Longleftrightarrow \exists\alpha,\ x\notin A_{\alpha} \\
+      &\Longleftrightarrow \exists\alpha,\ x\in A_{\alpha}^{c} \\
+      &\Longleftrightarrow x\in \bigcup_{\alpha}A_{\alpha}^{c}.
+    \end{align*}
+    两式合称\alert{对偶原理}：任何由 $\cup,\cap,^{c}$ 构成的恒等式，将其互换并补全补即得另一恒等式。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{吸收律与对偶应用}
+  \begin{prop}[吸收律]
+    \[ A\cup(A\cap B)=A,\qquad A\cap(A\cup B)=A. \]
+  \end{prop}
+  \begin{pf}
+    由 $A\cap B\subset A$ 知 $(A\cap B)\cup A=A$；第二式由对偶原理或直接验证。\hfill$\blacksquare$
+  \end{pf}
+  \begin{exmp}[用对偶化简]
+    化简 $(A\cup B^{c}\cup C)\cap(A\cup B^{c}\cup C^{c})$：
+    提出 $A\cup B^{c}$ 得 $(A\cup B^{c})\cap\bigl((A\cup B^{c})\cup(C\cap C^{c})\bigr)
+    =(A\cup B^{c})\cap(A\cup B^{c})=A\cup B^{c}$。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{例题：恒等式证明}
+  \begin{exmp}
+    证明：$(A\setminus B)\cup B=A\cup B$，且 $(A\setminus B)\cap B=\varnothing$。
+  \end{exmp}
+  \begin{pf}
+    注意 $A\setminus B=A\cap B^{c}$。
+    第一式：
+    \[(A\cap B^{c})\cup B=((A\cap B^{c})\cup B)\cap((A\cap B^{c})\cup B)
+     \text{（平凡）}.\]
+    用分配律更直接：
+    \[(A\cap B^{c})\cup B=(A\cup B)\cap(B^{c}\cup B)=(A\cup B)\cap X=A\cup B.\]
+    第二式：$(A\cap B^{c})\cap B=A\cap(B^{c}\cap B)=A\cap\varnothing=\varnothing$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{课堂练习 1.2（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明：$(A\cap B)\cup(A\setminus B)=A$。
+      \item 证明对称差性质：$A\triangle B=(A\cup B)\setminus(A\cap B)$。
+      \item 化简：$(A\cup B)\setminus(A\cap B)\setminus C$。
+      \item 设 $A_{n}=(0,\frac1n)$，求 $\bigcup_{n=1}^{\infty}A_{n}$ 与 $\bigcap_{n=1}^{\infty}A_{n}$。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 1.2（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $(A\cap B)\cup(A\cap B^{c})=A\cap(B\cup B^{c})=A\cap X=A$。
+    \item 2. $(A\cup B)\setminus(A\cap B)=\bigl((A\cup B)\cap A^{c}\bigr)\cup\bigl((A\cup B)\cap B^{c}\bigr)
+           =(B\setminus A)\cup(A\setminus B)=A\triangle B$。
+    \item 3. 原式 $=\bigl((A\triangle B)\bigr)\setminus C$，即恰属于 $A,B$ 之一且不属于 $C$ 的元素。
+    \item 4. $\bigcup_{n}A_{n}=(0,1)$；$\bigcap_{n}A_{n}=\varnothing$（因对任意 $x>0$，取 $n>1/x$ 则 $x\notin A_n$）。
+  \end{itemize}
+\end{frame}
+
+% ---------- 1.3 映射与基数 ----------
+\subsection{1.3\ 映射与基数}
+
+\begin{frame}{映射的定义}
+  \begin{defn}[映射]
+    设 $A,B$ 为集合。一个\alert{映射} $f\colon A\to B$ 是对每个 $x\in A$ 指定唯一的 $y\in B$ 与之对应，记为 $y=f(x)$。
+    $A$ 称\alert{定义域}，$B$ 称\alert{上域}；$\{f(x)\mid x\in A\}$ 称\alert{值域}。
+  \end{defn}
+  \begin{itemize}
+    \item 关键：\alert{处处有定义}且\alert{唯一确定}。
+    \item 集合间的“对应规则”是实变函数中“函数”的抽象前身。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 函数的本质即集合到集合的映射；本章用映射来比较集合“大小”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{单射、满射与双射}
+  \begin{defn}
+    设 $f\colon A\to B$。
+    \begin{itemize}
+      \item \alert{单射}（一一的）：若 $f(x_{1})=f(x_{2})\Rightarrow x_{1}=x_{2}$；
+      \item \alert{满射}（到上的）：值域等于 $B$，即 $\forall y\in B,\ \exists x\in A,\ f(x)=y$；
+      \item \alert{双射}（一一对应）：$f$ 既单又满。
+    \end{itemize}
+  \end{defn}
+  \begin{exmp}
+    $f(x)=e^{x}$ 从 $\mathbb{R}$ 到 $(0,\infty)$ 是双射；从 $\mathbb{R}$ 到 $\mathbb{R}$ 则是单射非满射。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{逆映射与复合映射}
+  \begin{defn}[逆映射]
+    若 $f\colon A\to B$ 是双射，则存在逆映射 $f^{-1}\colon B\to A$，使
+    \[ f^{-1}(f(x))=x\ (\forall x\in A),\qquad f(f^{-1}(y))=y\ (\forall y\in B). \]
+  \end{defn}
+  \begin{defn}[复合映射]
+    若 $f\colon A\to B,\ g\colon B\to C$，则复合 $g\circ f\colon A\to C$ 定义为 $(g\circ f)(x)=g(f(x))$。
+  \end{defn}
+  \begin{block}{注意}
+    仅当 $f$ 为双射时 $f^{-1}$ 才是映射；一般“反函数”不存在。
+  \end{block}
+\end{frame}
+
+\begin{frame}{集合的对等（等势）}
+  \begin{defn}[对等]
+    若存在双射 $f\colon A\to B$，则称 $A$ 与 $B$\alert{对等}（等势），记作 $A\sim B$，或说 $A,B$\alert{基数相同}。
+  \end{defn}
+  \begin{itemize}
+    \item 这是“多少”的严格化：不数数，而看能否一一配对。
+    \item 伽利略悖论：$\mathbb{N}\sim\{n^{2}\mid n\in\mathbb{N}\}$。
+  \end{itemize}
+  \begin{exmp}
+    线段 $(0,1)$ 与 $\mathbb{R}$ 对等（如 $f(x)=\tan\bigl(\pi(x-\tfrac12)\bigr)$）。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{对等的性质}
+  \begin{thm}[对等的等价关系]
+    集合间的对等关系 $\sim$ 满足：
+    \begin{enumerate}
+      \item \alert{自反性}：$A\sim A$；
+      \item \alert{对称性}：若 $A\sim B$，则 $B\sim A$；
+      \item \alert{传递性}：若 $A\sim B$ 且 $B\sim C$，则 $A\sim C$。
+    \end{enumerate}
+  \end{thm}
+  \begin{pf}
+    自反：取恒等映射 $\mathrm{id}_{A}$。对称：$A\sim B$ 时 $f$ 双射，其逆 $f^{-1}$ 即为 $B\to A$ 的双射。
+    传递：$A\xrightarrow{f}B\xrightarrow{g}C$ 均为双射，则 $g\circ f\colon A\to C$ 双射（双射之复合仍双射）。故 $A\sim C$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{基数与基数的比较}
+  \begin{defn}[基数]
+    把所有互相对等的集合归为一类，这个类称为一个\alert{基数}（势）。有限集的基数即元素个数；无限集的基数记为 $\aleph_{0},\mathfrak{c}$ 等。
+  \end{defn}
+  \begin{defn}[基数的序]
+    称 $|A|\le |B|$，若存在单射 $f\colon A\to B$。若 $|A|\le|B|$ 且 $|A|\neq|B|$，则 $|A|<|B|$。
+  \end{defn}
+  \begin{thm}[伯恩斯坦定理 Bernstein]
+    若 $|A|\le|B|$ 且 $|B|\le|A|$，则 $|A|=|B|$（即存在双射）。
+  \end{thm}
+  \begin{center}
+    \color{cloudgray}\small 该定理省去构造双射之苦：只要两边都能“嵌入”，它们就对等。
+  \end{center}
+\end{frame}
+
+\begin{frame}{例题：构造对等}
+  \begin{exmp}
+    证明开区间 $(0,1)\sim(0,2)$，并说明 $\mathbb{R}\sim(0,1)$。
+  \end{exmp}
+  \begin{pf}
+    $(0,1)\to(0,2)$ 取 $f(x)=2x$，显然双射。
+    对 $\mathbb{R}\sim(0,1)$，取 $g(x)=\dfrac{1}{\pi}\arctan x+\dfrac12$（或 $g(x)=\frac{e^{x}}{e^{x}+1}$），
+    它是 $\mathbb{R}\to(0,1)$ 的严格单调递增连续双射。故三者基数相同。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 重要结论：任何开区间、闭区间、半开区间都与 $\mathbb{R}$ 对等。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 1.3（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 构造 $\mathbb{N}$ 到 $2\mathbb{N}=\{2,4,6,\dots\}$ 的一个双射，说明 $\mathbb{N}\sim 2\mathbb{N}$。
+      \item 判断 $f(x)=x^{2}$（$\mathbb{R}\to\mathbb{R}$）是否单射、满射。
+      \item 证明：若 $A\subset B$，则 $|A|\le|B|$。
+      \item 用伯恩斯坦定理证明 $[0,1]\sim(0,1)$。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 1.3（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $f(n)=2n$（$n\in\mathbb{N}$），显然双射。这是“整体等于部分”的范例。
+    \item 2. 非单射（$1,-1$ 同像），非满射（负数无原像）。
+    \item 3. 取包含映射 $i(x)=x$ 即为 $A\to B$ 的单射。
+    \item 4. $(0,1)\subset[0,1]$ 且 $[0,1]\subset\mathbb{R}\sim(0,1)$，故两边互可单射嵌入，由伯恩斯坦定理得对等。
+  \end{itemize}
+\end{frame}
+
+% ---------- 1.4 可数集 ----------
+\subsection{1.4\ 可数集}
+
+\begin{frame}{有限集与无限集}
+  \begin{defn}[有限与无限]
+    若存在 $n\in\mathbb{N}$ 与双射 $\{1,2,\dots,n\}\to A$，则 $A$ 为\alert{有限集}；否则为\alert{无限集}。
+    空集视作有限（对应 $n=0$）。
+  \end{defn}
+  \begin{defn}[可数集]
+    若 $A\sim\mathbb{N}$，或 $A=\varnothing$，则称 $A$ 为\alert{可数集}（countable）。可数无限集的基数记为 $\aleph_{0}$。
+  \end{defn}
+  \begin{center}
+    \color{clouddeep}\small 可数 = “能像自然数一样排成一列”。这是最小的无限基数。
+  \end{center}
+\end{frame}
+
+\begin{frame}{整数集与自然数集可数}
+  \begin{thm}
+    $\mathbb{N}$ 可数（按定义）；$\mathbb{Z}$ 也可数。
+  \end{thm}
+  \begin{pf}
+    将整数按如下顺序排列，使之一一对应自然数：
+    \[ 0,1,-1,2,-2,3,-3,\dots \]
+    即映射 $f\colon\mathbb{N}\to\mathbb{Z}$ 为
+    \[ f(2k)=k,\quad f(2k-1)=-k+1\qquad(k\ge 1). \]
+    这是双射，故 $\mathbb{Z}$ 可数，且 $|\mathbb{Z}|=\aleph_{0}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{有理数集可数（构造）}
+  \begin{thm}
+    有理数集 $\mathbb{Q}$ 是可数集。
+  \end{thm}
+  \begin{itemize}
+    \item 思路：每个非零有理数可唯一写成既约分数 $\frac{p}{q}$（$q>0$，$\gcd(p,q)=1$）。
+    \item 先固定分母 $q$，则分子 $p$ 跑遍整数，得到可数集 $A_{q}=\{\frac{p}{q}\mid p\in\mathbb{Z}\}$。
+    \item 于是 $\mathbb{Q}=\{0\}\cup\bigcup_{q=1}^{\infty}A_{q}$——“可数个可数集的并”。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 关键引理：可数个可数集的并仍可数（下页证明）。
+  \end{center}
+\end{frame}
+
+\begin{frame}{有理数集可数（证明）}
+  \begin{pf}
+    由下页引理，$\mathbb{Q}=\bigcup_{q\ge1}A_{q}$ 是可数个可数集的并，故可数。
+    也可直接排成“对角线阵列”并剔除重复：
+    \[
+      \begin{matrix}
+        0&1&-1&2&-2&\cdots\\
+        \tfrac12&-\tfrac12&\tfrac32&-\tfrac32&\tfrac52&\cdots\\
+        \tfrac13&-\tfrac13&\tfrac23&-\tfrac23&\tfrac43&\cdots\\
+        \vdots&\vdots&\vdots&\vdots&\vdots
+      \end{matrix}
+    \]
+    沿对角线依次枚举，跳过已出现的既约分数，即得 $\mathbb{Q}$ 的一个排列。故 $\mathbb{Q}$ 可数。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{可数个可数集的并仍可数}
+  \begin{thm}[并的可数性]
+    设 $A_{1},A_{2},\dots$ 均为可数集，则 $\bigcup_{n=1}^{\infty}A_{n}$ 也可数。
+  \end{thm}
+  \begin{pf}
+    将各 $A_{n}$ 排成序列 $A_{n}=\{a_{n1},a_{n2},a_{n3},\dots\}$（有限集末尾可重复）。把这些元素排成无穷矩阵，
+    再按“反对角线”枚举：
+    \[ a_{11};\ a_{12},a_{21};\ a_{13},a_{22},a_{31};\ \dots \]
+    每一条反对角线有限，全体反对角线可数，逐条列举即得全体的一个排列（重复项可略去）。故并为可数集。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{可数集的基本性质（一）}
+  \begin{thm}
+    可数集的任一\alert{无限子集}仍是可数集。
+  \end{thm}
+  \begin{pf}
+    设 $A=\{a_{1},a_{2},\dots\}$ 可数，$B\subset A$ 无限。依次考察 $a_{1},a_{2},\dots$，将属于 $B$ 者按出现先后列出：
+    \[ b_{1},b_{2},b_{3},\dots \]
+    因 $B$ 无限，此列举永不终止，且恰好取遍 $B$，故 $B\sim\mathbb{N}$，可数。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 推论：不可数集的无限子集未必可数；但若子集可数，则原集必不可数。
+  \end{center}
+\end{frame}
+
+\begin{frame}{可数集的基本性质（二）}
+  \begin{thm}
+    \begin{enumerate}
+      \item 两个可数集的笛卡尔积 $A\times B$ 可数；
+      \item 有限个可数集的笛卡尔积可数；
+      \item 可数个有限集的并可数。
+    \end{enumerate}
+  \end{thm}
+  \begin{pf}
+    证(1)：若 $A=\{a_{i}\},B=\{b_{j}\}$，则 $A\times B=\{(a_{i},b_{j})\}$ 可排成矩阵，按反对角线枚举即可数。
+    (2)由(1)归纳。(3)每个有限集可视为可数（补重复项），由“可数个可数集的并”定理得可数。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{可数集的判定准则}
+  \begin{thm}[判定准则]
+    集合 $A$ 可数 $\Longleftrightarrow$ $A$ 的全部元素能排成一个序列（允许有限重复，剔除重复后仍列尽 $A$）。
+  \end{thm}
+  \begin{itemize}
+    \item 实用方法：把 $A$ 嵌入某个已知可数集，或把 $A$ 拆成可数个可数部分。
+    \item 典型可数集：$\mathbb{N},\mathbb{Z},\mathbb{Q}$，整点集 $\mathbb{Z}^{2}$，代数数集，多项式集。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 记住：可数集上“加、乘、可数并”运算封闭。
+  \end{center}
+\end{frame}
+
+\begin{frame}{例题：代数数可数}
+  \begin{exmp}
+    代数数（整系数多项式的根）的全体是可数集。
+  \end{exmp}
+  \begin{pf}
+    对每个次数 $n$ 与“系数绝对值之和”$N$，满足 $\sum|a_{k}|\le N$ 的整系数首一多项式只有有限个；
+    每个多项式只有有限个根。故所有代数数 = 可数个有限集之并，由前述定理可数。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{clouddeep}\small 推论：超越数（非代数数）必不可数——绝大多数实数是超越数！
+  \end{center}
+\end{frame}
+
+\begin{frame}{例题：平面整点可数}
+  \begin{exmp}
+    平面整点集 $\mathbb{Z}^{2}=\{(m,n)\mid m,n\in\mathbb{Z}\}$ 可数。
+  \end{exmp}
+  \begin{pf}
+    由“两个可数集的笛卡尔积可数”，$\mathbb{Z}^{2}=\mathbb{Z}\times\mathbb{Z}$ 可数。\hfill$\blacksquare$
+  \end{pf}
+  \begin{block}{推广}
+    类似地 $\mathbb{Z}^{k}$（$k$ 固定）可数；但 $\mathbb{R}^{k}$ 不可数（见下节）。
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 1.4（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明素数集是可数集。
+      \item 证明 $\mathbb{N}\times\mathbb{N}$ 可数（写出一种枚举顺序）。
+      \item 设 $A$ 可数，$B$ 有限，证明 $A\cup B$ 可数。
+      \item 证明：若 $A$ 不可数、$B$ 可数，则 $A\setminus B$ 不可数。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 1.4（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 素数集 $\subset\mathbb{N}$ 且无限，由“可数集的无限子集可数”得可数。
+    \item 2. 按 $i+j$ 递增枚举 $(i,j)$：$(1,1);(1,2),(2,1);(1,3),(2,2),(3,1);\dots$
+    \item 3. $A=\{a_{n}\}$，把 $B$ 中不在 $A$ 的元素插到最前，得可数枚举。
+    \item 4. 若 $A\setminus B$ 可数，则 $A=(A\setminus B)\cup(A\cap B)\subset(A\setminus B)\cup B$ 为两可数集之并，可数，矛盾。
+  \end{itemize}
+\end{frame}
+
+% ---------- 1.5 不可数集 ----------
+\subsection{1.5\ 不可数集}
+
+\begin{frame}{连续统基数}
+  \begin{defn}[连续统基数]
+    实数集 $\mathbb{R}$ 的基数记为 $\mathfrak{c}$（连续统基数）。由 $(0,1)\sim\mathbb{R}$ 知区间 $(0,1)$ 的基数也是 $\mathfrak{c}$。
+  \end{defn}
+  \begin{itemize}
+    \item $\aleph_{0}<\mathfrak{c}$：自然数“少”，实数“多”。
+    \item 本节核心：证明 $\mathbb{R}$ 不可数，并比较 $\mathfrak{c}$ 与 $2^{\aleph_{0}}$。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 关键工具：康托尔的“对角线法”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{实数集不可数（对角论证）}
+  \begin{thm}[康托尔，1874]
+    区间 $(0,1)$ 是不可数集，故 $\mathbb{R}$ 不可数，且 $|\mathbb{R}|=\mathfrak{c}>\aleph_{0}$。
+  \end{thm}
+  \begin{pf}[反证法·对角构造]
+    假设 $(0,1)$ 可数，排成
+    $x_{1}=0.a_{11}a_{12}a_{13}\dots,\; x_{2}=0.a_{21}a_{22}a_{23}\dots,\; x_{3}=0.a_{31}a_{32}a_{33}\dots,\;\cdots$
+    构造 $y=0.b_{1}b_{2}b_{3}\dots$，其中
+    \[ b_{k}=\begin{cases}1,&a_{kk}\neq 1,\\2,&a_{kk}=1.\end{cases} \]
+    则 $y\in(0,1)$ 且 $\forall k,\;b_{k}\neq a_{kk}$，故 $y\neq x_{k}$，与“列表已穷尽 $(0,1)$”矛盾。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{对角论证（续）· 要点澄清}
+  \begin{itemize}
+    \item 十进制表示需避开 $0.1999\dots=0.2000\dots$ 的歧义：约定不取“全 9  tail”表示。在构造 $y$ 时只取 1 或 2，自动避开此歧义。
+    \item 对角线法的本质：\alert{任何对无穷的“逐一列举”都漏掉了我们刻意构造的那个元素}。
+    \item 这证明“实数比自然数多”——无穷有大小之分。
+  \end{itemize}
+  \begin{block}{思想方法}
+    要证“不可数”，常先假设可数（能排列），再用对角线构造一个“不在列表中”的元素，导出矛盾。
+  \end{block}
+\end{frame}
+
+\begin{frame}{区间 $(0,1)$ 与 $\mathbb{R}$ 对等}
+  \begin{exmp}
+    证明 $(0,1)\sim\mathbb{R}$，故 $|\mathbb{R}|=\mathfrak{c}$。
+  \end{exmp}
+  \begin{pf}
+    取 $f(x)=\tan\!\bigl(\pi(x-\tfrac12)\bigr)$。当 $x\to0^{+}$，$f(x)\to-\infty$；当 $x\to1^{-}$，$f(x)\to+\infty$；
+    且 $f$ 在 $(0,1)$ 上严格单调递增连续，故为 $(0,1)\to\mathbb{R}$ 的双射。于是 $(0,1)\sim\mathbb{R}$。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 由此可知：任意（半）开闭区间的基数都是 $\mathfrak{c}$。
+  \end{center}
+\end{frame}
+
+\begin{frame}{康托尔定理：幂集严格更大}
+  \begin{thm}[康托尔定理]
+    对任意集合 $A$，恒有 $|A|<|\mathcal{P}(A)|$，即不存在从 $A$ 到其幂集 $\mathcal{P}(A)$ 的满射。
+  \end{thm}
+  \begin{itemize}
+    \item 含义：\alert{没有“最大的无穷大”}——幂集总比原集“更大”。
+    \item 推论链：$\aleph_{0}<|\mathcal{P}(\mathbb{N})|\le|\mathbb{R}|=\mathfrak{c}$，且 $|\mathcal{P}(\mathbb{N})|=2^{\aleph_{0}}$。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 这奠定了基数“无限阶梯”的存在性。
+  \end{center}
+\end{frame}
+
+\begin{frame}{康托尔定理证明（一）· 无满射}
+  \begin{pf}
+    先说明 $|A|\le|\mathcal{P}(A)|$：取单射 $a\mapsto\{a\}$ 即可。
+    再证不存在满射 $f\colon A\to\mathcal{P}(A)$。构造
+    \[ B=\{x\in A\mid x\notin f(x)\}\in\mathcal{P}(A). \]
+    若 $f$ 为满射，则存在 $b\in A$ 使 $f(b)=B$。考察 $b\in B$ 与否：
+    \begin{itemize}
+      \item 若 $b\in B$，由 $B$ 定义得 $b\notin f(b)=B$，矛盾；
+      \item 若 $b\notin B$，即 $b\notin f(b)$，由 $B$ 定义得 $b\in B$，矛盾。
+    \end{itemize}
+    故无满射，$|\mathcal{P}(A)|>|A|$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{康托尔定理证明（二）· 与对角法的关系}
+  \begin{itemize}
+    \item 上述构造的 $B$ 正是“对角线”思想的集合论版本：把每个 $x$ 与“它是否被自己对应的子集包含”对账。
+    \item 取 $A=\mathbb{N}$，则 $\mathcal{P}(\mathbb{N})$ 的基数记作 $2^{\aleph_{0}}$（每个子集对应一个 0-1 序列）。
+    \item 而 $\mathbb{R}$ 可与 $\{0,1\}^{\mathbb{N}}$ 建立双射（二进制展开），故 $\mathfrak{c}=2^{\aleph_{0}}$。
+  \end{itemize}
+  \begin{block}{结论}
+    $\aleph_{0}<2^{\aleph_{0}}=\mathfrak{c}$——实数集的基数恰好是自然数集幂集的基数。
+  \end{block}
+\end{frame}
+
+\begin{frame}{无最大基数与不可数集举例}
+  \begin{cor}
+    不存在最大的基数：对任意基数 $\kappa$，都有更大的基数（如 $2^{\kappa}$）。
+  \end{cor}
+  \begin{exmp}[不可数集举例]
+    \begin{itemize}
+      \item 无理数集：因 $\mathbb{R}=\mathbb{Q}\cup$（无理数），若无理数可数则 $\mathbb{R}$ 可数，矛盾；故无理数不可数。
+      \item 超越数集：代数数可数，故超越数不可数且“远多于”代数数。
+      \item 康托尔集（第二章）：不可数、测度为零。
+    \end{itemize}
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{基数算术初窥}
+  \begin{prop}[连续统的算术]
+    设 $\mathfrak{c}=|\mathbb{R}|$，则
+    \[ \mathfrak{c}+\mathfrak{c}=\mathfrak{c},\qquad \mathfrak{c}\cdot\mathfrak{c}=\mathfrak{c},\qquad 2^{\aleph_{0}}=\mathfrak{c}. \]
+  \end{prop}
+  \begin{itemize}
+    \item 直觉：$\mathbb{R}=\bigcup_{n}(n,n+1]$，可数并各基数 $\mathfrak{c}$，故 $\mathfrak{c}\cdot\aleph_{0}=\mathfrak{c}$。
+    \item $\mathbb{R}^{2}\sim\mathbb{R}$：平面与直线“一样多”（用交错十进制位构造双射）。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 这与有限算术迥异：无限基数满足 $\kappa+\kappa=\kappa$（$\kappa$ 无限）。
+  \end{center}
+\end{frame}
+
+\begin{frame}{连续统假设（前沿一瞥）}
+  \begin{block}{连续统假设 CH}
+    是否存在介于 $\aleph_{0}$ 与 $\mathfrak{c}$ 之间的基数？康托尔猜想“没有”，即 $\mathfrak{c}=\aleph_{1}$。
+  \end{block}
+  \begin{itemize}
+    \item 哥德尔（1940）：CH 与 ZF 集合论\alert{不矛盾}；
+    \item 科恩（1963）：CH 也\alert{不能被 ZF 证明}。
+    \item 结论：CH 是独立于集合论公理的——既不能证真也不能证伪。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 这是 20 世纪数学基础最深刻的发现之一。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 1.5（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 用对角线法证明 $\{0,1\}^{\mathbb{N}}$（无穷 0-1 序列）不可数。
+      \item 证明无理数集不可数。
+      \item 设 $A$ 不可数，证明存在不可数子集 $B\subset A$ 使 $B\sim A$。
+      \item 说明为何 $\mathbb{R}^{2}$ 与 $\mathbb{R}$ 基数相同。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 1.5（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 假设可数并排成行；取 $b_{k}=1-a_{kk}$，得新序列不在表中，矛盾。
+    \item 2. $\mathbb{R}=\mathbb{Q}\cup$（无理数），两可数集之并可数，故无理数不可数。
+    \item 3. 取 $B=A\setminus\{a_{1},a_{2},\dots\}$（去掉可数个），由“不可数减可数仍不可数”及构造双射可得 $B\sim A$。
+    \item 4. 将 $(x,y)\in\mathbb{R}^{2}$ 的十进制位交错合并成一个实数，可建立双射（处理进位歧义即可）。
+  \end{itemize}
+\end{frame}
+
+% ---------- 习题课 ----------
+\subsection{习题课}
+
+\begin{frame}{习题课导言：解题方法论}
+  \begin{itemize}
+    \item 本章常见题型：
+      \begin{enumerate}
+        \item 集合恒等式证明（用元素判属或 De Morgan）；
+        \item 构造双射证明对等；
+        \item 判定集合可数/不可数（枚举 vs 对角线）；
+        \item 基数比较（嵌入 + 伯恩斯坦）。
+      \end{enumerate}
+    \item 通法：\alert{“证包含”用任取元素推导；“证相等”证双向包含；“证可数”给排列；“证不可数”反证+对角}。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 下面逐题精讲教材典型习题。
+  \end{center}
+\end{frame}
+
+\begin{frame}{习题精讲 1：对称差恒等式}
+  \begin{题}
+    证明：$(A\triangle B)\triangle C=A\triangle(B\triangle C)$，并求 $(A\triangle B)\cap C$ 的等价形式。
+  \end{题}
+  \begin{pf}
+    用“特征函数”法：令 $\chi_{S}(x)\in\{0,1\}$ 表示 $x$ 是否属于 $S$。则
+    \[ \chi_{A\triangle B}(x)\equiv \chi_{A}(x)+\chi_{B}(x)\pmod 2. \]
+    于是 $\chi_{(A\triangle B)\triangle C}\equiv\chi_{A}+\chi_{B}+\chi_{C}\equiv\chi_{A\triangle(B\triangle C)}\pmod2$，两边对每个 $x$ 相等，故集合相等。结合律成立。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 2：De Morgan 实战}
+  \begin{题}
+    化简 $\bigl((A\cup B)^{c}\cap C^{c}\bigr)^{c}\cup (A\cap B^{c})$。
+  \end{题}
+  \begin{pf}
+    第一步：$(A\cup B)^{c}\cap C^{c}=(A\cup B\cup C)^{c}$（De Morgan 合并）。
+    其补集为 $A\cup B\cup C$。
+    原式 $=(A\cup B\cup C)\cup(A\cap B^{c})$。
+    注意 $A\subset A\cup B\cup C$，故
+    \[(A\cap B^{c})\cup(A\cup B\cup C)=A\cup B\cup C.\]
+    答案为 $A\cup B\cup C$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 3：对等构造}
+  \begin{题}
+    证明 $[0,1]\sim(a,b)$（任意闭区间与开区间对等）。
+  \end{题}
+  \begin{pf}
+    已知 $(0,1)\sim(a,b)$（线性映射 $x\mapsto a+(b-a)x$ 为双射）。
+    又 $[0,1]\sim(0,1)$（伯恩斯坦：嵌入显然；反之 $(0,1)\subset[0,1]$ 且 $[0,1]\subset\mathbb{R}\sim(0,1)$，两边可单射嵌入）。
+    由对等传递性，$[0,1]\sim(a,b)$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 4：可数性证明}
+  \begin{题}
+    证明：平面上所有圆心在有理点、半径为有理数的圆之集合可数。
+  \end{题}
+  \begin{pf}
+    每个圆由三元组 $(a,b,r)\in\mathbb{Q}\times\mathbb{Q}\times(\mathbb{Q}_{>0})$ 确定。
+    $\mathbb{Q}$ 可数，故 $\mathbb{Q}^{3}$ 可数（有限个可数集的笛卡尔积可数）。
+    不同三元组可能决定同一圆，但“可数集的像”仍至多可数。故该圆集可数。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 5：有理数可数再证}
+  \begin{题}
+    用“可数个有限集之并”证明 $\mathbb{Q}$ 可数。
+  \end{题}
+  \begin{pf}
+    对每个 $q\in\mathbb{N}^{+}$，集合 $S_{q}=\{\frac{p}{q}\mid p\in\mathbb{Z}\}$ 与 $\mathbb{Z}$ 对等，故可数。
+    $\mathbb{Q}=\{0\}\cup\bigcup_{q\ge1}S_{q}$ 是可数个可数集之并，可数。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 与“对角线枚举”殊途同归，体现“并的可数性”的威力。
+  \end{center}
+\end{frame}
+
+\begin{frame}{习题精讲 6：对角线法应用}
+  \begin{题}
+    证明：全体实系数多项式之集可数，但全体实数列之集不可数。
+  \end{题}
+  \begin{pf}
+    次数 $\le n$ 的多项式由有限个系数决定，是 $\mathbb{R}^{n+1}$ 的子集；但此处系数在实数中！需注意：\alert{实系数}多项式集不可数（因单个系数已可取 $\mathbb{R}$）。
+    改正：\alert{整系数}多项式集可数（有限个整数元组，可数个有限集之并）。
+    实数列集 $\mathbb{R}^{\mathbb{N}}$ 基数 $=\mathfrak{c}^{\aleph_{0}}=(2^{\aleph_{0}})^{\aleph_{0}}=2^{\aleph_{0}\cdot\aleph_{0}}=2^{\aleph_{0}}=\mathfrak{c}$，不可数（且与 $\mathbb{R}$ 对等）。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 审题关键：系数是“整”还是“实”，结论截然不同！
+  \end{center}
+\end{frame}
+
+\begin{frame}{习题精讲 7：康托尔定理应用}
+  \begin{题}
+    证明：不存在从 $\mathbb{R}$ 到 $\mathcal{P}(\mathbb{R})$ 的满射，并说明 $|\mathcal{P}(\mathbb{R})|>\mathfrak{c}$。
+  \end{题}
+  \begin{pf}
+    由康托尔定理，对任意集 $A$ 无满射 $A\to\mathcal{P}(A)$。取 $A=\mathbb{R}$ 即得。
+    又 $|A|<|\mathcal{P}(A)|$ 对所有 $A$ 成立，故 $|\mathcal{P}(\mathbb{R})|>\mathfrak{c}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 8：基数比较}
+  \begin{题}
+    比较 $|\mathbb{R}|$ 与 $|\mathcal{P}(\mathbb{N})|$ 的大小。
+  \end{题}
+  \begin{pf}
+    $\mathcal{P}(\mathbb{N})$ 中每个子集对应一个 0-1 序列（特征函数），即 $|\mathcal{P}(\mathbb{N})|=|\{0,1\}^{\mathbb{N}}|$。
+    而 $\mathbb{R}$ 中每个实数有二进制展开（避开歧义），给出满射 $\mathbb{R}\to\{0,1\}^{\mathbb{N}}$；
+    反向也有嵌入。由伯恩斯坦定理，$\mathfrak{c}=|\mathbb{R}|=|\mathcal{P}(\mathbb{N})|=2^{\aleph_{0}}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{本章知识总结}
+  \begin{itemize}
+    \item \alert{语言}：集合、子集、运算（$\cup\cap\setminus^{c}\triangle$）、De Morgan 律。
+    \item \alert{工具}：映射（单/满/双）、对等 $\sim$、基数与比较（伯恩斯坦）。
+    \item \alert{分类}：有限集、可数集（$\aleph_{0}$）、不可数集（$\mathfrak{c}$）。
+    \item \alert{关键定理}：
+      \begin{enumerate}
+        \item 可数个可数集之并可数；
+        \item $\mathbb{Q}$ 可数、$\mathbb{R}$ 不可数（对角线）；
+        \item 康托尔定理 $|A|<|\mathcal{P}(A)|$。
+      \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{常见误区与学习建议}
+  \begin{block}{易错点}
+    \begin{itemize}
+      \item 混淆 $\in$ 与 $\subset$：$\{1\}\in\mathcal{P}(A)$ 但 $\{1\}\not\subset\mathcal{P}(A)$（除非 $1\in\mathcal{P}(A)$）。
+      \item 以为“无限集不能与其真子集对等”——恰恰相反，这正是无穷的标志。
+      \item 对角线法构造时忽略十进制歧义（取 1/2 规避）。
+    \end{itemize}
+  \end{block}
+  \begin{block}{学习建议}
+    多动手构造双射；把“可数”理解为“能排成一列”；遇到“不可数”先想能否用对角线。
+  \end{block}
+\end{frame}
+
+\begin{frame}{本章知识导图}
+  \begin{block}{第一章结构总览}
+    \begin{itemize}
+      \item \alert{集合语言}：元素、子集、幂集、表示法；
+      \item \alert{集合运算}：$\cup,\cap,\setminus,^{c},\triangle$ 与 De Morgan 律；
+      \item \alert{映射与基数}：单/满/双射、对等 $\sim$、伯恩斯坦定理；
+      \item \alert{可数集}：$\aleph_{0}$，可数集的运算封闭性；
+      \item \alert{不可数集}：$\mathfrak{c}$，对角线法、康托尔定理。
+    \end{itemize}
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 主线：用“一一对应”取代“数数”，把无穷纳入算术。
+  \end{center}
+\end{frame}
+
+\begin{frame}{创新视角：从伽利略悖论到康托尔革命}
+  \begin{itemize}
+    \item 伽利略（1638）发现：平方数集与自然数集“一样多”，却又是其真子集——悖论的源头。
+    \item 传统回答：“无穷不可比较。”康托尔反其道而行：\alert{正是用一一对应定义“一样多”}，才解开悖论。
+    \item 革命性结论：无穷不是“一个”，而是分层的（$\aleph_{0}<\mathfrak{c}<2^{\mathfrak{c}}<\dots$）。
+    \item 教学启示：遇到“整体=部分”别慌，那是无穷集合的勋章，不是错误。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{例题：笛卡尔积对并的分配律}
+  \begin{exmp}
+    证明：$A\times(B\cup C)=(A\times B)\cup(A\times C)$。
+  \end{exmp}
+  \begin{pf}
+    \[ (x,y)\in A\times(B\cup C)
+      \Longleftrightarrow x\in A\ \text{且}\ y\in B\cup C
+      \Longleftrightarrow x\in A\ \text{且}\ (y\in B\ \text{或}\ y\in C). \]
+    由逻辑分配律，这等价于
+    \[ (x\in A\ \text{且}\ y\in B)\ \text{或}\ (x\in A\ \text{且}\ y\in C)
+      \Longleftrightarrow (x,y)\in(A\times B)\cup(A\times C). \]
+    故两集合相等。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{例题：逆映射与复合的顺序}
+  \begin{exmp}
+    设 $f\colon A\to B$、$g\colon B\to C$ 均为双射，证明 $(g\circ f)^{-1}=f^{-1}\circ g^{-1}$。
+  \end{exmp}
+  \begin{pf}
+    对任意 $z\in C$：
+    \[ (f^{-1}\circ g^{-1})(z)=f^{-1}(g^{-1}(z)). \]
+    而 $(g\circ f)\bigl(f^{-1}(g^{-1}(z))\bigr)=g\bigl(f(f^{-1}(g^{-1}(z)))\bigr)=g(g^{-1}(z))=z$。
+    再由 $g\circ f$ 双射知其逆唯一，故 $(g\circ f)^{-1}=f^{-1}\circ g^{-1}$。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small “脱手套”：先脱外面的 $g$，再脱里面的 $f$ ——顺序反转。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 1.2（三）· 综合}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明：$A\cap(B\triangle C)=(A\cap B)\triangle(A\cap C)$。
+      \item 设 $f$ 为单射，证明 $f(A\cap B)=f(A)\cap f(B)$。
+      \item 化简：$((A\cup B)\setminus C)\cup((A\cup C)\setminus B)$。
+    \end{enumerate}
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 提示：(1) 用特征函数最简洁；(2) 单射保证“像的交=交的像”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 1.4（三）· 提高}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明：可数个互不相交的可数集之并仍可数。
+      \item 设 $A$ 可数，$B$ 至多可数，证明 $A\times B$ 至多可数。
+      \item 举例说明：不可数集的并未必不可数（构造反例）。
+    \end{enumerate}
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 提示：(3) 取 $\bigcup_{x\in\mathbb{R}}\{x\}$，每个单点可数，但并为 $\mathbb{R}$ 不可数——其实这正说明“不可数个”才危险。
+  \end{center}
+\end{frame}
+
+\begin{frame}{习题精讲 9：对称差与交的分配律}
+  \begin{题}
+    证明：$A\cap(B\triangle C)=(A\cap B)\triangle(A\cap C)$。
+  \end{题}
+  \begin{pf}
+    用特征函数模 2 加法：$\chi_{X\triangle Y}\equiv\chi_X+\chi_Y\pmod2$。
+    左边特征 $\equiv\chi_A(\chi_B+\chi_C)=\chi_A\chi_B+\chi_A\chi_C\equiv\chi_{A\cap B}+\chi_{A\cap C}\equiv$ 右边特征。
+    故两集合相等。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 10：警惕“想当然”的分配律}
+  \begin{题}[判断真伪]
+    有人说：$A\setminus(B\cup C)=(A\setminus B)\cup(A\setminus C)$。对吗？
+  \end{题}
+  \begin{pf}
+    \alert{错误！}正确公式是 $A\setminus(B\cup C)=(A\setminus B)\cap(A\setminus C)$（De Morgan）。
+    反例：取 $A=\{1,2\},B=\{1\},C=\{2\}$。左边 $=\{1,2\}\setminus\{1,2\}=\varnothing$；
+    右边 $=(\{2\})\cup(\{1\})=\{1,2\}\neq\varnothing$。
+    误区在于把“差对并”误当“并对并”分配；差运算只对“交”保持分配律。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 11：显式构造双射}
+  \begin{题}
+    显式写出 $\mathbb{N}\times\mathbb{N}$ 到 $\mathbb{N}$ 的一个双射（或说明思路）。
+  \end{题}
+  \begin{pf}
+    按“反对角线” $i+j=k$ 枚举，并对每条对角线上元素个数做累计偏移即可。
+    一个经典显式公式（康托尔配对函数）：
+    \[ \pi(i,j)=\frac{(i+j-2)(i+j-1)}{2}+i\qquad(i,j\ge1). \]
+    它先把前 $i+j-2$ 条对角线（共 $\frac{(i+j-2)(i+j-1)}{2}$ 个）跳过，再在本对角线上数第 $i$ 个，严格递增且满射，故为双射。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 12：二进制与基数}
+  \begin{题}
+    说明 $[0,1]$ 中实数的二进制展开与 $\{0,1\}^{\mathbb{N}}$ 的关系，并由此看 $\mathfrak{c}$。
+  \end{题}
+  \begin{pf}
+    多数 $x\in[0,1]$ 有唯一二进制展开 $0.b_{1}b_{2}\dots$（$b_k\in\{0,1\}$），对应序列 $(b_k)\in\{0,1\}^{\mathbb{N}}$。
+    仅二进有理数有双展开（可数多个），可单独处理而不影响基数。
+    故 $[0,1]$ 与 $\{0,1\}^{\mathbb{N}}$ 对等，其基数为 $2^{\aleph_{0}}=\mathfrak{c}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{拓展阅读：选择公理与良序定理}
+  \begin{itemize}
+    \item \alert{选择公理（AC）}：任意一族两两不相交的非空集合，可从每个中选取一个元素组成集合。
+    \item 它等价于\alert{良序定理}（任何集合都可被良序化）与\alert{佐恩引理}。
+    \item 在实变函数中，构造某些“坏”集合（如 Vitali 集）依赖 AC；没有 AC，一些不可测集的存在性会失效。
+    \item 思考：AC 看似显然，却推出“球的可分解悖论”——数学基础的微妙之处。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 第三章讲 Vitali 集时我们会再回看 AC。
+  \end{center}
+\end{frame}
+
+\begin{frame}{易错辨析：反例集锦}
+  \begin{block}{常见错误与正解}
+    \begin{itemize}
+      \item 错：无限集都能与真子集对等。\quad 正：仅“无限”不足以保证任意真子集；需存在某个真子集对等（戴德金无限）。
+      \item 错：$A\setminus(B\cap C)=(A\setminus B)\cap(A\setminus C)$。\quad 正：应为 $(A\setminus B)\cup(A\setminus C)$。
+      \item 错：$\mathbb{R}$ 可数因为能“逼近”。\quad 正：对角线法证明不可数。
+      \item 错：基数比较必须构造双射。\quad 正：伯恩斯坦定理允许只用单射嵌入。
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{核心结论速查}
+  \begin{block}{必须记住的结论}
+    \begin{enumerate}
+      \item De Morgan：$({\cup}A_\alpha)^c={\cap}A_\alpha^c$，对偶。
+      \item 可数集对并、积、子集运算封闭；$\mathbb{Q}$ 可数。
+      \item 对角线法：$\mathbb{R}$ 不可数，$|\mathbb{R}|=\mathfrak{c}$。
+      \item 康托尔定理：$|A|<|\mathcal{P}(A)|$，无最大基数。
+      \item 伯恩斯坦：双边可嵌入 $\Rightarrow$ 对等。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{学习方法：如何“看出”双射}
+  \begin{itemize}
+    \item \alert{几何法}：把区间“掰直/拉伸”（如 $\tan$ 把 $(0,1)$ 拉成 $\mathbb{R}$）。
+    \item \alert{编码法}：把元素排成矩阵用反对角线枚举（可数集）。
+    \item \alert{特征函数法}：把集合运算翻译成 0-1 模 2 加法（对称差）。
+    \item \alert{配对法}：证明 $A\subset B\subset C$ 且 $A\sim C$ 则 $B\sim C$（压缩技巧）。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 多积累“标准双射模板”，新题往往是旧模板的组合。
+  \end{center}
+\end{frame}
+
+\begin{frame}{综合自测（一）}
+  \begin{block}{自测}
+    \begin{enumerate}
+      \item 设 $A=\{1,2,3\}$，写出 $|\mathcal{P}(A)|$ 并列出其中含有元素 1 的子集个数。
+      \item 证明：$(A\cup B)\setminus(A\cap B)=(A\setminus B)\cup(B\setminus A)$。
+      \item 证明：若 $A$ 可数、$B$ 不可数，则 $B\setminus A$ 不可数。
+    \end{enumerate}
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 先独立做，再看下页解析。
+  \end{center}
+\end{frame}
+
+\begin{frame}{综合自测（二）· 解析}
+  \begin{itemize}
+    \item 1. $|\mathcal{P}(A)|=2^{3}=8$；含 1 的子集 = 在 $\{2,3\}$ 的 4 个子集中各加 1，共 4 个。
+    \item 2. 左边即 $A\triangle B$；右边正是对称差定义 $(A\setminus B)\cup(B\setminus A)$，由定义即得。
+    \item 3. 若 $B\setminus A$ 可数，则 $B=(B\setminus A)\cup(A\cap B)$ 为两可数集之并，可数，与 $B$ 不可数矛盾。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{本章结束}
+  \begin{center}
+    {\color{clouddeep}\Large 第一章\quad 集合\quad 小结}\\[0.4cm]
+    {\color{cloudgray}从“数数”到“一一对应”，我们获得了丈量无穷的标尺。}\\[0.6cm]
+    {\color{cloudblue}下章预告：直线上的点集——给“开、闭、疏密”一个拓扑定义。}
+  \end{center}
+\end{frame}
+
+% =====================================================================
+%  第二章 直线上的点集
+% =====================================================================
+\section{第二章\quad 直线上的点集}
+
+% ---------- 2.1 度量空间初步 ----------
+\subsection{2.1\ 度量空间初步}
+
+\begin{frame}{本章导学：给“远近”与“疏密”一个定义}
+  \begin{itemize}
+    \item 第一章用“一一对应”量了无穷的\alert{多少}；本章用\alert{距离}量无穷的\alert{结构}。
+    \item 核心问题：
+      \begin{enumerate}
+        \item 什么叫“靠近”“聚在一起”“分散孤立”？（聚点、闭包）
+        \item 直线上的开集长什么样？（开集构造定理）
+        \item 是否存在“处处稠密却长度为 0”的怪集？（康托尔集）
+      \end{enumerate}
+    \item 主线：\alert{度量 $\to$ 开/闭集 $\to$ 直线上的结构 $\to$ 康托尔集 $\to$ 稠密与疏朗}。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{创新视角：从“数”到“形”的桥梁}
+  \begin{itemize}
+    \item 实分析不只要算函数值，更要理解函数在\alert{哪些点“表现好”}（连续、可微、收敛）。
+    \item 这些“好点”的集合往往是开集、闭集、G$_\delta$ 集——它们的结构决定分析性质。
+    \item 本章的工具（内点、聚点、闭包、覆盖）是后续“可测集”“连续函数”的语言基础。
+    \item 康托尔集告诉我们：直觉（“有长度才有内容”）会骗人。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{度量空间的定义}
+  \begin{defn}[度量空间]
+    设 $X$ 为非空集合，$d\colon X\times X\to\mathbb{R}$ 满足对任意 $x,y,z\in X$：
+    \begin{enumerate}
+      \item 正定性：$d(x,y)\ge0$，且 $d(x,y)=0\Longleftrightarrow x=y$；
+      \item 对称性：$d(x,y)=d(y,x)$；
+      \item 三角不等式：$d(x,z)\le d(x,y)+d(y,z)$。
+    \end{enumerate}
+    则称 $d$ 为\alert{度量}，$(X,d)$ 为\alert{度量空间}。
+  \end{defn}
+  \begin{center}
+    \color{cloudgray}\small 度量 = 把“距离”公理化；欧氏空间是特例。
+  \end{center}
+\end{frame}
+
+\begin{frame}{度量的例子}
+  \begin{exmp}[常见度量]
+    \begin{itemize}
+      \item $\mathbb{R}^{n}$ 上的欧氏度量：$d(x,y)=\bigl(\sum_{i=1}^{n}|x_i-y_i|^{2}\bigr)^{1/2}$；
+      \item 离散度量：$d(x,y)=\begin{cases}0,&x=y,\\1,&x\neq y;\end{cases}$
+      \item 有界函数空间上的上确界度量：$d(f,g)=\sup_{t}|f(t)-g(t)|$。
+    \end{itemize}
+  \end{exmp}
+  \begin{block}{验证提示}
+    离散度量显然满足三条；欧氏度量由柯西不等式保证三角不等式。
+  \end{block}
+\end{frame}
+
+\begin{frame}{邻域、开球与球面}
+  \begin{defn}[球与邻域]
+    在度量空间 $(X,d)$ 中，对 $x\in X,r>0$：
+    \begin{itemize}
+      \item \alert{开球} $B(x,r)=\{y\in X\mid d(x,y)<r\}$；
+      \item \alert{闭球} $\overline{B}(x,r)=\{y\mid d(x,y)\le r\}$；
+      \item \alert{球面} $S(x,r)=\{y\mid d(x,y)=r\}$；
+      \item $x$ 的\alert{邻域}：任一包含某个开球 $B(x,r)$ 的集合。
+    \end{itemize}
+  \end{defn}
+  \begin{center}
+    \color{cloudgray}\small 在 $\mathbb{R}$ 中，$B(x,r)=(x-r,x+r)$ 就是一个开区间。
+  \end{center}
+\end{frame}
+
+\begin{frame}{内点、外点与边界点}
+  \begin{defn}
+    对 $E\subset X$ 与点 $x$：
+    \begin{itemize}
+      \item 若存在邻域 $U$ 使 $U\subset E$，称 $x$ 为 $E$ 的\alert{内点}；全体内点记作 $E^{\circ}$；
+      \item 若存在邻域 $U$ 使 $U\cap E=\varnothing$，称 $x$ 为 $E$ 的\alert{外点}；
+      \item 若 $x$ 的任一邻域既含 $E$ 的点又含 $E^{c}$ 的点，称 $x$ 为\alert{边界点}；全体记作 $\partial E$。
+    \end{itemize}
+  \end{defn}
+  \begin{exmp}
+    在 $\mathbb{R}$ 中，$E=[0,1]$。内点为 $(0,1)$；边界点为 $\{0,1\}$；外点为 $(-\infty,0)\cup(1,\infty)$。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{聚点与孤立点}
+  \begin{defn}[聚点]
+    若 $x$ 的任一邻域都含有 $E\setminus\{x\}$ 中的点，则称 $x$ 为 $E$ 的\alert{聚点}（极限点）。
+    $E$ 的全部聚点组成\alert{导集}，记作 $E'$。
+  \end{defn}
+  \begin{defn}[孤立点]
+    若 $x\in E$ 但不是聚点，即存在邻域 $U$ 使 $U\cap E=\{x\}$，称 $x$ 为 $E$ 的\alert{孤立点}。
+  \end{defn}
+  \begin{exmp}
+    $\mathbb{Z}\subset\mathbb{R}$ 中每点都是孤立点，无聚点；$\{1/n\mid n\in\mathbb{N}\}\cup\{0\}$ 的聚点只有 $0$。
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{闭包}
+  \begin{defn}[闭包]
+    $E$ 与其导集的并称为\alert{闭包}：$\overline{E}=E\cup E'$。
+  \end{defn}
+  \begin{prop}[闭包的等价刻画]
+    对 $x\in\overline{E}$ 当且仅当：$x$ 的任一邻域都与 $E$ 相交（即 $\forall r>0,\ B(x,r)\cap E\neq\varnothing$）。
+  \end{prop}
+  \begin{exmp}
+    $\overline{(0,1)}=[0,1]$；$\overline{\mathbb{Q}}=\mathbb{R}$；$\overline{\mathbb{Z}}=\mathbb{Z}$。
+  \end{exmp}
+  \begin{center}
+    \color{cloudgray}\small “闭包”= 把 E 的所有聚点补回来。
+  \end{center}
+\end{frame}
+
+\begin{frame}{开集与闭集}
+  \begin{defn}
+    \begin{itemize}
+      \item $E$ 为\alert{开集}：每一点都是内点（$E=E^{\circ}$）。
+      \item $E$ 为\alert{闭集}：包含其全部聚点（等价地 $E' \subset E$，或 $E^{c}$ 为开集）。
+    \end{itemize}
+  \end{defn}
+  \begin{itemize}
+    \item 空集与全集既开又闭（在连通空间中仅此二者“兼得”）。
+    \item $\mathbb{R}$ 中的开区间 $(a,b)$ 是开集；闭区间 $[a,b]$ 是闭集。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 闭集的“闭” = 把聚点关在门内。
+  \end{center}
+\end{frame}
+
+\begin{frame}{开集与闭集的性质}
+  \begin{thm}
+    \begin{enumerate}
+      \item 任意多个开集的并是开集；有限多个开集的交是开集。
+      \item 任意多个闭集的交是闭集；有限多个闭集的并是闭集。
+    \end{enumerate}
+  \end{thm}
+  \begin{pf}
+    证(1)开集之并：任取并集中的点 $x$，它属于某个开集 $G_\alpha$，而 $G_\alpha$ 含 $x$ 的邻域，该邻域也含于并集中，故并为开。
+    有限交：对 $x\in\bigcap_{i=1}^{n}G_i$，每个 $G_i$ 含 $x$ 的邻域 $B(x,r_i)$；取 $r=\min r_i>0$，则 $B(x,r)$ 含于每个 $G_i$，故含于交中。无限交不一定开（如 $\bigcap( -1/n,1/n)=\{0\}$ 为闭）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{例题：识别开闭集}
+  \begin{exmp}
+    在 $\mathbb{R}$ 中判断下列集合的开闭性：
+    \begin{itemize}
+      \item $A=(0,1)\cup(2,3)$：开集（两开区间之并）；
+      \item $B=[0,1]$：闭集（含聚点 0,1）；
+      \item $C=(0,1]$：既不开也不闭；
+      \item $D=\mathbb{R}\setminus\mathbb{Z}$：开集（补集 $\mathbb{Z}$ 闭）。
+    \end{itemize}
+  \end{exmp}
+  \begin{block}{判别技巧}
+    看边界点归属：边界点全在集合内 $\Rightarrow$ 闭；边界点全在外 $\Rightarrow$ 开；部分在内部分在外 $\Rightarrow$ 皆非。
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.1（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 验证离散度量满足度量三公理。
+      \item 求 $E=\{1/n\mid n\in\mathbb{N}\}\cup\{0\}$ 的导集与闭包。
+      \item 证明：若 $F$ 闭、$G$ 开，则 $F\setminus G$ 闭、$G\setminus F$ 开。
+      \item 举例说明无限个开集的交未必开。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.1（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 正定、对称显然；三角不等式因 $d$ 只取 0,1，易验证成立。
+    \item 2. 导集 $E'=\{0\}$，闭包 $\overline{E}=E$（已含 0）。
+    \item 3. $F\setminus G=F\cap G^{c}$：闭集交开集之补（闭集）= 闭。$G\setminus F=G\cap F^{c}$：开集交开集 = 开。
+    \item 4. $\bigcap_{n=1}^{\infty}(-1/n,1/n)=\{0\}$ 闭非开。
+  \end{itemize}
+\end{frame}
+
+% ---------- 2.2 R^n 中的点集与基本定理 ----------
+\subsection{2.2\ R$^n$ 中的点集与基本定理}
+
+\begin{frame}{R$^n$ 中的距离与邻域}
+  \begin{itemize}
+    \item 在 $\mathbb{R}^{n}$ 中采用欧氏度量；点 $x$ 的 $r$-邻域即开球 $B(x,r)$。
+    \item 内点、聚点、闭包的几何意义与度量空间一致。
+    \item 关键差别来自“维数”：$\mathbb{R}$ 中的开集结构远比高维简单（下节专论）。
+  \end{itemize}
+  \begin{block}{闭包运算的性质}
+    $\overline{A\cup B}=\overline{A}\cup\overline{B}$；$\overline{A\cap B}\subset\overline{A}\cap\overline{B}$（反向一般不成立）。
+  \end{block}
+\end{frame}
+
+\begin{frame}{闭区间套定理}
+  \begin{thm}[闭区间套定理]
+    设 $\{[a_n,b_n]\}$ 为一列闭区间，满足
+    \[ [a_1,b_1]\supset[a_2,b_2]\supset\cdots,\qquad \lim_{n\to\infty}(b_n-a_n)=0, \]
+    则存在唯一的 $\xi\in\mathbb{R}$ 属于所有区间，且 $\xi=\lim a_n=\lim b_n$。
+  \end{thm}
+  \begin{pf}[简述]
+    $\{a_n\}$ 单调增有上界 $\{b_1\}$，故有极限 $\xi$；同理 $\{b_n\}\downarrow\xi$（因区间长 $\to0$）。唯一性由长度趋于 0 保证。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 这是实数“连续性”的等价表述，是两大基本定理的基石。
+  \end{center}
+\end{frame}
+
+\begin{frame}{聚点定理（Bolzano--Weierstrass）}
+  \begin{thm}[聚点定理]
+    $\mathbb{R}^{n}$ 中的任一\alert{有界无限}点集（或有界数列）至少有一个聚点。
+  \end{thm}
+  \begin{pf}[在 $\mathbb{R}$ 中，二分法]
+    设 $E\subset[a,b]$ 为无限集。将 $[a,b]$ 二等分，其中必有一半含 $E$ 中无穷多点（否则 $E$ 有限）。取此半区间为 $[a_1,b_1]$。
+    对 $[a_1,b_1]$ 重复，得闭区间套 $[a_n,b_n]\supset[a_{n+1},b_{n+1}]$，且每个含 $E$ 无穷多点，$b_n-a_n=(b-a)/2^{n}\to0$。
+    由闭区间套定理，存在唯一 $\xi\in\bigcap[a_n,b_n]$。任给 $r>0$，当 $n$ 大时 $[a_n,b_n]\subset B(\xi,r)$，而该区间含 $E$ 无穷多点，故 $B(\xi,r)$ 含 $E\setminus\{\xi\}$ 无穷多点，$\xi$ 为聚点。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{聚点定理（续）· 高维与数列形式}
+  \begin{itemize}
+    \item 在 $\mathbb{R}^{n}$ 中证明类似：每次把方体各边二等分得到 $2^{n}$ 个小方体，至少有一含无穷多点，逐维收缩即可。
+    \item \alert{数列形式}：任一有界数列必有收敛子列（Bolzano--Weierstrass 引理）。
+    \item 对偶表述：无聚点的有界集必为有限集。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 聚点定理 = “有界无穷必挤出一个聚点”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{有限覆盖定理（Heine--Borel）}
+  \begin{thm}[Heine--Borel]
+    $\mathbb{R}^{n}$ 中的集合 $F$ 是\alert{紧集}（即它的任一开覆盖都有有限子覆盖）当且仅当 $F$ 是\alert{有界闭集}。
+  \end{thm}
+  \begin{itemize}
+    \item 在 $\mathbb{R}$ 中只需证：有界闭集 $F$ 的任一开覆盖必有有限子覆盖。
+    \item “紧”直观上就是“能用有限张网兜住”。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 该定理把“闭+有界”与“有限覆盖”画上等号，是分析学的万能钥匙。
+  \end{center}
+\end{frame}
+
+\begin{frame}{有限覆盖定理证明（在 $\mathbb{R}$）}
+  \begin{pf}
+    设 $F\subset[a,b]$ 闭，被一族开集 $\{G_\alpha\}$ 覆盖。反设\alert{无有限子覆盖}。
+    将 $[a,b]$ 二等分，则 $F$ 与至少一半的交不能被有限子覆盖（否则合并即可）；记该半区间为 $[a_1,b_1]$。
+    迭代得闭区间套 $[a_n,b_n]$，$b_n-a_n=(b-a)/2^{n}\to0$，且每个 $F\cap[a_n,b_n]$ 都无有限子覆盖。
+    由闭区间套定理得唯一公共点 $\xi$。因 $\{G_\alpha\}$ 覆盖 $F$ 且 $\xi\in F$，存在某 $G_{\alpha_0}\ni\xi$。
+    又 $G_{\alpha_0}$ 开，含 $\xi$ 的邻域，当 $n$ 足够大时 $[a_n,b_n]\subset G_{\alpha_0}$，于是 $F\cap[a_n,b_n]$ 被单集覆盖，矛盾！故必有有限子覆盖。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{有限覆盖定理应用举例}
+  \begin{exmp}[一致连续性的拓扑来源]
+    闭区间 $[a,b]$ 上的连续函数必一致连续——证明中正是用“每点邻域内的连续控制”覆盖 $[a,b]$，再取有限子覆盖、取最小半径得到全局控制。
+  \end{exmp}
+  \begin{exmp}[有界性定理]
+    紧集上的连续函数有界且取到最值：开覆盖 $\{f^{-1}((-n,n))\}$ 有有限子覆盖，取最大 $n$ 即可。
+  \end{exmp}
+  \begin{center}
+    \color{cloudgray}\small “有限覆盖”把局部性质提升为全局性质。
+  \end{center}
+\end{frame}
+
+\begin{frame}{度量空间中的收敛}
+  \begin{defn}[序列收敛]
+    度量空间 $(X,d)$ 中称 $x_n\to x$ 是指 $d(x_n,x)\to0$。
+  \end{defn}
+  \begin{itemize}
+    \item 收敛的极限唯一（由三角不等式：若 $x_n\to x$ 且 $x_n\to y$，则 $d(x,y)\le d(x,x_n)+d(x_n,y)\to0$）。
+    \item 在 $\mathbb{R}$ 中即为通常的数列极限；在 $C[0,1]$（一致度量）中即一致收敛。
+  \end{itemize}
+  \begin{block}{聚点与收敛子列}
+    $x$ 是 $E$ 的聚点 $\Longleftrightarrow$ 存在 $E\setminus\{x\}$ 中序列收敛到 $x$。这把“聚点”翻译成了“序列语言”。
+  \end{block}
+\end{frame}
+
+\begin{frame}{开集的开球刻画（拓扑基）}
+  \begin{prop}[开集的等价描述]
+    $G$ 为开集 $\Longleftrightarrow$ $G$ 可表为若干开球之并 $\Longleftrightarrow$ 每点都有一个完全含于 $G$ 的开球。
+  \end{prop}
+  \begin{itemize}
+    \item 所有开球的集合构成度量空间的\alert{拓扑基}：任意开集都是基元素的并。
+    \item 这给出“开集”一个构造性定义，便于验证复杂集合的开性。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 开球 = 开集的“积木”；一切开集都由它拼成。
+  \end{center}
+\end{frame}
+
+\begin{frame}{内部运算及其性质}
+  \begin{defn}[内部]
+    $E$ 的内部 $E^{\circ}$ 是 $E$ 的所有内点之并，即 $E$ 中含于 $E$ 的最大开集。
+  \end{defn}
+  \begin{prop}[内部运算律]
+    \begin{enumerate}
+      \item $(E^{\circ})^{\circ}=E^{\circ}$，且 $E^{\circ}$ 是开集；
+      \item $(E\cap F)^{\circ}=E^{\circ}\cap F^{\circ}$；
+      \item $(E\cup F)^{\circ}\supset E^{\circ}\cup F^{\circ}$（反向一般不成立）。
+    \end{enumerate}
+  \end{prop}
+\end{frame}
+
+\begin{frame}{课堂练习 2.2（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 用聚点定理证明：有界数列必有收敛子列。
+      \item 证明 $[0,1]$ 是紧集。
+      \item 举例说明：开区间 $(0,1)$ 不是紧集（给出无有限子覆盖的开覆盖）。
+      \item 设 $E$ 无聚点且 $E\subset[a,b]$，证明 $E$ 有限。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.2（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 有界数列 $\{x_n\}$ 的值域（或有界无穷子集）由聚点定理有聚点 $\xi$，取子列逼近即得收敛子列。
+    \item 2. $[0,1]$ 有界闭，由 Heine--Borel 为紧集。
+    \item 3. 覆盖 $\{(1/n,1)\mid n\ge2\}\cup(0,1/n)$? 更典型：$\{ (1/n,1)\}_{n\ge2}$ 覆盖 $(0,1)$ 但无有限子覆盖（任意有限个的最大左端点 $>0$，漏掉 $(0,\varepsilon)$）。
+    \item 4. 若 $E$ 无穷，由聚点定理它有聚点，与“无聚点”矛盾，故 $E$ 有限。
+  \end{itemize}
+\end{frame}
+
+% ---------- 2.3 直线上的开集、闭集与完备集 ----------
+\subsection{2.3\ 直线上的开集、闭集与完备集}
+
+\begin{frame}{直线上开集的构造定理}
+  \begin{thm}[开集构造定理]
+    $\mathbb{R}$ 中任一非空开集 $G$ 都可表示为\alert{至多可数个互不相交的开区间}的并：
+    \[ G=\bigcup_{k}(a_k,b_k),\qquad (a_k,b_k)\cap(a_j,b_j)=\varnothing\ (k\neq j). \]
+  \end{thm}
+  \begin{itemize}
+    \item 这些开区间称为 $G$ 的\alert{构成区间}（component intervals）。
+    \item 这是 $\mathbb{R}$ 独占的优美性质，高维不再成立。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 一句话：直线上的开集 = 若干“洞”被挖掉后剩下的开区间之并。
+  \end{center}
+\end{frame}
+
+\begin{frame}{开集构造定理证明（一）· 构成区间}
+  \begin{pf}
+    对每个 $x\in G$，因 $G$ 开，存在开区间含 $x$ 且含于 $G$。把所有含 $x$ 且含于 $G$ 的开区间取并集，记为 $I_x$。
+    断言 $I_x$ 本身是一个开区间：若 $a,c\in I_x$，则存在含 $x$ 的开区间 $J_a,J_c\subset G$ 使 $a\in J_a,c\in J_c$，而 $J_a,J_c$ 都含 $x$，故相交，从而 $a,c$ 之间的点也都在 $J_a\cup J_c\subset G$ 中，且连通——故 $I_x$ 是含 $x$ 的极大开区间（构成区间）。\hfill$\blacksquare$（续）
+  \end{pf}
+\end{frame}
+
+\begin{frame}{开集构造定理证明（二）· 可数性}
+  \begin{pf}[续]
+    不同构成区间要么相等要么不相交（若相交则按上页论证应合并为同一极大区间）。
+    于是 $\{I_x\mid x\in G\}$ 是一族两两不相交的开区间。
+    每个构成区间 $(a_k,b_k)$ 中可取一个有理数 $q_k\in(a_k,b_k)$；因区间互不相交，不同区间取到不同有理数。
+    有理数集可数，故构成区间至多可数。从而 $G=\bigcup_k I_k$ 为至多可数个互不相交开区间之并。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 证明的关键技巧：“用有理数给区间编号”→ 可数性。
+  \end{center}
+\end{frame}
+
+\begin{frame}{闭集的构造}
+  \begin{prop}[闭集的两种描述]
+    \begin{enumerate}
+      \item $F$ 闭 $\Longleftrightarrow F^{c}$ 开（定义的对偶）；
+      \item $F$ 闭 $\Longleftrightarrow F=\overline{F}$（含全部聚点）。
+    \end{enumerate}
+  \end{prop}
+  \begin{itemize}
+    \item 由开集构造定理，闭集 = 从 $\mathbb{R}$ 中挖掉至多可数个开区间后剩下的集合。
+    \item 特别地，闭集可能很“碎”（如康托尔集），未必是闭区间之并。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 闭集 = 补集是开集；其“破洞”是开区间。
+  \end{center}
+\end{frame}
+
+\begin{frame}{完备集（Perfect Set）}
+  \begin{defn}[完备集]
+    若闭集 $P$ 满足 $P'=P$（即无孤立点，且每点都是聚点），则称 $P$ 为\alert{完备集}（perfect set）。
+  \end{defn}
+  \begin{exmp}
+    \begin{itemize}
+      \item $[a,b]$、$\mathbb{R}$ 是完备集；
+      \item 单点集不是（有孤立点）；
+      \item 康托尔集是完备集（下节证）。
+    \end{itemize}
+  \end{exmp}
+  \begin{center}
+    \color{clouddeep}\small 完备集 = “闭且无孤立点” = 自密集且闭。
+  \end{center}
+\end{frame}
+
+\begin{frame}{完备集的性质}
+  \begin{thm}[完备集的基数]
+    直线上的非空完备集必含有一个与连续统对等的子集，因而\alert{不可数}。
+  \end{thm}
+  \begin{itemize}
+    \item 更强结论（将在习题中触及）：非空完备集的基数恰为 $\mathfrak{c}$。
+    \item 推论：任何非空完备集都“足够大”（不可数），但它仍可测度为零（康托尔集即如此）。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small “不可数”与“长度为 0”可以共存——这是拓扑与测度的第一次碰撞。
+  \end{center}
+\end{frame}
+
+\begin{frame}{例题：构造与判别}
+  \begin{exmp}
+    判断 $P=\{0\}\cup\{1/n\mid n\in\mathbb{N}\}$ 是否为完备集。
+  \end{exmp}
+  \begin{pf}
+    $P$ 闭（含聚点 0）。但 $0$ 是聚点，而每个 $1/n$ 是孤立点（取半径小于到相邻点的距离即可孤立之）。
+    因存在孤立点，$P'\neq P$（$P'$ 只含 0）。故 $P$ 不是完备集。\hfill$\blacksquare$
+  \end{pf}
+  \begin{block}{判别口诀}
+    闭 + 无孤立点 $\Leftrightarrow$ 完备；二者缺一不可。
+  \end{block}
+\end{frame}
+
+\begin{frame}{实数连续性的等价命题总览}
+  \begin{block}{七大等价表述}
+    $\mathbb{R}$ 的“连续（完备）性”可由以下任一命题刻画，彼此等价：
+    \begin{enumerate}
+      \item 确界存在定理；\quad 2. 单调有界收敛定理；
+      \item 闭区间套定理；\quad 4. 聚点（Bolzano--Weierstrass）定理；
+      \item Heine--Borel 有限覆盖定理；\quad 6. Cauchy 收敛准则；
+      \item 闭集套定理。
+    \end{enumerate}
+  \end{block}
+  \begin{itemize}
+    \item 本章重点使用了 3、4、5 三条，它们是实分析的“发动机”。
+    \item 理解“等价”意味着：证出一个，即可推出其余全部。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{闭集套定理}
+  \begin{thm}[闭集套定理]
+    设 $\{F_n\}$ 为一列非空闭集，$F_1\supset F_2\supset\cdots$，且 $\mathrm{diam}(F_n)\to0$，则存在唯一 $\xi\in\bigcap_n F_n$。
+  \end{thm}
+  \begin{pf}
+    任取 $x_n\in F_n$，则 $\{x_n\}$ 为 Cauchy 列（因直径趋于 0），故收敛于某 $\xi$。对每个 $m$，$\{x_n\}_{n\ge m}\subset F_m$ 且 $F_m$ 闭，故 $\xi\in F_m$，从而 $\xi\in\bigcap F_m$。唯一性由直径趋于 0 保证。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{聚点定理与有限覆盖定理的等价性}
+  \begin{itemize}
+    \item 在 $\mathbb{R}$ 中，聚点定理 $\Longleftrightarrow$ 有限覆盖定理（Heine--Borel）。
+    \item \alert{聚点 $\Rightarrow$ 有限覆盖}：见前文二分反证法证明。
+    \item \alert{有限覆盖 $\Rightarrow$ 聚点}：若有界集 $E$ 无聚点，则每点有邻域只含自身，这些邻域的并覆盖 $E$，取有限子覆盖即见 $E$ 有限，矛盾。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 两条定理“一根绳上的两只蚂蚱”——互相推出。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 2.3（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 将开集 $G=\mathbb{R}\setminus\bigl(\{0\}\cup\bigcup_{n=1}^{\infty}\{\tfrac1n\}\bigr)$ 写成构成区间之并。
+      \item 证明：两个闭集的交是闭集，两个开集的并是开集。
+      \item 设 $P$ 完备，证明 $P$ 不能是有限集或至多可数集。
+      \item 判断 $\mathbb{R}\setminus\mathbb{Q}$（无理数集）是否闭、是否开、是否完备。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.3（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $G=(-\infty,0)\cup(0,1)\cup\bigl(\bigcup_{n=1}^{\infty}(\tfrac1{n+1},\tfrac1n)\bigr)\cup(1,\infty)$。
+    \item 2. 由开/闭集性质定理直接得。
+    \item 3. 若 $P$ 有限或可数，则存在孤立点（可数无限闭集必有孤立点），与完备矛盾。
+    \item 4. 无理数集不是闭（其闭包是 $\mathbb{R}$），不是开（补集 $\mathbb{Q}$ 也不是开），不是完备。
+  \end{itemize}
+\end{frame}
+
+% ---------- 2.4 康托尔集 ----------
+\subsection{2.4\ 康托尔集（三分集）}
+
+\begin{frame}{康托尔集的构造}
+  \begin{itemize}
+    \item 从 $C_0=[0,1]$ 出发，每次去掉每个区间的\alert{中间三分之一开区间}。
+    \item $C_1=[0,\tfrac13]\cup[\tfrac23,1]$；
+    \item $C_2=[0,\tfrac19]\cup[\tfrac29,\tfrac39]\cup[\tfrac69,\tfrac79]\cup[\tfrac89,1]$；
+    \item 如此得到递减闭集列 $C_0\supset C_1\supset C_2\supset\cdots$。
+  \end{itemize}
+  \begin{defn}[康托尔集]
+    \[ C=\bigcap_{n=0}^{\infty}C_n \]
+    称为（三分）\alert{康托尔集}，也叫康托尔三分集。
+  \end{defn}
+\end{frame}
+
+\begin{frame}{康托尔集构造图示}
+  \begin{center}
+    \begin{tikzpicture}[scale=1.9, yscale=1.0]
+      \foreach \x/\y in {0/0, 0.33/0, 0.66/0, 1/0}{}
+      % C0
+      \draw[clouddeep,thick] (0,2.2) -- (1,2.2);
+      % C1
+      \draw[clouddeep,thick] (0,1.6) -- (0.333,1.6);
+      \draw[clouddeep,thick] (0.666,1.6) -- (1,1.6);
+      % C2
+      \draw[clouddeep,thick] (0,1.0) -- (0.111,1.0);
+      \draw[clouddeep,thick] (0.222,1.0) -- (0.333,1.0);
+      \draw[clouddeep,thick] (0.666,1.0) -- (0.777,1.0);
+      \draw[clouddeep,thick] (0.888,1.0) -- (1,1.0);
+      % C limit hint
+      \foreach \a/\b in {0/0.039,0.043/0.073,0.075/0.106,0.11/0.14,0.144/0.175,
+                         0.178/0.208,0.21/0.241,0.245/0.275,0.278/0.309,
+                         0.323/0.353,0.356/0.387,0.39/0.42,0.424/0.454,
+                         0.457/0.488,0.49/0.521,0.524/0.554,0.557/0.588,
+                         0.605/0.635,0.638/0.669,0.69/0.72,0.724/0.754,
+                         0.757/0.788,0.79/0.821,0.824/0.854,0.857/0.888,
+                         0.891/0.921,0.924/0.955,0.957/0.988}{
+        \draw[cloudblue, line width=1.2pt] (\a,0.4) -- (\b,0.4);
+      }
+      \node[cloudgray,font=\scriptsize] at (0.5,2.45) {$C_0$};
+      \node[cloudgray,font=\scriptsize] at (0.5,1.85) {$C_1$};
+      \node[cloudgray,font=\scriptsize] at (0.5,1.25) {$C_2$};
+      \node[cloudgray,font=\scriptsize] at (0.5,0.15) {$C=\bigcap C_n$};
+    \end{tikzpicture}
+  \end{center}
+  \begin{center}
+    \color{cloudgray}\small 每步“挖掉中间三分之一”，极限集竟仍有不可数个点。
+  \end{center}
+\end{frame}
+
+\begin{frame}{康托尔集的性质（一）· 闭与疏朗}
+  \begin{thm}
+    康托尔集 $C$ 是闭集，且在 $\mathbb{R}$ 中\alert{无处稠密}（疏朗）：其闭包含有空内部，即 $\overline{C}=C$ 且 $C$ 不含任何非空开区间。
+  \end{thm}
+  \begin{pf}
+    $C$ 是闭集之交，故闭。若 $C$ 含某个开区间 $(a,b)$，取 $n$ 使 $3^{-n}<b-a$，则第 $n$ 步的某构成区间长度 $3^{-n}$ 必完全落在 $(a,b)$ 内，但 $C_n$ 在该区间处已被挖空，矛盾。故 $C$ 不含任何开区间。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{康托尔集的性质（二）· 测度为零（预告）}
+  \begin{itemize}
+    \item 第 $n$ 步去掉的总长度为 $\frac13+2\cdot\frac19+\cdots+2^{n-1}\cdot\frac1{3^n}=1-(\frac23)^n$。
+    \item 当 $n\to\infty$，剩余总长 $\to0$。
+    \item 严格地（第三章测度论），$m(C)=0$：$\bigl(\frac23\bigr)^n\to0$。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 一个“看不见长度”却“点比实数还多”的集合——反直觉的极致。
+  \end{center}
+\end{frame}
+
+\begin{frame}{康托尔集的性质（三）· 基数为连续统}
+  \begin{thm}
+    康托尔集 $C$ 的基数为 $\mathfrak{c}$（连续统），即 $C$ 不可数且与 $\mathbb{R}$ 对等。
+  \end{thm}
+  \begin{pf}[用三进制]
+    在构造中，点留在 $C$ 中 $\Longleftrightarrow$ 它的三进制展开只使用数字 $0$ 与 $2$（不使用 $1$；含 1 的点在某一阶段被挖去中间段）。
+    于是定义映射
+    \[ \varphi\colon C\to[0,1],\qquad 0.a_1a_2a_3\cdots{}_{(3)}\ (a_k\in\{0,2\})\mapsto 0.\frac{a_1}{2}\frac{a_2}{2}\frac{a_3}{2}\cdots{}_{(2)}. \]
+    这把 $\{0,2\}^{\mathbb{N}}$ 双射到二进制序列 $\{0,1\}^{\mathbb{N}}$，后者与 $[0,1]$ 对等（基数 $\mathfrak{c}$）。
+    故 $|C|=\mathfrak{c}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{康托尔集的意义（创新视角）}
+  \begin{itemize}
+    \item $C$ 同时具备：闭、疏朗、测度零、基数 $\mathfrak{c}$——四个“极端”性质共存。
+    \item 它粉碎了多个直觉：
+      \begin{enumerate}
+        \item “不可数”不必“有长度”（测度零）；
+        \item “处处不稠密”仍可“和实数一样多”；
+        \item “挖掉总长 1”仍能剩下一个不可数集。
+      \end{enumerate}
+    \item 现代应用：分形几何（自相似维数 $\frac{\log2}{\log3}$）、信号处理、混沌理论都以康托尔集为原型。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{离散集与孤立点}
+  \begin{defn}[离散集]
+    若 $E$ 中每点都是孤立点（即每点都有邻域不含 $E$ 的其他点），则称 $E$ 为\alert{离散集}。
+  \end{defn}
+  \begin{exmp}
+    \begin{itemize}
+      \item $\mathbb{Z}$ 是离散集；
+      \item $\{1/n\mid n\in\mathbb{N}\}$ 是离散集（但加 $\{0\}$ 后 0 成为聚点，不再是离散集）；
+      \item 有限集必为离散集。
+    \end{itemize}
+  \end{exmp}
+  \begin{center}
+    \color{cloudgray}\small 离散 = “点与点之间都有空隙”；离散集必无聚点。
+  \end{center}
+\end{frame}
+
+\begin{frame}{自密集与完备集的关系}
+  \begin{defn}[自密集]
+    若 $E\subset E'$（即每点都是聚点，无孤立点），则称 $E$ 为\alert{自密集}（dense-in-itself）。
+  \end{defn}
+  \begin{itemize}
+    \item \alert{完备集} = 自密集 且 闭。即“闭的自密集”。
+    \item 任何集合 $E$ 的\alert{导集 }$E'$ 都是自密集（导集总是自密的）；
+    \item 于是完备集 $P$ 必满足 $P'\subset P\subset P'$，即 $P'=P$。
+  \end{itemize}
+  \begin{block}{判别流程}
+    闭？\quad 是 $\to$ 无孤立点？\quad 是 $\to$ 完备集。
+  \end{block}
+\end{frame}
+
+\begin{frame}{边界点的等价刻画}
+  \begin{prop}[边界的多种描述]
+    对 $x\in\partial E$（边界）等价于以下任一：
+    \begin{enumerate}
+      \item 任一邻域既交 $E$ 又交 $E^{c}$；
+      \item $x\in\overline{E}\cap\overline{E^{c}}$；
+      \item $x\in\overline{E}$ 但 $x\notin E^{\circ}$。
+    \end{enumerate}
+  \end{prop}
+  \begin{itemize}
+    \item 由此 $\partial E=\overline{E}\setminus E^{\circ}$，边界 = 闭包去掉内部。
+    \item 开集边界 $\subset E^{c}$；闭集边界 $\subset E$。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{课堂练习 2.4（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 写出 $C_3$ 各构成区间的端点（用三进制）。
+      \item 证明：康托尔集中的点用三进制表示时绝不出现数字 1。
+      \item 利用三进制构造，说明 $C+C=\{x+y\mid x,y\in C\}$ 是什么集合。
+      \item 康托尔集是否完备？验证之。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.4（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $C_3$ 有 8 个区间，端点形如 $0.a_1a_2a_3{}_{(3)}$，其中每位 $\in\{0,2\}$，如 $0,0.002,0.02,0.022,0.2,0.202,0.22,0.222$（即 $0,\frac{2}{27},\frac{2}{9},\frac{8}{27},\frac{2}{3},\frac{20}{27},\frac{8}{9},1$）。
+    \item 2. 出现 1 的点在对应阶段落入被挖的中间段，故不在 $C$。
+    \item 3. $C+C=[0,2]$（经典结论，由三进制进位可得）。
+    \item 4. $C$ 闭且每点都是聚点（任一点可用更细的构成区间逼近），故完备。
+  \end{itemize}
+\end{frame}
+
+% ---------- 2.5 稠密集与疏朗集 ----------
+\subsection{2.5\ 稠密集与疏朗集}
+
+\begin{frame}{稠密集}
+  \begin{defn}[稠密]
+    若 $\overline{E}=X$（在度量空间 $X$ 中），即 $E$ 的闭包是整个空间，则称 $E$ 在 $X$ 中\alert{稠密}。
+  \end{defn}
+  \begin{exmp}
+    \begin{itemize}
+      \item $\mathbb{Q}$ 在 $\mathbb{R}$ 中稠密（任意实数可用有理数逼近）；
+      \item 多项式函数在 $C[a,b]$ 中按一致度量稠密（魏尔斯特拉斯逼近定理，后章触及）；
+      \item 无理数集也在 $\mathbb{R}$ 中稠密。
+    \end{itemize}
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{疏朗集（无处稠密集）}
+  \begin{defn}[疏朗 / 无处稠密]
+    若 $\overline{E}$ 的内部为空（即 $\overline{E}$ 不含任何非空开区间），则称 $E$ 为\alert{疏朗集}（无处稠密集）。
+  \end{defn}
+  \begin{exmp}
+    \begin{itemize}
+      \item 有限点集、$\mathbb{Z}$ 是疏朗集；
+      \item 康托尔集是疏朗集（已证）；
+      \item 但 $\mathbb{Q}$ 不是疏朗（它稠密，$\overline{\mathbb{Q}}=\mathbb{R}$ 内部非空）。
+    \end{itemize}
+  \end{exmp}
+  \begin{center}
+    \color{cloudgray}\small 疏朗 = “再怎么闭包也撑不起一个开区间”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{贝尔范畴定理（简介）}
+  \begin{thm}[贝尔范畴定理]
+    完备度量空间（如 $\mathbb{R}$）不能表示为\alert{可数个疏朗集}的并。
+  \end{thm}
+  \begin{itemize}
+    \item 推论：$\mathbb{R}$ 不能表示为可数个无处稠密集之并——故“大多数”实数不在任何给定的可数疏朗并中。
+    \item 应用：存在处处连续但无处可微的函数（魏尔斯特拉斯函数）；这类函数“普遍存在”（剩余集）。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small “稀疏集合的可数并仍是稀疏的”——与测度论视角互补。
+  \end{center}
+\end{frame}
+
+\begin{frame}{例题：稠密与疏朗辨析}
+  \begin{exmp}
+    判断以下集合在 $\mathbb{R}$ 中的稠密/疏朗性：
+    \begin{itemize}
+      \item $A=\mathbb{R}\setminus\mathbb{Q}$：稠密（非疏朗）；
+      \item $B=\bigcup_{n\in\mathbb{Z}}(n,n+\tfrac1{n^2})$：非稠密；其闭包含整数点但内部为空？其实含开区间 $(n,n+1/n^2)$，故不疏朗但也不稠密；
+      \item $D=\{1/n\mid n\in\mathbb{N}\}\cup\{0\}$：疏朗（闭包 $[0,1]$ 不对——闭包是 $\{0\}\cup\{1/n\}$，内部为空，故疏朗）。
+    \end{itemize}
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{胖康托尔集（Smith--Volterra--Cantor 集）}
+  \begin{itemize}
+    \item 构造：与三分康托尔集类似，但每次挖掉的是中间\alert{比例更小}的开区间（如第 $n$ 步挖掉长度为 $1/4^{n}$ 的区间）。
+    \item 结果仍是一个\alert{闭、疏朗、完备}集，但剩余总长度大于 0（因为挖掉的总长 $<1$）。
+  \end{itemize}
+  \begin{prop}
+    存在“疏朗却正测度”的闭集——胖康托尔集 $V$ 满足 $m(V)>0$ 且 $V$ 无处稠密。
+  \end{prop}
+  \begin{center}
+    \color{clouddeep}\small 它说明“疏朗（拓扑小）”与“正测度（测度大）”可以共存。
+  \end{center}
+\end{frame}
+
+\begin{frame}{康托尔函数（魔鬼阶梯）简介}
+  \begin{itemize}
+    \item 在康托尔集构造的每一步，把被挖掉的中间区间映射为常值“阶梯”。
+    \item 最终得到 $c\colon[0,1]\to[0,1]$：连续、单调不减，但在康托尔集（测度 0）之外为常数。
+  \end{itemize}
+  \begin{prop}[魔鬼阶梯的性质]
+    $c$ 连续、单调递增，且 $c'(x)=0$ 对几乎所有 $x$（因非常数部分只在测度 0 的 $C$ 上）。它把“长度 0”的集合映成整个 $[0,1]$。
+  \end{prop}
+  \begin{center}
+    \color{cloudgray}\small 一个“几乎处处导数为 0”却能把区间拉满的连续函数——反直觉的经典。
+  \end{center}
+\end{frame}
+
+\begin{frame}{康托尔集的自相似维数}
+  \begin{itemize}
+    \item 康托尔集由两份自身缩放 $1/3$ 拼成：$C=\tfrac13 C\cup(\tfrac23+\tfrac13 C)$。
+    \item 设其分形（Hausdorff）维数为 $d$，由自相似：$2\cdot(1/3)^{d}=1$。
+    \item 解得 $d=\dfrac{\log 2}{\log 3}\approx0.6309$。
+  \end{itemize}
+  \begin{block}{意义}
+    维数介于 0（离散点）与 1（线段）之间，恰好量化了康托尔集“比点密、比线疏”的几何特征。
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.5（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明：若 $E$ 疏朗，则 $E$ 的补集 $\overline{E^{c}}$ 在 $\mathbb{R}$ 中稠密。
+      \item 证明：两个疏朗集的并未必疏朗，但有限个疏朗集的并仍疏朗。
+      \item 举例一个稠密集，其补集也稠密。
+      \item 说明康托尔集是疏朗的完备集。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 2.5（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $(\overline{E})^{c}$ 开且含于 $E^{c}$，因 $\overline{E}$ 无内点，$(\overline{E})^{c}$ 稠密，从而其超集 $E^{c}$ 的闭包 = $\mathbb{R}$。
+    \item 2. 有限并：闭包之内部 $\subset$ 各闭包内部之并 = 空，故疏朗。可数并可能不疏朗（如 $\mathbb{Q}$）。
+    \item 3. $\mathbb{Q}$ 与 $\mathbb{R}\setminus\mathbb{Q}$ 互为稠密补集。
+    \item 4. 已证 $C$ 闭、无内点（疏朗）、无孤立点（完备）。
+  \end{itemize}
+\end{frame}
+
+% ---------- 习题课 ----------
+\begin{frame}{贝尔第一、第二类集}
+  \begin{defn}[贝尔分类]
+    \begin{itemize}
+      \item \alert{第一范畴集}（贫集）：可表为可数个疏朗集之并；
+      \item \alert{第二范畴集}（丰集）：不是第一范畴的集合。
+    \end{itemize}
+  \end{defn}
+  \begin{itemize}
+    \item 贝尔范畴定理：完备度量空间本身是第二范畴的（不能表示为可数疏朗并）。
+    \item 因此 $\mathbb{R}$ 中“绝大多数”点不在任何给定的可数疏朗并中。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{剩余集与范畴观点}
+  \begin{defn}[剩余集]
+    补集为第一范畴集的集合称为\alert{剩余集}（残集）。
+  \end{defn}
+  \begin{itemize}
+    \item 剩余集在“范畴意义下”是“几乎全部”。
+    \item 应用：存在\alert{处处连续但处处不可微}的函数，且其全体在 $C[0,1]$ 中是剩余集——即“病态函数”其实占绝大多数，连续可微的才是少数！
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 范畴论告诉我们：直觉中的“好函数”反而是特例。
+  \end{center}
+\end{frame}
+
+\begin{frame}{稠密与疏朗综合例题}
+  \begin{exmp}
+    设 $A$ 在 $\mathbb{R}$ 中稠密，$B$ 疏朗。问 $A\setminus B$ 是否仍稠密？
+  \end{exmp}
+  \begin{pf}
+    $B$ 疏朗 $\Rightarrow\overline{B}$ 无内点 $\Rightarrow(\overline{B})^{c}$ 稠密。而 $A\setminus B\supset A\cap(\overline{B})^{c}$（因 $B\subset\overline{B}$）。
+    稠密集的闭包 $\overline{A\cap(\overline{B})^{c}}\subset\overline{A}=\mathbb{R}$ 且它含于稠密集 $(\overline{B})^{c}$ 的超集，本身稠密，故 $A\setminus B$ 稠密。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\subsection{习题课}
+
+\begin{frame}{习题课导言：拓扑直觉的培养}
+  \begin{itemize}
+    \item 本章题型：
+      \begin{enumerate}
+        \item 判断集合的开/闭/完备性；
+        \item 计算导集、闭包、边界；
+        \item 应用两大基本定理（聚点、有限覆盖）；
+        \item 开集构造与康托尔集论证。
+      \end{enumerate}
+    \item 通法：\alert{“用邻域定义验证”}；涉及“有界无限/覆盖”立刻联想两大定理。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{习题精讲 1：开闭判定}
+  \begin{题}
+    设 $A$ 开、$B$ 闭，证明 $A\setminus B$ 开、$B\setminus A$ 闭。
+  \end{题}
+  \begin{pf}
+    $A\setminus B=A\cap B^{c}$：开集交开集（因 $B$ 闭 $\Rightarrow B^{c}$ 开）$=$ 开。
+    $B\setminus A=B\cap A^{c}$：闭集交闭集 $=$ 闭。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 2：导集与闭包计算}
+  \begin{题}
+    求 $E=\{\tfrac1n+\tfrac1m\mid n,m\in\mathbb{N}\}$ 的导集与闭包。
+  \end{题}
+  \begin{pf}
+    固定 $n$，$\tfrac1n+\tfrac1m\to\tfrac1n$（$m\to\infty$），故每个 $\tfrac1n$ 是聚点；又 $\tfrac1n\to0$，故 0 也是聚点。
+    此外点本身之间不累积。于是 $E'=\{0\}\cup\{\tfrac1n\mid n\in\mathbb{N}\}$，$\overline{E}=E\cup E'$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 3：聚点定理应用}
+  \begin{题}
+    证明：有界数列必含收敛子列（Bolzano--Weierstrass 引理）。
+  \end{题}
+  \begin{pf}
+    若数列值有限，则某值重复无穷次，取该值子列即常收敛子列。
+    若值域无限，则有界无限点集，由聚点定理存在聚点 $\xi$；对每个 $k$ 取 $n_k$ 使 $|x_{n_k}-\xi|<1/k$ 且 $n_k$ 递增，得收敛子列 $x_{n_k}\to\xi$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 4：有限覆盖应用}
+  \begin{题}
+    用有限覆盖定理证明：闭区间 $[a,b]$ 上的连续函数必有界。
+  \end{题}
+  \begin{pf}
+    对每点 $x\in[a,b]$，连续性给出 $\delta_x>0$ 使 $|f(y)-f(x)|<1$ 当 $|y-x|<\delta_x$，即 $f$ 在 $(x-\delta_x,x+\delta_x)$ 上有界（界 $|f(x)|+1$）。
+    这些开区间覆盖 $[a,b]$，由紧性取有限子覆盖，对应有限个界，取最大者 $M$，则 $|f|\le M$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 5：开集构造}
+  \begin{题}
+    设 $G$ 为开集，证明 $G$ 中每个构成区间的端点都不属于 $G$，且都属于 $G^{c}$ 的聚点。
+  \end{题}
+  \begin{pf}
+    若构成区间端点 $a\in G$，因 $G$ 开含 $a$ 的邻域，该邻域会向左延伸使构成区间更大，矛盾；故 $a\notin G$。
+    又 $a$ 右侧紧邻构成区间内部（属 $G$），左侧紧邻 $G^{c}$，故任一邻域都交 $G^{c}$，即 $a$ 是 $G^{c}$ 的聚点。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 6：完备集构造}
+  \begin{题}
+    证明非空完备集必不可数（利用“每点皆聚点”递归构造两两个不同的点列）。
+  \end{题}
+  \begin{pf}
+    设 $P$ 完备非空。取 $x_1\neq x_2\in P$（若 $P$ 只有一个点则非完备，因该点孤立）。
+    因 $P$ 无孤立点，可在 $x_1,x_2$ 邻域内各取异于它们的点，递归二分区间得到一列互异点 $\{y_n\}\subset P$，且 $\{y_n\}$ 无限，故 $P$ 含无限（实则不可数）子集。严格基数结论见教材，此处至少说明不可有限。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 7：康托尔集再证}
+  \begin{题}
+    证明康托尔集 $C$ 不可数（不用测度，用自相似性）。
+  \end{题}
+  \begin{pf}
+    注意 $C=\frac13 C\cup(\frac23+\frac13 C)$，且这两部分不相交。若存在枚举 $C=\{c_1,c_2,\dots\}$，
+    递归地：左、右两份都同胚于 $C$（故都不可数若 $C$ 可数则矛盾）——更直接的还是三进制编码法（见正文）。自相似也暗示其规模与自身相同，符合无限特征。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 8：稠密与疏朗}
+  \begin{题}
+    证明：可数多个稠密集的交仍可稠密（举例）；但可数多个疏朗集的并一般不稠密（贝尔定理）。
+  \end{题}
+  \begin{pf}
+    例：$\bigcap_{q\in\mathbb{Q}}(\mathbb{R}\setminus\{q\})=\mathbb{R}\setminus\mathbb{Q}$ 稠密。
+    贝尔定理（已述）：完备度量空间不能表为可数疏朗并，故一般可数疏朗并不稠密（甚至 nowhere dense 的并仍“小”）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 9：闭包运算}
+  \begin{题}
+    举例说明 $\overline{A\cap B}$ 可真包含于 $\overline{A}\cap\overline{B}$。
+  \end{题}
+  \begin{pf}
+    取 $A=\mathbb{Q}$，$B=\mathbb{R}\setminus\mathbb{Q}$。则 $A\cap B=\varnothing$，故 $\overline{A\cap B}=\varnothing$。
+    但 $\overline{A}=\overline{B}=\mathbb{R}$，故 $\overline{A}\cap\overline{B}=\mathbb{R}\supsetneq\varnothing$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 10：综合}
+  \begin{题}
+    设 $F$ 闭且有界，证明 $F$ 必为紧集；并由此说明 $F$ 上连续函数能取到最大值。
+  \end{题}
+  \begin{pf}
+    有界闭 $\Rightarrow$ 紧（Heine--Borel）。紧集上连续函数有界且取到最值（有限覆盖取最大界与对应点）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 11：闭包包含关系的反例}
+  \begin{题}
+    举例说明 $\overline{A\cup B}=\overline{A}\cup\overline{B}$ 成立，但 $\overline{A\cap B}\subsetneq\overline{A}\cap\overline{B}$ 可真包含。
+  \end{题}
+  \begin{pf}
+    前者恒等：由闭包对有限并成立。后者反例已见（$A=\mathbb{Q},B=\mathbb{R}\setminus\mathbb{Q}$）：$A\cap B=\varnothing$，$\overline{A\cap B}=\varnothing$，而 $\overline{A}\cap\overline{B}=\mathbb{R}$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 12：证明集合非紧}
+  \begin{题}
+    证明 $(0,1)$ 不是紧集（构造一个无有限子覆盖的开覆盖）。
+  \end{题}
+  \begin{pf}
+    取开覆盖 $\mathcal{U}=\{(1/n,1)\mid n\ge2\}$。它覆盖 $(0,1)$：任 $x\in(0,1)$，取 $n>1/x$ 则 $x\in(1/n,1)$。
+    但任意有限子族的最大左端点为 $1/N>0$，区间 $(0,1/N]$ 未被覆盖，故无有限子覆盖，$(0,1)$ 非紧。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 13：完备集不可数的标准证明}
+  \begin{题}
+    用闭区间套方法证明：非空完备集 $P\subset\mathbb{R}$ 不可数。
+  \end{题}
+  \begin{pf}
+    若 $P$ 可数，列 $P=\{p_1,p_2,\dots\}$。取闭区间 $I_0$ 含 $P$ 且两端点不在 $P$（因 $P$ 无孤立点，可在两侧取到）。
+    第一步：在 $I_0$ 内取闭子区间 $I_1$ 使其端点不在 $P$ 且避开 $p_1$；递归避 $p_n$，得 $I_n\supset I_{n+1}$，长度 $\to0$。
+    由闭集套，$\exists!\xi\in\cap I_n\subset P$，但构造中 $\xi\neq p_n$ 对所有 $n$，矛盾。故 $P$ 不可数。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 14：开集构造的反问题}
+  \begin{题}
+    设 $F=[0,1]\setminus\bigcup_{n=1}^{\infty}(\frac1{2n+1},\frac1{2n})$，求 $F$ 的构成区间，并判断 $F$ 是否闭、是否疏朗。
+  \end{题}
+  \begin{pf}
+    $F$ 由 $[0,1]$ 挖去一列开区间得到，剩余为闭集（补集开）。
+    剩余为端点相接的闭区间之并：$\{0\}\cup\bigcup_{n\ge1}[\tfrac1{2n},\tfrac1{2n+1}]\cup\{1\}$。
+    它是闭集；内部非空（含小闭区间），故不疏朗。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 15：聚点定理的逆向使用}
+  \begin{题}
+    证明：若 $E\subset\mathbb{R}$ 的任一聚点都属于 $E$，则 $E$ 为闭集。
+  \end{题}
+  \begin{pf}
+    $E$ 闭 $\Longleftrightarrow E'\subset E$（含全部聚点）。题设正是 $E'\subset E$，故 $E$ 闭。\hfill$\blacksquare$
+  \end{pf}
+  \begin{block}{注意}
+    这是闭集“含聚点”定义的原命题；常与“补集开”等价使用。
+  \end{block}
+\end{frame}
+
+\begin{frame}{习题精讲 16：稠密补集稠密}
+  \begin{题}
+    证明：若 $A$ 稠密且 $A\subset B$，则 $B$ 稠密；并举例两个稠密集之交仍可稠密。
+  \end{题}
+  \begin{pf}
+    稠密 $\Rightarrow\overline{A}=\mathbb{R}$。由 $A\subset B$ 得 $\mathbb{R}=\overline{A}\subset\overline{B}\subset\mathbb{R}$，故 $\overline{B}=\mathbb{R}$，即 $B$ 稠密。
+    例：$\bigcap_{q\in\mathbb{Q}}(\mathbb{R}\setminus\{q\})=\mathbb{R}\setminus\mathbb{Q}$ 稠密——故“可数多个稠密集交仍可稠密”。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 17：综合（闭包与导集计算进阶）}
+  \begin{题}
+    求 $E=\{\tfrac1n+\tfrac{(-1)^n}{m}\mid n,m\in\mathbb{N}\}$ 的导集与闭包。
+  \end{题}
+  \begin{pf}
+    固定 $n$，$\tfrac{(-1)^n}{m}\to0$，故每个 $\tfrac1n$ 是聚点；又 $\tfrac1n\to0$，故 0 是聚点。
+    当 $n$ 偶，$1/n$ 附近有上方点；当 $n$ 奇，有下方点。所有聚点为 $\{0\}\cup\{\tfrac1n\}$。
+    于是 $E'=\{0\}\cup\{\tfrac1n\mid n\in\mathbb{N}\}$，$\overline{E}=E\cup E'$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{本章知识总结}
+  \begin{itemize}
+    \item \alert{工具}：度量、邻域、内点/聚点/闭包、开集/闭集；
+    \item \alert{两大定理}：聚点定理（有界无限 $\Rightarrow$ 有聚点）、有限覆盖定理（有界闭 $\Leftrightarrow$ 紧）；
+    \item \alert{开集构造}：直线开集 = 至多可数个不相交开区间之并；
+    \item \alert{康托尔集}：闭、疏朗、测度零、基数 $\mathfrak{c}$；
+    \item \alert{稠密 vs 疏朗}：贝尔范畴定理。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{易错辨析}
+  \begin{block}{易错点}
+    \begin{itemize}
+      \item 以为“闭集都是区间之并”——错，康托尔集是闭但高度破碎。
+      \item 无限个开集交仍开——错，只能保证有限交。
+      \item 稠密集的补集必疏朗——错（$\mathbb{Q}$ 与无理数集互稠密）。
+      \item 康托尔集“测度零所以可数”——错，它不可数！
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{核心结论速查}
+  \begin{block}{必记}
+    \begin{enumerate}
+      \item 开集任意并、有限交；闭集任意交、有限并。
+      \item 闭区间套、聚点、Heine--Borel 三定理互推。
+      \item 直线开集 = 可数不相交开区间并。
+      \item $C$：闭、疏朗、测度 0、基数 $\mathfrak{c}$。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{学习方法与自测}
+  \begin{itemize}
+    \item \alert{画图}：开/闭/聚点先画数轴再下结论。
+    \item \alert{套定义}：判断开闭优先用“边界点归属”与“补集”。
+    \item \alert{联想定理}：遇“有界无限”→聚点；遇“开覆盖”→有限覆盖。
+  \end{itemize}
+  \begin{block}{自测}
+    1. 证明 $(0,1)$ 不是紧集；2. 康托尔集为什么不含开区间？3. 举一个疏朗但不闭的集合。
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 自测答案见课堂讨论或下章延伸。
+  \end{center}
+\end{frame}
+
+\begin{frame}{本章知识地图}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.92, every node/.style={font=\small}]
+    \node[draw=clouddeep, fill=cloudblue!12, rounded corners, minimum width=2.4cm, minimum height=0.8cm] (m) at (0,3) {度量空间};
+    \node[draw=clouddeep, fill=cloudblue!12, rounded corners, minimum width=2.4cm, minimum height=0.8cm] (o) at (-3,1.2) {开/闭集};
+    \node[draw=clouddeep, fill=cloudblue!12, rounded corners, minimum width=2.4cm, minimum height=0.8cm] (c) at (0,1.2) {聚点/闭包};
+    \node[draw=clouddeep, fill=cloudblue!12, rounded corners, minimum width=2.4cm, minimum height=0.8cm] (t) at (3,1.2) {两大定理};
+    \node[draw=clouddeep, fill=cloudsand!14, rounded corners, minimum width=2.4cm, minimum height=0.8cm] (k) at (-1.5,-0.8) {康托尔集};
+    \node[draw=clouddeep, fill=cloudsand!14, rounded corners, minimum width=2.4cm, minimum height=0.8cm] (d) at (1.5,-0.8) {稠密/疏朗};
+    \draw[->,cloudgray,thick] (m)--(o); \draw[->,cloudgray,thick] (m)--(c); \draw[->,cloudgray,thick] (m)--(t);
+    \draw[->,cloudgray,thick] (o)--(k); \draw[->,cloudgray,thick] (c)--(d); \draw[->,cloudgray,thick] (t)--(k);
+  \end{tikzpicture}
+  \end{center}
+  \begin{center}
+    \color{cloudgray}\small 一条主线：度量 $\to$ 开闭/聚点 $\to$ 两大定理 $\to$ 康托尔集与稠密疏朗。
+  \end{center}
+\end{frame}
+
+\begin{frame}{本章结束}
+  \begin{center}
+    {\color{clouddeep}\Large 第二章\quad 直线上的点集\quad 小结}\\[0.4cm]
+    {\color{cloudgray}开与闭、聚与散；康托尔集让我们学会谦逊地面对直觉。}\\[0.6cm]
+    {\color{cloudblue}下章预告：测度——给“长度”一个严谨而普适的定义。}
+  \end{center}
+\end{frame}
+
+% =====================================================================
+%  第三章 测度
+% =====================================================================
+\section{第三章\quad 测度}
+
+% ---------- 3.1 外测度 ----------
+\subsection{3.1\ 外测度}
+
+\begin{frame}{本章导学：给“长度”一个普适定义}
+  \begin{itemize}
+    \item 前两章解决了“集合有多少”“点如何分布”；本章回答：\alert{一个集合有多“长/大”}？
+    \item 核心问题：
+      \begin{enumerate}
+        \item 区间长度能推广到任意点集吗？（外测度）
+        \item 怎样的点集才能“可加”地量？（可测集 / 卡拉西奥多里条件）
+        \item 是否存在根本“不能量”的集合？（Vitali 集）
+      \end{enumerate}
+    \item 主线：\alert{外测度 $\to$ 可测集与测度 $\to$ 测度性质 $\to$ 不可测集}。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{创新视角：黎曼积分的痛点在哪}
+  \begin{itemize}
+    \item 黎曼积分按“横切竖条”逼近，要求函数在“绝大多数点”连续；对严重振荡的函数（如狄利克雷函数）束手无策。
+    \item 根本限制：黎曼积分的“分割”作用域是区间，无法灵活贴合复杂点集。
+    \item 勒贝格的思路（1902）：\alert{先量集合（测度），再按函数值竖切}，把积分转化为“函数值乘以测度”的求和。
+    \item 本章的“测度”正是这场革命的地基。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{长度、面积的局限}
+  \begin{itemize}
+    \item 区间长度：$m((a,b))=b-a$，$m([a,b])=b-a$。
+    \item 直觉希望：任何点集 $E\subset\mathbb{R}$ 都有一个“长度” $m(E)$，且对互不相交的集满足\alert{可数可加性}。
+    \item 困难：若强行对\alert{所有}集合定义可加长度，会推出矛盾（巴拿赫--塔斯基式怪象，及 Vitali 反例）。
+    \item 策略：先放宽为\alert{外测度}（只要求次可加），再筛出满足可加性的“可测集”。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small “先松后严”——外测度是测度的摇篮。
+  \end{center}
+\end{frame}
+
+\begin{frame}{外测度的定义}
+  \begin{defn}[Lebesgue 外测度]
+    对 $E\subset\mathbb{R}$，定义其\alert{外测度}
+    \[ m^{*}(E)=\inf\Bigl\{\sum_{k=1}^{\infty}|I_k|\ \Big|\ E\subset\bigcup_{k=1}^{\infty}I_k,\ I_k\ \text{为开区间}\Bigr\}. \]
+    其中 $|I_k|$ 为区间长度。若下确界为 $+\infty$，则 $m^{*}(E)=+\infty$。
+  \end{defn}
+  \begin{itemize}
+    \item 用“开区间覆盖”的总长度去逼近，取所有可能覆盖中的最小上界。
+    \item $m^{*}(\varnothing)=0$；$m^{*}((a,b))=b-a$。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{外测度的三条基本性质}
+  \begin{thm}[外测度性质]
+    对任意 $E,E_1,E_2,\dots\subset\mathbb{R}$：
+    \begin{enumerate}
+      \item \alert{非负性}：$m^{*}(E)\ge0$，且 $m^{*}(\varnothing)=0$；
+      \item \alert{单调性}：若 $E_1\subset E_2$，则 $m^{*}(E_1)\le m^{*}(E_2)$；
+      \item \alert{次可加性}：$m^{*}\bigl(\bigcup_{n=1}^{\infty}E_n\bigr)\le\sum_{n=1}^{\infty}m^{*}(E_n)$。
+    \end{enumerate}
+  \end{thm}
+  \begin{center}
+    \color{clouddeep}\small 注意：一般只有“$\le$”（次可加），而非等号！等号只对可测集成立。
+  \end{center}
+\end{frame}
+
+\begin{frame}{次可加性证明}
+  \begin{pf}
+    若 $\sum m^{*}(E_n)=\infty$，不等式平凡成立。下设有限。
+    任给 $\varepsilon>0$，对每个 $n$ 取开区间列 $\{I_{n,k}\}$ 覆盖 $E_n$ 使
+    \[ \sum_{k}|I_{n,k}|\le m^{*}(E_n)+\frac{\varepsilon}{2^{n}}. \]
+    则 $\bigcup_n E_n\subset\bigcup_{n,k}I_{n,k}$，且
+    \[ \sum_{n,k}|I_{n,k}|=\sum_n\sum_k|I_{n,k}|
+      \le\sum_n\Bigl(m^{*}(E_n)+\frac{\varepsilon}{2^{n}}\Bigr)
+      =\sum_n m^{*}(E_n)+\varepsilon. \]
+    由外测度定义，$m^{*}(\cup E_n)\le\sum m^{*}(E_n)+\varepsilon$。令 $\varepsilon\to0$ 得证。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{例题：外测度计算}
+  \begin{exmp}
+    \begin{itemize}
+      \item $m^{*}(\mathbb{Q})=0$：因 $\mathbb{Q}$ 可数，设 $\mathbb{Q}=\{q_n\}$，取 $I_n=(q_n-\varepsilon/2^{n+1},q_n+\varepsilon/2^{n+1})$，则 $m^{*}(\mathbb{Q})\le\varepsilon$，故为 0。
+      \item 对单点集 $\{x\}$，$m^{*}(\{x\})=0$。
+      \item 可数集的外测度恒为 0。
+    \end{itemize}
+  \end{exmp}
+  \begin{block}{推论}
+    外测度为 0 的集合称为\alert{零测集}；可数集必为零测集，但零测集未必可数（康托尔集）。
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 3.1（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明：若 $m^{*}(E)=0$，则对任意 $A\subset\mathbb{R}$ 有 $m^{*}(A\cup E)=m^{*}(A)$。
+      \item 证明有限版本的次可加性：$m^{*}(E_1\cup E_2)\le m^{*}(E_1)+m^{*}(E_2)$。
+      \item 计算 $m^{*}\bigl(\{1/n\mid n\in\mathbb{N}\}\bigr)$。
+      \item 举例说明次可加性严格小于（构造 $E_1,E_2$ 使等号不成立）。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 3.1（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 由次可加性 $m^{*}(A)\le m^{*}(A\cup E)\le m^{*}(A)+m^{*}(E)=m^{*}(A)$。
+    \item 2. 次可加性的有限特例（或同法证明）。
+    \item 3. 可数集 $\Rightarrow$ 外测度 0。
+    \item 4. 有理数与无理数在 $[0,1]$ 中：两者外测度分别为 0 与 1，并的外测度 1 = 0+1（此处等号）。要“严格小于”可用：取 $E_1=V$ 不可测情形较复杂；简单例：$E_1=E_2=(0,1)$，则 $m^{*}(E_1\cup E_2)=1<2$。
+  \end{itemize}
+\end{frame}
+
+% ---------- 3.2 可测集与测度 ----------
+\subsection{3.2\ 可测集与测度}
+
+\begin{frame}{卡拉西奥多里条件}
+  \begin{itemize}
+    \item 外测度太“松”（只次可加）。要恢复可加性，需对集合加限制。
+    \item 思路：一个集合 $E$ 若能把\alert{任意}集合 $A$“干净地切分”而不产生长度损失，就称 $E$ 可测。
+  \end{itemize}
+  \begin{defn}[卡拉西奥多里条件]
+    若对任意 $A\subset\mathbb{R}$，
+    \[ m^{*}(A)=m^{*}(A\cap E)+m^{*}(A\cap E^{c}), \]
+    则称 $E$ 为\alert{（Lebesgue）可测集}。
+  \end{defn}
+\end{frame}
+
+\begin{frame}{测度的定义}
+  \begin{defn}[测度]
+    对可测集 $E$，定义其\alert{测度} $m(E)=m^{*}(E)$。
+    全体可测集记为 $\mathcal{M}$，其上 $m$ 称为\alert{Lebesgue 测度}。
+  \end{defn}
+  \begin{itemize}
+    \item 可测集上的测度 = 外测度，但多了\alert{可数可加性}。
+    \item 关键：$\mathcal{M}$ 是一个 $\sigma$-代数（对可数并、交、补封闭）。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 可测 = “能干净切分任意集合”；测度 = 可测集上的外测度。
+  \end{center}
+\end{frame}
+
+\begin{frame}{可测集的关键性质：可数可加性}
+  \begin{thm}[可数可加性]
+    若 $\{E_n\}$ 为两两不相交的可测集列，则 $\bigcup_n E_n$ 可测且
+    \[ m\Bigl(\bigcup_{n=1}^{\infty}E_n\Bigr)=\sum_{n=1}^{\infty}m(E_n). \]
+  \end{thm}
+  \begin{itemize}
+    \item 这是整个测度论的“皇冠定理”——它让“长度”真正可加。
+    \item 证明分两步：先证有限可加，再推可数可加（结合外测度次可加与单调性）。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{可数可加性证明（一）· 有限可加}
+  \begin{pf}
+    先证两不相交可测集 $E_1,E_2$：$m(E_1\cup E_2)=m(E_1)+m(E_2)$。
+    对任意 $A$，因 $E_1$ 可测：
+    \[ m^{*}(A)=m^{*}(A\cap E_1)+m^{*}(A\cap E_1^{c}). \]
+    对第二项中的 $A\cap E_1^{c}$ 用 $E_2$ 可测（注意 $E_2\subset E_1^{c}$）：
+    \[ m^{*}(A\cap E_1^{c})=m^{*}(A\cap E_1^{c}\cap E_2)+m^{*}(A\cap E_1^{c}\cap E_2^{c})
+      =m^{*}(A\cap E_2)+m^{*}(A\cap(E_1\cup E_2)^{c}). \]
+    代回得 $m^{*}(A)=m^{*}(A\cap E_1)+m^{*}(A\cap E_2)+m^{*}(A\cap(E_1\cup E_2)^{c})$。
+    取 $A=E_1\cup E_2$ 即得 $m(E_1\cup E_2)=m(E_1)+m(E_2)$。有限可加由归纳得。\hfill$\blacksquare$（续）
+  \end{pf}
+\end{frame}
+
+\begin{frame}{可数可加性证明（二）· 可数情形}
+  \begin{pf}[续]
+    设 $E_n$ 两两不交且可测，令 $E=\cup E_n$。由外测度次可加：
+    \[ m^{*}(E)\le\sum m(E_n). \]
+    另一方面，对前 $N$ 项用有限可加与单调性：
+    \[ \sum_{n=1}^{N}m(E_n)=m\Bigl(\bigcup_{n=1}^{N}E_n\Bigr)\le m^{*}(E). \]
+    令 $N\to\infty$ 得 $\sum m(E_n)\le m^{*}(E)$。结合两不等式即等号成立，且 $E$ 可测（取 $A$ 验证卡拉西奥多里条件即可）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{可测集的代数结构}
+  \begin{thm}
+    可测集全体 $\mathcal{M}$ 构成 $\sigma$-代数：
+    \begin{enumerate}
+      \item $\varnothing,\mathbb{R}\in\mathcal{M}$；
+      \item 若 $E\in\mathcal{M}$，则 $E^{c}\in\mathcal{M}$；
+      \item 若 $E_n\in\mathcal{M}$，则 $\bigcup_n E_n\in\mathcal{M}$（从而 $\bigcap_n E_n\in\mathcal{M}$）。
+    \end{enumerate}
+  \end{thm}
+  \begin{pf}
+    由卡拉西奥多里条件直接验证：空集显然；若 $E$ 可测则条件对 $E^{c}$ 形式不变；可数并已由上一定理保证。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{开集、闭集与 Borel 集可测}
+  \begin{thm}
+    \begin{enumerate}
+      \item 一切开区间、开集、闭集都可测；
+      \item 由开集经可数并、交、补生成的\alert{Borel 集}都可测。
+    \end{enumerate}
+  \end{thm}
+  \begin{itemize}
+    \item 特别地，$\mathbb{R}$ 中“常见”的集合（区间、开集、闭集、可数集、康托尔集）全都可测。
+    \item Borel 集类记作 $\mathcal{B}$；$\mathcal{B}\subset\mathcal{M}$（可测集严格更大，含不可测集需 AC）。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small “能写出来的集合几乎都可测”——不可测集要靠选择公理硬造。
+  \end{center}
+\end{frame}
+
+\begin{frame}{G$_\delta$ 集与 F$_\sigma$ 集}
+  \begin{defn}
+    \begin{itemize}
+      \item 可数多个开集的交称为 \alert{G$_\delta$ 集}；
+      \item 可数多个闭集的并称为 \alert{F$_\sigma$ 集}。
+    \end{itemize}
+  \end{defn}
+  \begin{exmp}
+    \begin{itemize}
+      \item 单点集是闭集，也是 G$_\delta$（如 $\{0\}=\bigcap_n(-\tfrac1n,\tfrac1n)$）；
+      \item 有理数集 $\mathbb{Q}$ 是可数闭集之并，故为 F$_\sigma$；
+      \item 无理数集是 G$_\delta$。
+    \end{itemize}
+  \end{exmp}
+\end{frame}
+
+\begin{frame}{例题：测度计算}
+  \begin{exmp}
+    计算 $[0,1]$ 中无理数的测度。
+  \end{exmp}
+  \begin{pf}
+    $[0,1]=(\mathbb{Q}\cap[0,1])\cup(\text{无理数}\cap[0,1])$，两部分不交，前者可数故测度 0。
+    由可数可加性：$1=m([0,1])=0+m(\text{无理数}\cap[0,1])$，故该集测度为 1。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{clouddeep}\small 直觉上“满眼都是无理数”，测度果然是 1。
+  \end{center}
+\end{frame}
+
+\begin{frame}{外测度的平移不变性}
+  \begin{prop}[平移不变]
+    对任意 $E\subset\mathbb{R}$ 与 $a\in\mathbb{R}$，令 $E+a=\{x+a\mid x\in E\}$，则 $m^{*}(E+a)=m^{*}(E)$。
+  \end{prop}
+  \begin{pf}
+    覆盖 $E$ 的开区间列 $\{I_k\}$ 平移为 $\{I_k+a\}$ 即覆盖 $E+a$，且 $|I_k+a|=|I_k|$。故下确界相等。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 长度不应因“整体平移”而改变——外测度满足这一点。
+  \end{center}
+\end{frame}
+
+\begin{frame}{区间的外测度等于其长度（一）}
+  \begin{thm}
+    对开区间、闭区间、半开半闭区间 $I$，恒有 $m^{*}(I)=|I|$。
+  \end{thm}
+  \begin{pf}[下界]
+    显然 $m^{*}(I)\le|I|$（取单区间覆盖即可）。
+    证 $m^{*}(I)\ge|I|$：以 $(a,b)$ 为例。任给覆盖 $(a,b)\subset\bigcup I_k$，由有限覆盖（Heine--Borel，因 $[a+\varepsilon,b-\varepsilon]$ 紧）可取有限子覆盖 $I_1,\dots,I_N$。
+    对这些有限个区间用区间长度的“有限子覆盖不等式”$\sum|I_k|\ge b-a-\varepsilon$，再令 $\varepsilon\to0$。（续）
+  \end{pf}
+\end{frame}
+
+\begin{frame}{区间的外测度等于其长度（二）}
+  \begin{pf}[续]
+    严格地说，对覆盖 $[a,b]$ 的有限个开区间，可通过排序与重叠估计得到 $\sum|I_k|\ge b-a$（经典引理）。
+    于是任意覆盖的总长 $\ge b-a$，取下确界得 $m^{*}((a,b))\ge b-a$。结合上界即等号。
+    闭/半开区间由端点测度 0 推出同样结论。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{clouddeep}\small 这说明外测度确实把“区间长度”延拓成了更一般集合的“长度”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{更多零测集例子}
+  \begin{exmp}[零测集家族]
+    \begin{itemize}
+      \item 有限集、单点集：外测度 0；
+      \item 可数集（有理数集、代数数集）：外测度 0；
+      \item 康托尔集：不可数但外测度 0（第三章已用 $(\frac23)^n\to0$ 估计）；
+      \item 维数小于 1 的分形曲线（如科赫曲线可构造零测）。
+    \end{itemize}
+  \end{exmp}
+  \begin{block}{提示}
+    “零测”$\neq$“可数”；康托尔集是反例。
+  \end{block}
+\end{frame}
+
+\begin{frame}{外测度的等号情形（可测的先兆）}
+  \begin{itemize}
+    \item 一般 $m^{*}(A\cup B)\le m^{*}(A)+m^{*}(B)$（次可加）。
+    \item 当 $A,B$\alert{被一段正距离分开}（即 $\operatorname{dist}(A,B)>0$）时，等号成立：
+    \[ m^{*}(A\cup B)=m^{*}(A)+m^{*}(B). \]
+    \item 这揭示：外测度“失控”（严格小于）的根源是集合\alert{相互纠缠、边界重叠}；把集合隔开后它就变回可加了。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 正距离分离 $\Rightarrow$ 外测度可加——可测性的朴素版本。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 3.2（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 证明：测度为零的集合必可测。
+      \item 证明：有限个可测集的不交并的测度等于测度之和。
+      \item 若 $E$ 可测且 $m(E)=0$，证明其任意子集可测。
+      \item 写出 $\mathbb{Q}$ 是 F$_\sigma$ 集的具体表示。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 3.2（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 设 $m^{*}(E)=0$。对任意 $A$，$m^{*}(A)\le m^{*}(A\cap E)+m^{*}(A\cap E^{c})\le m^{*}(E)+m^{*}(A)=m^{*}(A)$，故等号成立，$E$ 可测。
+    \item 2. 可数可加性的有限特例。
+    \item 3. 子集 $B\subset E$ 有 $m^{*}(B)\le m^{*}(E)=0$，由(1)可测。
+    \item 4. $\mathbb{Q}=\bigcup_{n}\{q_n\}$，单点闭，故为 F$_\sigma$。
+  \end{itemize}
+\end{frame}
+
+% ---------- 3.3 测度的性质 ----------
+\subsection{3.3\ 测度的性质}
+
+\begin{frame}{测度的单调性}
+  \begin{prop}[单调性]
+    若 $E_1\subset E_2$ 且均可测，则 $m(E_1)\le m(E_2)$。
+  \end{prop}
+  \begin{pf}
+    $E_2=E_1\cup(E_2\setminus E_1)$ 为不交并，由有限可加性 $m(E_2)=m(E_1)+m(E_2\setminus E_1)\ge m(E_1)$。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 子集不会比母集“更长”——测度符合直觉。
+  \end{center}
+\end{frame}
+
+\begin{frame}{测度的连续性（从下连续）}
+  \begin{thm}[从下连续]
+    若 $E_1\subset E_2\subset\cdots$ 为递增可测集列，且 $E=\bigcup_n E_n$，则
+    \[ m(E)=\lim_{n\to\infty}m(E_n). \]
+  \end{thm}
+  \begin{pf}
+    令 $F_1=E_1$，$F_n=E_n\setminus E_{n-1}$（$n\ge2$），则 $F_n$ 两两不交且 $E=\bigcup_n F_n$。
+    由可数可加性：
+    \[ m(E)=\sum_{n=1}^{\infty}m(F_n)=\lim_{N\to\infty}\sum_{n=1}^{N}m(F_n)=\lim_{N\to\infty}m(E_N). \]
+    （因 $\bigcup_{n=1}^{N}F_n=E_N$）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{测度的连续性（从上连续）}
+  \begin{thm}[从上连续]
+    若 $E_1\supset E_2\supset\cdots$ 为递减可测集列，$E=\bigcap_n E_n$，且 $m(E_1)<\infty$，则
+    \[ m(E)=\lim_{n\to\infty}m(E_n). \]
+  \end{thm}
+  \begin{pf}
+    递减列的补集 $E_1\setminus E_n$ 递增到 $E_1\setminus E$，且 $m(E_1)<\infty$。
+    由从下连续：
+    \[ m(E_1)-m(E)=\lim_n\bigl(m(E_1)-m(E_n)\bigr)=m(E_1)-\lim_n m(E_n). \]
+    消去 $m(E_1)$ 得 $m(E)=\lim_n m(E_n)$。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 注意：$m(E_1)<\infty$ 不可少（否则可能失效）。
+  \end{center}
+\end{frame}
+
+\begin{frame}{从上连续的“有限测度”必要性}
+  \begin{exmp}[反例：缺有限测度则失效]
+    取 $E_n=(n,\infty)$。则 $E_n\downarrow\varnothing$，但 $m(E_n)=\infty$ 对所有 $n$，$\lim m(E_n)=\infty\neq0=m(\varnothing)$。
+  \end{exmp}
+  \begin{block}{教训}
+    递减列要取极限测度，必须有一个“起点”测度有限，否则无穷相减无意义。
+  \end{block}
+\end{frame}
+
+\begin{frame}{测度的次可加性（可数）}
+  \begin{thm}[可数次可加]
+    若 $E_n$ 可测，则 $m\bigl(\bigcup_n E_n\bigr)\le\sum_n m(E_n)$。
+  \end{thm}
+  \begin{pf}
+    先化不交：令 $F_1=E_1$，$F_n=E_n\setminus\bigcup_{k<n}E_k$，则 $F_n$ 可测、互不交且 $\cup F_n=\cup E_n$。
+    \[ m\Bigl(\bigcup E_n\Bigr)=m\Bigl(\bigcup F_n\Bigr)=\sum m(F_n)\le\sum m(E_n). \]
+    （因 $F_n\subset E_n$，由单调性）\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{可测集的逼近定理}
+  \begin{thm}[逼近定理]
+    若 $E$ 可测，则对任意 $\varepsilon>0$：
+    \begin{enumerate}
+      \item 存在开集 $G\supset E$ 使 $m^{*}(G\setminus E)<\varepsilon$；
+      \item 存在闭集 $F\subset E$ 使 $m^{*}(E\setminus F)<\varepsilon$。
+    \end{enumerate}
+    进一步，$E$ 可表为 G$_\delta$ 集与 F$_\sigma$ 集之差。
+  \end{thm}
+  \begin{itemize}
+    \item 含义：可测集能“用开集从外逼近、用闭集从内逼近，误差任意小”。
+    \item 这是可测集区别于不可测集的本质特征。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{逼近定理证明（一）· 外逼近}
+  \begin{pf}
+    先设 $m(E)<\infty$。由外测度定义，存在开区间列 $\{I_k\}$ 覆盖 $E$ 使 $\sum|I_k|<m(E)+\varepsilon$。
+    令 $G=\bigcup_k I_k$（开集），则 $G\supset E$ 且
+    \[ m(G)\le\sum|I_k|<m(E)+\varepsilon. \]
+    由 $G=E\cup(G\setminus E)$ 不交、$m(G)=m(E)+m(G\setminus E)$，得 $m(G\setminus E)<\varepsilon$。
+    对一般 $E$（可能无穷测度），先对 $E\cap(-n,n)$ 逼近再取极限。\hfill$\blacksquare$（续）
+  \end{pf}
+\end{frame}
+
+\begin{frame}{逼近定理证明（二）· 内逼近与 G$_\delta$/F$_\sigma$}
+  \begin{pf}[续]
+    内逼近：对 $E^{c}$ 用外逼近得开集 $G\supset E^{c}$ 使 $m(G\setminus E^{c})<\varepsilon$；
+    令 $F=G^{c}$（闭集），则 $F\subset E$ 且 $E\setminus F=G\setminus E^{c}$，故 $m(E\setminus F)<\varepsilon$。
+    G$_\delta$/F$_\sigma$ 表示：取 $\varepsilon=1/n$ 得开集 $G_n\supset E$ 使 $m(G_n\setminus E)<1/n$，
+    令 $H=\bigcap_n G_n$，则 $H$ 为 G$_\delta$ 且 $E\subset H$，$m(H\setminus E)=0$，故 $E=H\setminus(H\setminus E)$ 为 G$_\delta$ 差零测。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{例题：用逼近定理判别可测}
+  \begin{exmp}
+    若 $E$ 满足“对任意 $\varepsilon>0$ 存在闭集 $F\subset E$ 使 $m^{*}(E\setminus F)<\varepsilon$”，且 $m^{*}(E)<\infty$，证明 $E$ 可测。
+  \end{exmp}
+  \begin{pf}
+    由条件，$E=F\cup N$，其中 $F$ 闭（可测），$N=E\setminus F$ 满足 $m^{*}(N)<\varepsilon$ 对任意 $\varepsilon$，故 $m^{*}(N)=0$（零测，可测）。
+    可测集之并 $E$ 可测。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 这就是“可测 = 闭集 + 零测”的实用判别法。
+  \end{center}
+\end{frame}
+
+\begin{frame}{卡拉西奥多里条件的几何理解}
+  \begin{itemize}
+    \item 条件 $m^{*}(A)=m^{*}(A\cap E)+m^{*}(A\cap E^{c})$ 要求：用 $E$ 把\alert{任意}集合 $A$ 切成的两块，长度之和不“损失”也不“溢出”。
+    \item 若 $E$ 边界“毛糙”（如 Vitali 集），存在某 $A$ 使切分产生“长度漏洞”，则不可测。
+    \item 直觉：可测 = “边界足够规整，能干净切割”。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 把“可测”想成“剪刀足够利，切口不粘长度”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{可测集的差与对称差}
+  \begin{prop}
+    若 $E,F$ 可测，则 $E\setminus F$、$E\cap F$、$E\cup F$、$E\triangle F$（对称差）都可测。
+  \end{prop}
+  \begin{pf}
+    由 $\sigma$-代数性质：差 $E\setminus F=E\cap F^{c}$，交、并、对称差 $E\triangle F=(E\setminus F)\cup(F\setminus E)$ 均可由补与并交得到。\hfill$\blacksquare$
+  \end{pf}
+  \begin{block}{用途}
+    计算复杂集合测度时，常写成“可测块的差/并”，再套可加性。
+  \end{block}
+\end{frame}
+
+\begin{frame}{有限可加性的直接陈述}
+  \begin{thm}[有限可加性]
+    若 $E_1,\dots,E_n$ 两两不交且可测，则 $m\bigl(\bigcup_{i=1}^{n}E_i\bigr)=\sum_{i=1}^{n}m(E_i)$。
+  \end{thm}
+  \begin{pf}
+    由可数可加性取 $E_{n+1}=E_{n+2}=\cdots=\varnothing$ 即得；或直接用卡拉西奥多里条件做有限次拆分（前文已证两集合情形，归纳即得）。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 有限可加是“长度能分段求和”的日常版本。
+  \end{center}
+\end{frame}
+
+\begin{frame}{测度的正则性（简介）}
+  \begin{thm}[Lebesgue 测度的正则性]
+    \begin{enumerate}
+      \item \alert{外正则}：对任意可测 $E$，$m(E)=\inf\{m(G)\mid G\supset E,\ G\text{开}\}$；
+      \item \alert{内正则}：若 $m(E)<\infty$，$m(E)=\sup\{m(F)\mid F\subset E,\ F\text{闭}\}$。
+    \end{enumerate}
+  \end{thm}
+  \begin{itemize}
+    \item 这正是“逼近定理”的精炼表述：可测集可用开集从外、闭集从内任意逼近。
+    \item 正则性是勒贝格测度区别于一般测度的重要性质。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Borel 层次的简介}
+  \begin{itemize}
+    \item Borel 集可按“交并交替次数”分为层次：
+      \begin{enumerate}
+        \item $F_{\sigma}$：可数闭集之并；
+        \item $G_{\delta}$：可数开集之交；
+        \item 进一步有 $F_{\sigma\delta},G_{\delta\sigma},\dots$
+      \end{enumerate}
+    \item 每个层次都严格包含于下一层（存在真包含例子）。
+    \item 所有 Borel 集都可测，但可测集不都是 Borel 集（基数论证）。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small Borel 层次 = 开闭集合“交并交替”搭出的精密结构。
+  \end{center}
+\end{frame}
+
+\begin{frame}{课堂练习 3.3（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 设 $E_1\subset E_2\subset\cdots$，$m(E_1)=0$，证明 $\lim m(E_n)=m(\cup E_n)$。
+      \item 设 $E_n\downarrow E$ 且 $m(E_{10})<\infty$，证明 $m(E)=\lim m(E_n)$。
+      \item 用逼近定理说明：可测集 $E$ 可写为 $E=G\setminus N$，$G$ 为 G$_\delta$，$N$ 零测。
+      \item 若 $A,B$ 可测且不交，证明 $m(A\cup B)=m(A)+m(B)$。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 3.3（二）· 参考答案}
+  \begin{itemize}
+    \item 1. 从下连续直接应用（递增列）。
+    \item 2. 从上连续（因 $m(E_{10})<\infty$ 保证起点有限）。
+    \item 3. 见逼近定理证明：取 $G_n$ 开覆盖，$G=\cap G_n$ 为 G$_\delta$，$E\subset G$ 且 $m(G\setminus E)=0$。
+    \item 4. 有限可加性特例。
+  \end{itemize}
+\end{frame}
+
+% ---------- 3.4 不可测集（Vitali 集） ----------
+\subsection{3.4\ 不可测集（Vitali 集）}
+
+\begin{frame}{为什么会有不可测集}
+  \begin{itemize}
+    \item 可测集要求“对任意 $A$ 能干净切分”。若对\alert{所有}集合都要求此性质，会与选择公理冲突。
+    \item 结论：\alert{存在不可测集}，但其构造依赖选择公理（AC）。
+    \item 历史意义：说明“给每个集合赋值长度”在 ZF+AC 下不可能；必须退而求其次（只测可测集）。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 不可测集的存在，是测度论“先筛可测集”的根本原因。
+  \end{center}
+\end{frame}
+
+\begin{frame}{Vitali 集的构造}
+  \begin{itemize}
+    \item 在 $[0,1]$ 上定义等价关系：$x\sim y\Longleftrightarrow x-y\in\mathbb{Q}$。
+    \item 这把 $[0,1]$ 分成若干\alert{等价类}（每类形如 $x+\mathbb{Q}$ 与 $[0,1]$ 的交）。
+    \item 由\alert{选择公理}，从每个等价类中选取一个代表元，组成集合 $V\subset[0,1]$，称为\alert{Vitali 集}。
+  \end{itemize}
+  \begin{block}{关键性质}
+    不同等价类的代表元之差\alert{不是}有理数；同一类内差为有理数。
+  \end{block}
+\end{frame}
+
+\begin{frame}{Vitali 集不可测证明（一）· 平移分解}
+  \begin{pf}
+    记 $Q=\mathbb{Q}\cap[-1,1]$（可数）。考察平移族 $V_q=V+q\ (q\in Q)$。
+    \begin{enumerate}
+      \item \alert{两两不交}：若 $(V+q_1)\cap(V+q_2)\neq\varnothing$，则存在 $v_1,v_2\in V$ 使 $v_1+q_1=v_2+q_2$，即 $v_1-v_2=q_2-q_1\in\mathbb{Q}$，说明 $v_1,v_2$ 同属一类，但 $V$ 每类只取一个代表，故 $v_1=v_2$ 且 $q_1=q_2$。
+      \item \alert{覆盖}：$[0,1]\subset\bigcup_{q\in Q}(V+q)$。因任取 $x\in[0,1]$，其等价类代表 $v\in V$ 满足 $x-v\in\mathbb{Q}$；适当加减整数可使 $x-v\in[-1,1]$，即 $x\in V+q$。
+      \item \alert{包含于} $[-1,2]$：因 $V\subset[0,1]$，$q\in[-1,1]$，故 $V+q\subset[-1,2]$。（续）
+    \end{enumerate}
+  \end{pf}
+\end{frame}
+
+\begin{frame}{Vitali 集不可测证明（二）· 反证}
+  \begin{pf}[续]
+    假设 $V$ 可测。由平移不变性 $m(V_q)=m(V)$，且诸 $V_q$ 不交。
+    由覆盖与包含：
+    \[ m([0,1])\le m\Bigl(\bigcup_{q\in Q}(V+q)\Bigr)=\sum_{q\in Q}m(V)\le m([-1,2]). \]
+    即 $1\le\sum_{q}m(V)\le3$。
+    若 $m(V)=0$，则和为 0，矛盾 $1\le0$；
+    若 $m(V)>0$，则对可数多个 $q$ 求和得 $+\infty$，矛盾 $\le3$。
+    两难皆矛盾，故 $V$ 不可测。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{clouddeep}\small 一个优雅的“两难反证”：为零不行，为正也不行。
+  \end{center}
+\end{frame}
+
+\begin{frame}{选择公理的作用与反思}
+  \begin{itemize}
+    \item Vitali 集的证明\alert{必不可避地}用了选择公理（从不可数多个等价类中同时选代表）。
+    \item 有趣事实：在“不假定选择公理”的集合论中，有可能\alert{所有}实数子集都可测（索洛维模型，1970）。
+    \item 教学态度：接受 AC 下的标准结论——存在不可测集，但我们日常遇到的集合几乎都可测。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 数学基础的微妙：不可测集是“公理选择”的产物。
+  \end{center}
+\end{frame}
+
+\begin{frame}{例题与讨论}
+  \begin{exmp}[不可测集的平移]
+    若 $V$ 不可测，则 $V+q$ 也不可测（若可测则 $V=(V+q)-q$ 可测，矛盾）。
+  \end{exmp}
+  \begin{block}{讨论}
+    是否存在“显式”（不依赖 AC）的不可测集？——在 ZF 中无法证明存在不可测集，因此“显式构造”在标准公理下不可能。
+  \end{block}
+\end{frame}
+
+\begin{frame}{测度的完全性}
+  \begin{defn}[完全测度]
+    若 $E$ 可测且 $m(E)=0$，则 $E$ 的任意子集都可测，称测度\alert{完全}。
+  \end{defn}
+  \begin{thm}
+    Lebesgue 测度是\alert{完全}的。
+  \end{thm}
+  \begin{pf}
+    设 $N\subset E$，$m(E)=0$。则 $m^{*}(N)\le m^{*}(E)=0$，故 $m^{*}(N)=0$，由“零测集可测”知 $N$ 可测。\hfill$\blacksquare$
+  \end{pf}
+  \begin{center}
+    \color{cloudgray}\small 完全性保证了“零测集里的任何渣滓都可量”。
+  \end{center}
+\end{frame}
+
+\begin{frame}{为什么是“可数”可加而非“任意”可加}
+  \begin{itemize}
+    \item 可数可加性已足够支撑积分与极限理论；任意（不可数）可加会过度约束，甚至与选择公理冲突。
+    \item 反例思路：若要求对\alert{任意}指标集的互斥并都可加，则某些“病态分解”会导致矛盾（关联不可测集的构造）。
+    \item 因此标准测度论只要求\alert{可数}可加（$\sigma$-可加）。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small “可数”是恰到好处的火候——再多就出乱子。
+  \end{center}
+\end{frame}
+
+\begin{frame}{连续性的应用：测度的极限交换}
+  \begin{exmp}[用连续性求极限测度]
+    设 $E_n=(0,1-1/n)$，则 $E_n\uparrow(0,1)$。由从下连续：
+    $m\bigl((0,1)\bigr)=\lim_{n\to\infty}m(E_n)=\lim(1-1/n)=1$。
+  \end{exmp}
+  \begin{itemize}
+    \item 连续性让“递增/递减集列的测度极限”等于“极限集的测度”。
+    \item 这是概率论中“单调收敛”思想的几何前身。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{测度连续性的细节辨析}
+  \begin{block}{注意点}
+    \begin{enumerate}
+      \item 从下连续\alert{无条件}成立（递增列）；
+      \item 从上连续要求起点 $m(E_1)<\infty$，否则如 $E_n=(n,\infty)\downarrow\varnothing$ 失效；
+      \item 连续性都依赖\alert{可数可加性}，是测度（而非外测度）的特权。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 3.4（一）}
+  \begin{block}{练习}
+    \begin{enumerate}
+      \item 简述 Vitali 集构造中“等价类”的定义。
+      \item 为什么 $\{V+q\mid q\in\mathbb{Q}\cap[-1,1]\}$ 两两不交？
+      \item 若假设 $V$ 可测且 $m(V)>0$，导出什么矛盾？
+      \item 说明 Vitali 集依赖选择公理的哪一步。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习 3.4（二）· 参考答案}
+  \begin{itemize}
+    \item 1. $x\sim y\iff x-y\in\mathbb{Q}$，将 $[0,1]$ 划分为等价类。
+    \item 2. 见证明：若有交则两代表同属一类，与“每类只取一个”矛盾。
+    \item 3. 可数多个正测度平移不交且含于 $[-1,2]$，总测度 $\infty>3$，矛盾。
+    \item 4. “从每个等价类选一个代表”必须借助选择公理。
+  \end{itemize}
+\end{frame}
+
+% ---------- 习题课 ----------
+\begin{frame}{若放弃选择公理：索洛维模型}
+  \begin{itemize}
+    \item 标准结论：在 ZF + 选择公理（AC）下，必存在不可测集（Vitali）。
+    \item 但索洛维（Solovay, 1970）证明：若假定“所有实数集都可测”是一致的（需用到不可达基数这一大基数假设），则可在不依赖 AC 的系统中构造出“所有实数子集都可测”的模型。
+    \item 启示：不可测集的“怪”，根子在\alert{选择公理}而非实数本身。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 数学基础告诉我们：不可测是“公理选择”的代价。
+  \end{center}
+\end{frame}
+
+\begin{frame}{不可测集的“密度”讨论}
+  \begin{itemize}
+    \item 在标准 ZFC 下，不可测集\alert{必然存在}，但无法“构造性”写出（依赖 AC 选代表）。
+    \item 另一方面，可测集的基数是 $2^{\mathfrak{c}}$，而用“可定义方式”写出的集合绝大多数是可测的。
+    \item 实用态度：分析中遇到的集合几乎都可测；不可测集主要用于“划定理论边界”。
+  \end{itemize}
+  \begin{block}{教学小结}
+    不必恐惧不可测集，但要理解它为什么存在、存在意味着什么。
+  \end{block}
+\end{frame}
+
+\begin{frame}{另一种不可测构造思路（选学）}
+  \begin{itemize}
+    \item 除 Vitali 外，还可由\alert{超限归纳 + 选择公理}构造“伯恩斯坦集”：与每条完备集都相交且补集也如此，从而不可测。
+    \item 也可用\alert{哈恩--巴拿赫定理}的几何形式构造线性不可测集（在赋范空间情形）。
+    \item 这些构造的共同点：都绕不开某种“整体性选取”。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 选学内容：打开视野，知道不可测不止 Vitali 一种。
+  \end{center}
+\end{frame}
+
+\subsection{习题课}
+
+\begin{frame}{习题课导言：从定义到证明的链条}
+  \begin{itemize}
+    \item 本章题型：
+      \begin{enumerate}
+        \item 外测度估计与次可加；
+        \item 验证可测（卡拉西奥多里条件）；
+        \item 用可数可加性 / 连续性计算测度；
+        \item 逼近定理与 Vitali 不可测证明。
+      \end{enumerate}
+    \item 通法：\alert{“证明可测先证零测或开闭”；“算测度先拆不交集”；“反证不可测用平移分解”}。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{习题精讲 1：零测集的可测性}
+  \begin{题}
+    证明：若 $m^{*}(E)=0$，则 $E$ 可测且任意 $A\subset\mathbb{R}$ 有 $m^{*}(A\cup E)=m^{*}(A)$。
+  \end{题}
+  \begin{pf}
+    由次可加性 $m^{*}(A)\le m^{*}(A\cup E)\le m^{*}(A)+m^{*}(E)=m^{*}(A)$，等号成立，故 $E$ 满足卡拉西奥多里条件（取任意 $A$ 验证），可测。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 2：可数可加性的应用}
+  \begin{题}
+    设 $E_n$ 两两不交可测，证明 $m(\cup E_n)=\sum m(E_n)$，并用之求 $[0,1]$ 中 Cantor 集的测度。
+  \end{题}
+  \begin{pf}
+    可数可加性即该等式。Cantor 集在第 $n$ 步剩余总长 $(\frac23)^n\to0$，而 $C$ 可测，由从下连续或外测度得 $m(C)=\lim(\frac23)^n=0$。（严格：$C\subset C_n$，$m(C)\le m(C_n)=(\frac23)^n\to0$。）\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 3：连续性计算}
+  \begin{题}
+    设 $E_n=(0,1+\frac1n)$，求 $m(\cap_{n=1}^{\infty}E_n)$。
+  \end{题}
+  \begin{pf}
+    $E_n\downarrow(0,1]$，且 $m(E_1)=2<\infty$，由从上连续：
+    $m(\cap E_n)=\lim m(E_n)=\lim(1+\frac1n)=1$。而 $\cap E_n=(0,1]$，其测度确为 1。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 4：逼近定理实战}
+  \begin{题}
+    设 $E$ 可测且 $m(E)<\infty$，证明存在闭集 $F\subset E$ 使 $m(E\setminus F)<\varepsilon$。
+  \end{题}
+  \begin{pf}
+    对 $E^{c}$ 用外逼近：存在开集 $G\supset E^{c}$ 使 $m(G\setminus E^{c})<\varepsilon$。
+    令 $F=G^{c}$（闭），$F\subset E$，且 $E\setminus F=G\setminus E^{c}$，故 $m(E\setminus F)<\varepsilon$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 5：Borel 与可测的关系}
+  \begin{题}
+    证明：每个 Borel 集都可测；并举例说明存在可测集不是 Borel 集（思路）。
+  \end{题}
+  \begin{pf}
+    开集可测，可测集对可数并、交、补封闭，而 Borel 集正是由开集经这些运算生成，故 Borel $\subset$ 可测。
+    存在性：可测集的基数为 $2^{\mathfrak{c}}$，Borel 集只有 $\mathfrak{c}$ 个，故必有可测非 Borel 集（基数论证）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 6：外测度单调性应用}
+  \begin{题}
+    若 $A\subset B$ 且 $m^{*}(B)<\infty$，证明 $m^{*}(B\setminus A)\ge m^{*}(B)-m^{*}(A)$。
+  \end{题}
+  \begin{pf}
+    由次可加性 $m^{*}(B)=m^{*}((B\setminus A)\cup A)\le m^{*}(B\setminus A)+m^{*}(A)$，
+    移项得 $m^{*}(B\setminus A)\ge m^{*}(B)-m^{*}(A)$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 7：Vitali 证明复述}
+  \begin{题}
+    完整陈述 Vitali 集不可测的证明思路（不写细节，列关键三步）。
+  \end{题}
+  \begin{pf}
+    三步：(1) 构造等价类并用 AC 选代表 $V$；(2) 证明 $\{V+q:q\in\mathbb{Q}\cap[-1,1]\}$ 两两不交、覆盖 $[0,1]$、含于 $[-1,2]$；(3) 反证：若 $V$ 可测，则 $1\le\sum m(V)\le3$，无论 $m(V)=0$ 或 $>0$ 都矛盾。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 8：综合}
+  \begin{题}
+    设 $E$ 可测，$A$ 任意。证明 $m^{*}(A)=m^{*}(A\cap E)+m^{*}(A\cap E^{c})$（即可测的等价刻画）。
+  \end{题}
+  \begin{pf}
+    这正是卡拉西奥多里条件的定义。若 $E$ 可测，由定义对任意 $A$ 该式成立；反之若该式对任意 $A$ 成立，取 $A$ 任意即得可测。故两者等价，是判定可测的核心判据。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 9：外测度的平移不变应用}
+  \begin{题}
+    证明 $m^{*}(E)=m^{*}(E+x)$ 对任意 $x$ 成立，并用以说明 Vitali 证明中 $m(V_q)=m(V)$。
+  \end{题}
+  \begin{pf}
+    平移不变性（已证）：覆盖平移后总长不变，故外测度不变。Vitali 证明中 $V_q=V+q$，故 $m^{*}(V_q)=m^{*}(V)$；若 $V$ 可测则测度也相等。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 10：零测集的传递}
+  \begin{题}
+    若 $A$ 零测，$B\subset A$，证明 $B$ 零测且可测。
+  \end{题}
+  \begin{pf}
+    $m^{*}(B)\le m^{*}(A)=0\Rightarrow m^{*}(B)=0$，零测集可测（前文已证），故 $B$ 可测。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 11：可数可加性的反向不等式}
+  \begin{题}
+    对不交可测列 $E_n$，证明 $m(\cup E_n)\le\sum m(E_n)$ 与反向，从而等号。
+  \end{题}
+  \begin{pf}
+    由外测度次可加直接得 $\le$。反向：对前 $N$ 项用有限可加与单调性 $\sum_{n=1}^N m(E_n)=m(\cup_{n=1}^N E_n)\le m(\cup E_n)$，令 $N\to\infty$ 得 $\sum m(E_n)\le m(\cup E_n)$。两向合即得等号。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 12：用逼近定理判别可测}
+  \begin{题}
+    若对任意 $\varepsilon>0$ 存在开集 $G\supset E$ 使 $m(G\setminus E)<\varepsilon$，且 $m^{*}(E)<\infty$，证明 $E$ 可测。
+  \end{题}
+  \begin{pf}
+    取 $G_n\supset E$ 使 $m(G_n\setminus E)<1/n$。则 $H=\cap G_n$ 为 G$_\delta\supset E$，且 $m(H\setminus E)=0$，故 $H\setminus E$ 可测（零测），从而 $E=H\setminus(H\setminus E)$ 可测。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 13：从上连续的失效反例}
+  \begin{题}
+    举出递减可测列使从上连续失效的例子，并解释为何与定理不矛盾。
+  \end{题}
+  \begin{pf}
+    取 $E_n=(n,\infty)$，则 $E_n\downarrow\varnothing$ 但 $m(E_n)=\infty$ 对所有 $n$，故 $\lim m(E_n)=\infty\neq0=m(\varnothing)$。这与定理不矛盾，因为定理要求 $m(E_1)<\infty$，此处不满足。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 14：康托尔集测度为零的完整写法}
+  \begin{题}
+    严格写出康托尔集 $C$ 满足 $m(C)=0$ 的证明。
+  \end{题}
+  \begin{pf}
+    $C\subset C_n$，而 $C_n$ 是 $2^n$ 个长度 $3^{-n}$ 的闭区间之并，故 $m(C_n)=2^n\cdot3^{-n}=(2/3)^n$。
+    由单调性 $0\le m(C)\le m(C_n)=(2/3)^n\to0$，故 $m(C)=0$。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{习题精讲 15：综合（可测性的多种判据）}
+  \begin{题}
+    总结并比较：零测、开集、闭集、Borel 集、G$_\delta$/F$_\sigma$、逼近条件，哪些能保证可测？
+  \end{题}
+  \begin{pf}
+    全部都能保证可测：开/闭/Borel 由生成 closure 保证；零测直接验证卡拉西奥多里条件；G$_\delta$/F$_\sigma$ 是 Borel 的特例；逼近条件（外/内正则误差任意小）也推出可测（见习题 12）。\hfill$\blacksquare$
+  \end{pf}
+\end{frame}
+
+\begin{frame}{数学史与人物：勒贝格与维塔利}
+  \begin{itemize}
+    \item \alert{亨利·勒贝格}（1875--1941）：1902 年博士论文提出测度与积分，奠定现代分析基石。
+    \item \alert{朱塞佩·维塔利}（1875--1932）：1905 年给出首个不可测集构造，揭示测度论必须“筛选可测集”。
+    \item 从黎曼到勒贝格，分析学完成了一次“从函数到集合”的范式转换。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 站在巨人的肩上：测度论是 20 世纪分析学的第一块基石。
+  \end{center}
+\end{frame}
+
+\begin{frame}{测度论在概率与现代分析中的应用}
+  \begin{itemize}
+    \item \alert{概率论}：概率就是“总测度为 1”的测度；事件 = 可测集，期望 = 对测度的积分。
+    \item \alert{遍历论、调和分析、几何测度论}：都建立在测度与可测函数之上。
+    \item 本章只是起点：下一章“可测函数与勒贝格积分”才真正释放测度的威力。
+  \end{itemize}
+  \begin{center}
+    \color{clouddeep}\small 学完测度，你已握住现代数学分析的总闸门。
+  \end{center}
+\end{frame}
+
+\begin{frame}{回到导学三问}
+  \begin{block}{开章时提出的三个核心问题，现在可以作答了}
+    \begin{enumerate}
+      \item “区间长度能推广到任意点集吗？”——能，用\alert{外测度} $m^{*}(E)=\inf\sum|I_k|$ 推广。
+      \item “怎样的点集才能可加地量？”——满足\alert{卡拉西奥多里条件}的\alert{可测集}，其上测度可数可加。
+      \item “是否存在根本不能量的集合？”——有，\alert{Vitali 集}在 AC 下必然不可测。
+    \end{enumerate}
+  \end{block}
+  \begin{center}
+    \color{clouddeep}\small 三问闭环：从“想量一切”到“先筛可测”，测度论完成了它的自我约束。
+  \end{center}
+\end{frame}
+
+\begin{frame}{测度论常见误区快答}
+  \begin{itemize}
+    \item \alert{问}：外测度是不是长度？\quad \alert{答}：只对区间等于长度；一般集合外测度只是“最小覆盖总长”。
+    \item \alert{问}：可测集是不是“能写出公式的集”？\quad \alert{答}：否；可测由卡拉西奥多里条件定义，常见集几乎都可测。
+    \item \alert{问}：零测集一定可数吗？\quad \alert{答}：否，康托尔集是不可数零测集。
+    \item \alert{问}：从上连续总是成立吗？\quad \alert{答}：仅当起点测度有限；否则如 $(n,\infty)\downarrow\varnothing$ 失效。
+  \end{itemize}
+  \begin{center}
+    \color{cloudgray}\small 把这四个“是不是”想通，测度论就入门了。
+  \end{center}
+\end{frame}
+
+\begin{frame}{本章知识总结}
+  \begin{itemize}
+    \item \alert{外测度}：$m^{*}(E)=\inf\sum|I_k|$，仅次可加；
+    \item \alert{可测}：卡拉西奥多里条件；测度 = 可测集上的外测度；
+    \item \alert{可数可加性}：测度论的皇冠定理；
+    \item \alert{连续性}：从下连续（无条件）、从上连续（起点有限）；
+    \item \alert{逼近}：可测集能用开/闭/G$_\delta$/F$_\sigma$ 任意逼近；
+    \item \alert{Vitali 集}：依赖 AC 的不可测集。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{易错辨析}
+  \begin{block}{易错点}
+    \begin{itemize}
+      \item 把外测度当可加——错，外测度只次可加，等号仅对可测集。
+      \item 以为所有集合可测——错，Vitali 集反例。
+      \item 从上连续忘写 $m(E_1)<\infty$——错，否则反例失效。
+      \item 混淆 $m^{*}$ 与 $m$——只在可测集上二者相等。
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{核心结论速查}
+  \begin{block}{必记}
+    \begin{enumerate}
+      \item $m^{*}(\cup E_n)\le\sum m^{*}(E_n)$（次可加）。
+      \item $E$ 可测 $\Leftrightarrow m^{*}(A)=m^{*}(A\cap E)+m^{*}(A\cap E^{c})$（$\forall A$）。
+      \item 不交可测列：$m(\cup E_n)=\sum m(E_n)$。
+      \item $E_n\uparrow E$：$m(E)=\lim m(E_n)$；$E_n\downarrow E$ 且 $m(E_1)<\infty$ 同理。
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{学习方法与自测}
+  \begin{itemize}
+    \item \alert{画覆盖}：外测度靠“开区间覆盖总长”理解。
+    \item \alert{拆不交}：算测度先化成不交并或差集。
+    \item \alert{反证平移}：不可测证明的标准武器。
+  \end{itemize}
+  \begin{block}{自测}
+    1. 证明康托尔集测度为 0；2. 若 $m(E)=0$ 则 $E$ 可测吗？3. 复述 Vitali 证明的三步。
+  \end{block}
+  \begin{center}
+    \color{cloudgray}\small 自测答案可在课堂讨论或后续“积分”章节中深化。
+  \end{center}
+\end{frame}
+
+\begin{frame}{本章知识地图}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
+    \node[draw=clouddeep, fill=cloudblue!12, rounded corners, minimum width=2.6cm, minimum height=0.8cm] (o) at (0,3) {外测度 $m^{*}$};
+    \node[draw=clouddeep, fill=cloudsand!14, rounded corners, minimum width=2.6cm, minimum height=0.8cm] (m) at (-3,1.1) {可测集 $\mathcal{M}$};
+    \node[draw=clouddeep, fill=cloudsand!14, rounded corners, minimum width=2.6cm, minimum height=0.8cm] (p) at (0,1.1) {测度 $m$};
+    \node[draw=clouddeep, fill=cloudsand!14, rounded corners, minimum width=2.6cm, minimum height=0.8cm] (pr) at (3,1.1) {逼近/正则};
+    \node[draw=clouddeep, fill=cloudgray!16, rounded corners, minimum width=2.6cm, minimum height=0.8cm] (v) at (0,-0.9) {Vitali 不可测};
+    \draw[->,cloudgray,thick] (o)--(m); \draw[->,cloudgray,thick] (m)--(p);
+    \draw[->,cloudgray,thick] (p)--(pr); \draw[->,cloudgray,thick] (m)--(v);
+  \end{tikzpicture}
+  \end{center}
+  \begin{center}
+    \color{cloudgray}\small 一条主线：外测度（松）$\to$ 可测集（筛）$\to$ 测度（严）$\to$ 逼近与不可测的边界。
+  \end{center}
+\end{frame}
+
+\begin{frame}{本章结束}
+  \begin{center}
+    {\color{clouddeep}\Large 第三章\quad 测度\quad 小结}\\[0.4cm]
+    {\color{cloudgray}从外测度的“松”到可测集的“严”，我们终于能给长度一个公理。}\\[0.6cm]
+    {\color{cloudblue}课程前3章到此结束——下一站：可测函数与勒贝格积分。}
+  \end{center}
+\end{frame}
+
+
+% ----------------------------- 结束页 -----------------------------
+\begin{frame}[plain]
+  \vspace{1.6cm}
+  \begin{center}
+    \begin{tabular}{cl}
+      \textcolor{cloudblue}{\Large 集} & 以无穷为尺度，重新认识“整体与部分” \\[0.55cm]
+      \textcolor{cloudblue}{\Large 点} & 以拓扑为眼，看清直线上的疏密结构 \\[0.55cm]
+      \textcolor{cloudblue}{\Large 测} & 以可加为尺，给“长度”一个严格的定义 \\
+    \end{tabular}
+    \vspace{1.0cm}
+
+    {\color{cloudgray}\large 课程前3章 · 到此结束\quad 谢谢聆听}
+  \end{center}
+\end{frame}
+
+\end{document}

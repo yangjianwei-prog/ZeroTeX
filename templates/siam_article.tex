@@ -1,0 +1,74 @@
+% SIAM 期刊模板 —— SIAM J. Math. Anal. / SIAM J. Numer. Anal. / SIMAX
+% 引擎：pdflatex
+% 官方类 siamart 已安装时自动使用正式期刊格式（tlmgr install siam）；
+% 未安装时降级为 article 预览排版，正文首段会给出提示，仍可正常编译与双向同步。
+\IfFileExists{siamart.cls}{%
+  \documentclass[siam,11pt]{siamart}
+}{%
+  \documentclass[11pt,a4paper]{article}
+  \def\YTfallback{1}
+}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{Convergence of a Finite Element Scheme for a Nonlocal Allen--Cahn Equation}
+\author{Yang Jianwei\thanks{School of Mathematics and Statistics, NCWU, Zhengzhou, P.R. China.}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\ifdefined\YTfallback
+\noindent\fbox{\parbox{0.96\linewidth}{\small\textbf{[YangTex preview mode] }
+The official \texttt{siamart.cls} is not installed on this machine, so this
+document is typeset with a generic article class. Install it with
+\texttt{tlmgr install siam} (or the MiKTeX Console) and recompile: YangTex
+will then switch to the real SIAM journal layout automatically.}}
+\bigskip
+\fi
+
+\begin{abstract}\label{abs:siam}
+We propose and analyse a fully discrete finite element scheme for a
+nonlocal Allen--Cahn equation. Optimal-order error estimates in
+$L^\infty(0,T;L^2)$ are proved under a mild time-step restriction.
+\end{abstract}
+
+\noindent\textbf{AMS subject classifications:} 65M60, 65M12, 35K55.
+
+\section{Introduction}
+Let $\Om\subset\R^d$, $d\le3$, be a convex polygonal domain. We consider
+\begin{equation}\label{eq:ac}
+  \partial_t u + \mathcal{L}u + \frac{1}{\eps^2}(u^3-u) = 0,
+  \qquad (x,t)\in\Om\times(0,T],
+\end{equation}
+where $\mathcal{L}$ is a nonlocal operator of fractional type.
+For the classical background and related results, see~\cite{AC}.
+
+\begin{theorem}
+Let $u$ and $U_h^n$ be the exact and fully discrete solutions. If
+$\tau\le C h^{2}$, then
+\begin{equation}
+  \max_{1\le n\le N}\|u(t_n)-U_h^n\|_{L^2(\Om)}
+  \le C(\tau + h^{2}).
+\end{equation}
+\end{theorem}
+
+\section{Numerical analysis}
+The proof uses a discrete Gronwall argument together with the
+stability of the $L^2$ projection.
+
+\bibliographystyle{siamplain}
+\begin{thebibliography}{9}
+\bibitem{AC} S.~M.~Allen and J.~W.~Cahn, \emph{A microscopic theory for
+antiphase boundary motion}, Acta Metall. \textbf{27} (1979), 1085--1095.
+\end{thebibliography}
+
+\end{document}

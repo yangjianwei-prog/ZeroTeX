@@ -1,0 +1,77 @@
+% AMS 专著 / 长篇章节 —— amsbook
+% 引擎：pdflatex
+\documentclass[11pt]{amsbook}
+
+\usepackage{amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Om}{\Omega}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{Lectures on Nonlinear Elliptic Equations}
+\author{Yang Jianwei}
+
+\begin{document}
+\frontmatter
+\maketitle
+
+\tableofcontents
+
+\mainmatter
+\chapter{Function Spaces and Preliminaries}\label{ch:spaces}
+
+\section{Sobolev spaces}
+
+Throughout this chapter, $\Om\subset\R^n$ denotes a bounded open set.
+For $1\le p\le\infty$ and $k\in\N$, we write $W^{k,p}(\Om)$ for the
+Sobolev space of functions whose weak derivatives up to order $k$
+belong to $L^p(\Om)$, endowed with the norm
+\begin{equation}
+  \|u\|_{W^{k,p}(\Om)}
+  = \Bigl(\sum_{|\alpha|\le k}\|D^\alpha u\|_{L^p(\Om)}^p\Bigr)^{1/p}.
+\end{equation}
+
+\begin{definition}
+The space $W^{1,p}_0(\Om)$ is the closure of $C_c^\infty(\Om)$ in
+$W^{1,p}(\Om)$.
+\end{definition}
+
+\begin{lemma}[Sobolev embedding]
+If $1\le p<n$ then $W^{1,p}_0(\Om)\hookrightarrow L^{p^*}(\Om)$
+continuously, where $p^*=np/(n-p)$.
+\end{lemma}
+
+\section{Weak formulation}
+
+\begin{theorem}
+Let $f\in L^2(\Om)$. Then there exists a unique
+$u\in H^1_0(\Om)$ satisfying
+\begin{equation}
+  \int_{\Om}\nabla u\cdot\nabla\varphi\,dx=\int_{\Om} f\varphi\,dx
+  \qquad\text{for all } \varphi\in H^1_0(\Om).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Apply the Lax--Milgram theorem to the coercive bilinear form
+$a(u,v)=\int_{\Om}\nabla u\cdot\nabla v\,dx$ on the Hilbert space
+$H^1_0(\Om)$.
+\end{proof}
+
+\chapter{Regularity Theory}\label{ch:regularity}
+
+\section{Interior estimates}
+
+We now turn to the regularity of weak solutions introduced in
+Chapter~\ref{ch:spaces}. The main tool is the Caccioppoli inequality
+together with Moser iteration.
+
+\end{document}

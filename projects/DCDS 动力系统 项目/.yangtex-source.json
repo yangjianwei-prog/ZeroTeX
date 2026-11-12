@@ -1,0 +1,5 @@
+{
+  "kind": "tex",
+  "file": "main.tex",
+  "engine": "pdflatex"
+}

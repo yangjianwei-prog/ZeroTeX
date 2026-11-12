@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YangTex · 轻量 LaTeX 实时编译</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body class="theme-light">
+
+<!-- ============ 启动遮罩 ============ -->
+<div id="boot" class="boot">
+  <div class="boot-logo" id="bootLogo"></div>
+  <div class="boot-title">YangTex</div>
+  <div class="boot-sub">正在启动本地编译服务…</div>
+</div>
+
+<!-- ============ 欢迎页 ============ -->
+<div id="welcome" class="welcome hidden">
+  <div class="welcome-card">
+    <button class="welcome-close" id="welcomeClose" title="关闭">×</button>
+    <div class="welcome-mark" id="welcomeLogo"></div>
+    <div class="welcome-eyebrow">Y A N G T E X &nbsp;·&nbsp; 本地 LaTeX 写作台</div>
+    <h1>欢迎使用 YangTex</h1>
+    <p class="welcome-lead">一个能双击打开、输入即编译的轻量级 LaTeX 系统。<br>中英文同排，AMS 期刊模板随取随用，源码与 PDF 逐行双向对齐。</p>
+    <div class="welcome-grid">
+      <div class="wg-item"><span class="wg-ico">⌁</span><b>实时自动编译</b><small>停笔即编译，改动即时可见</small></div>
+      <div class="wg-item"><span class="wg-ico">⇄</span><b>精确双向同步</b><small>SyncTeX 逐行定位，点哪跳哪</small></div>
+      <div class="wg-item"><span class="wg-ico">文</span><b>中英文通排</b><small>xelatex + ctex 开箱即用</small></div>
+      <div class="wg-item"><span class="wg-ico">✦</span><b>AI 辅助写作</b><small>免费大模型，无需任何设置</small></div>
+    </div>
+    <div class="welcome-status" id="welcomeStatus">环境检测中…</div>
+    <div class="welcome-actions">
+      <button class="btn btn-primary btn-lg" id="welcomeStart">开始写作</button>
+      <button class="btn btn-lg" id="welcomeTemplates">浏览模板库</button>
+      <button class="btn btn-lg" id="welcomeNew">新建项目</button>
+    </div>
+    <div class="welcome-foot">本机运行 · 数据不出本地 · 无终端窗口 · 无需账号与 API Key</div>
+  </div>
+</div>
+
+<!-- ============ 顶栏 ============ -->
+<header id="topbar">
+  <div class="brand" id="brandBtn" title="重新显示欢迎页">
+    <span class="brand-logo" id="brandLogo"></span>
+    <span class="brand-name">YangTex</span>
+    <span class="brand-hello">欢迎使用 YangTex</span>
+  </div>
+
+  <div class="toolbar" id="toolbar">
+    <div class="tb-group tb-group-project">
+      <label class="tb-label" for="projectSel">项目</label>
+      <select id="projectSel" class="tb-select" title="当前项目"></select>
+      <button data-tip="新建项目 · 独立目录" class="tb-btn" id="newProjectBtn" title="新建项目 (每个项目独立目录)">＋<span class="tb-text"> 新建</span><span class="tb-short"> 新建</span></button>
+      <span class="tb-sep"></span>
+      <button data-tip="模板库 · 分类检索" class="tb-btn" id="templatesBtn" title="模板库 / 添加模板">▤<span class="tb-text"> 模板</span><span class="tb-short"> 模板</span><span class="tb-count" id="tplCount">0</span></button>
+    </div>
+
+    <span class="tb-sep"></span>
+    <div class="tb-group tb-group-build">
+      <label class="tb-label" for="engineSel">引擎</label>
+      <select id="engineSel" class="tb-select tb-select-sm" title="编译引擎">
+        <option value="auto">自动</option>
+        <option value="xelatex">XeLaTeX</option>
+        <option value="pdflatex">pdfLaTeX</option>
+        <option value="lualatex">LuaLaTeX</option>
+      </select>
+      <button data-tip="立即编译 · ⌘/Ctrl + Enter" class="tb-btn tb-compile" id="compileBtn" title="立即编译 (⌘/Ctrl + Enter)">▶<span class="tb-text"> 编译</span><span class="tb-short"> 编译</span></button>
+    </div>
+
+    <span class="tb-sep"></span>
+    <div class="tb-group tb-group-switches">
+      <span class="tb-cap">写作</span>
+      <button class="tb-toggle on" id="autoToggle" title="自动编译总开关：开启后随输入自动编译（是否等停手由「⇶ 连续编译」决定）；关闭则只在手动点「▶ 编译」时编译" aria-label="自动编译"><span class="tb-ico">⏱</span><span class="tb-text">自动编译</span><span class="tb-short">自动</span></button>
+      <button class="tb-toggle on" id="contToggle" title="⇶ 连续编译：输入后一帧就启动 TeX，打字过程中预览持续跟着更新；关闭则回到「停手 0.14 秒才编译」" aria-label="连续编译"><span class="tb-ico">⇶</span><span class="tb-text">连续编译</span><span class="tb-short">连续</span></button>
+      <button class="tb-toggle on tb-turbo" id="turboToggle" title="⚡ 极速模式：英文文档自动选最快引擎，预编译导言区（.fmt）；中文 / 字体类文档自动回退标准编译" aria-label="极速模式"><span class="tb-ico">⚡</span><span class="tb-text">极速</span><span class="tb-short">极速</span></button>
+      <button class="tb-toggle on" id="syncToggle" title="光标行 ↔ PDF 逐行同步" aria-label="逐行同步"><span class="tb-ico">⇄</span><span class="tb-text">逐行同步</span><span class="tb-short">同步</span></button>
+      <button class="tb-toggle on" id="pkgToggle" title="用到宏包命令时自动补进导言区" aria-label="宏包补全"><span class="tb-ico">⊕</span><span class="tb-text">宏包补全</span><span class="tb-short">宏包</span></button>
+      <button class="tb-toggle on" id="envHintToggle" title="输入 \begin{ 联想环境名；手打完 \begin{xxx} 也会自动补 \end{xxx}；偏好随 YangTex 保存" aria-label="环境联想"><span class="tb-ico">⌁</span><span class="tb-text">环境联想</span><span class="tb-short">联想</span></button>
+    </div>
+
+    <span class="tb-sep"></span>
+    <div class="tb-group tb-group-tools">
+      <span class="tb-cap">工具</span>
+      <button data-tip="工具面板 · ⌘/Ctrl + K" class="tb-btn tb-tools" id="toolsBtn" title="工具面板 (⌘/Ctrl + K)" aria-label="工具面板">🧰<span class="tb-text"> 工具面板</span><span class="tb-short"> 工具</span></button>
+      <button data-tip="AI 助手 · ⌘/Ctrl + /" class="tb-btn tb-ai" id="aiBtn" title="AI 助手 (⌘/Ctrl + /)" aria-label="AI 助手">✦<span class="tb-text"> AI 助手</span><span class="tb-short"> AI</span></button>
+      <button data-tip="参考文献管理" class="tb-btn tb-scholar" id="bibBtn" title="参考文献管理：条目编辑、引用检查、真实性核验" aria-label="文献">◉<span class="tb-text"> 文献</span><span class="tb-short"> 文献</span></button>
+      <button data-tip="导出投稿包" class="tb-btn tb-scholar" id="submissionBtn" title="导出投稿包：自动去除注释与编译辅助文件" aria-label="投稿包">⇪<span class="tb-text"> 投稿包</span><span class="tb-short"> 投稿</span></button>
+      <button data-tip="PDF 投影演示" class="tb-btn tb-scholar" id="presentBtn" title="把生成的 PDF 投影演示 / 自动播放（Esc 退出）" aria-label="投影">📽<span class="tb-text"> 投影</span><span class="tb-short"> 投影</span></button>
+    </div>
+
+    <!-- 右侧常驻：主题 / 帮助 / 退出，任何宽度下都不被挤走 -->
+    <div class="tb-tail">
+      <button class="tb-icon" id="themeBtn" title="切换深浅色" aria-label="切换深浅色">◐</button>
+      <button class="tb-icon" id="helpBtn" title="使用说明" aria-label="使用说明">?</button>
+      <button class="tb-icon" id="exitBtn" title="退出 YangTex（关闭本地服务）" aria-label="退出">⏻</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 主工作区 ============ -->
+<main id="workspace">
+  <!-- 编辑器 -->
+  <section id="editorPane" class="pane">
+    <div class="pane-head" id="editorHead">
+      <span class="pane-title"><i class="dot dot-tex" id="docDot"></i> <span id="docName">main.tex</span><span class="src-badge hidden" id="srcBadge"></span></span>
+      <span class="pane-hint" id="saveHint">已保存</span>
+      <div class="pane-tools">
+        <button class="mini-btn" id="undoBtn" title="撤回 (⌘/Ctrl + Z)" aria-label="撤回" disabled>↶<span class="mini-label optional"> 撤回</span></button>
+        <button class="mini-btn" id="redoBtn" title="重做 (⌘/Ctrl + Shift + Z)" aria-label="重做" disabled>↷<span class="mini-label optional"> 重做</span></button>
+        <button class="mini-btn" id="insertImageBtn" title="插入图片（也可直接把图片拖进窗口）">▣ 插入图片</button>
+        <button class="mini-btn" id="mdConvertBtn" title="把选中的 Markdown / 混排文本转成 LaTeX（内置转换器，无需 pandoc）">MD→TeX</button>
+        <input type="file" id="imageInput" class="hidden" multiple
+               accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.eps">
+        <button class="mini-btn" id="locateBtn" title="把当前行定位到 PDF (F8)">⇥<span class="mini-label optional"> 定位到 PDF</span></button>
+        <button class="mini-btn" id="wrapBtn" title="切换自动换行">↩</button>
+        <button class="mini-btn" id="fontMinus" title="缩小字号">A−</button>
+        <button class="mini-btn" id="fontPlus" title="放大字号">A+</button>
+      </div>
+    </div>
+    <div class="editor-shell" id="editorShell">
+      <div class="gutter" id="gutter"><div class="gutter-inner" id="gutterInner"></div></div>
+      <div class="editor-body" id="editorBody">
+        <div id="activeLine" class="active-line"></div>
+        <pre id="highlight" class="highlight" aria-hidden="true"></pre>
+        <textarea id="editor" class="editor" spellcheck="false" wrap="off"
+                  autocomplete="off" autocorrect="off" autocapitalize="off"
+                  placeholder="% 在这里写 LaTeX …"></textarea>
+      </div>
+    </div>
+    <div class="pane-foot">
+      <span id="cursorInfo">行 1, 列 1</span>
+      <span id="docInfo">0 行 · 0 字符</span>
+      <span class="foot-tip">单击右侧 PDF 即可跳回源码行</span>
+    </div>
+  </section>
+
+  <div id="splitter" title="拖动调整宽度"></div>
+
+  <!-- 预览 -->
+  <section id="previewPane" class="pane">
+    <div class="pane-head" id="previewHead">
+      <span class="pane-title"><i class="dot dot-pdf"></i> 实时预览</span>
+      <!-- 放大 / 缩小预览：紧贴「实时预览」标题右侧，单一入口 -->
+      <span class="pv-zoombar" id="pvZoomBar" title="预览显示大小：也可按 ⌘/Ctrl + 滚轮调整">
+        <button class="mini-btn" id="pvZoomOut" title="缩小 PDF 显示">−</button>
+        <span id="pvZoomLabel">125%</span>
+        <button class="mini-btn" id="pvZoomIn" title="放大 PDF 显示">＋</button>
+        <button class="mini-btn" id="pvZoomFit" title="按预览区宽度自适应">⤢<span class="mini-label"> 适配</span></button>
+        <button class="mini-btn" id="pvZoomReset" title="恢复 100%">100</button>
+        <!-- 页码与缩放同组：点一下直接输入页码跳转，和底栏 / 每页徽标实时同步 -->
+        <span class="pv-pagebox" id="pvPageBox" title="当前页 / 总页数 · 点击输入页码跳转">
+          <span class="pv-pageno empty" id="pvPageNo" role="button" tabindex="0"
+                aria-label="尚未生成 PDF">— / —</span>
+        </span>
+      </span>
+      <div class="pane-tools">
+        <button class="mini-btn" id="syncHereBtn" title="从 PDF 当前可视区反向定位">⇤<span class="mini-label optional"> 反向定位</span></button>
+        <button class="mini-btn" id="openPdfBtn" title="在浏览器新标签页打开完整 PDF（可打印 / 系统另存）">↗ 打开 PDF</button>
+        <button class="mini-btn" id="downloadBtn" title="把 main.pdf 下载到本机">↓ 下载 PDF</button>
+        <button class="mini-btn" id="presentMiniBtn" title="全屏投影演示 / 自动播放（Esc 退出）">📽 投影</button>
+        <button class="mini-btn" id="folderBtn" title="打开项目文件夹">▣<span class="mini-label optional"> 文件夹</span></button>
+      </div>
+    </div>
+    <div class="pdf-scroll" id="pdfScroll">
+      <div id="pdfPages" class="pdf-pages"></div>
+      <div id="pdfEmpty" class="pdf-empty">
+        <div class="empty-mark" id="emptyLogo"></div>
+        <p><b>欢迎使用 YangTex</b></p>
+        <p>点击「▶ 编译」生成第一份 PDF，<br>或开启自动编译，边写边看。</p>
+      </div>
+    </div>
+    <div class="pane-foot">
+      <span id="compileStatus" class="status-idle">● 就绪</span>
+      <span id="engineInfo">xelatex</span>
+      <span class="pane-hint" id="pageInfo">尚未生成 PDF</span>
+      <span id="incrBadge" class="incr-badge" title="准增量预览：本轮是否重画了 PDF 页面"></span>
+      <span class="foot-tip">单击 PDF 文字 → 跳回源码行</span>
+      <button class="mini-btn" id="pvFullBtn" title="把预览放大到整个工作区（Esc 还原）">⛶ 放大预览</button>
+    </div>
+  </section>
+</main>
+
+<!-- ============ 版本更新提示（停留在旧页面时自动提醒刷新） ============ -->
+<div id="updateBar" class="update-bar hidden" aria-hidden="true">
+  <span>YangTex 已更新，当前页面还是旧版本。<b>刷新后</b>即可使用最新功能（不会丢失正在编辑的内容）。</span>
+  <button id="updateReload">点此刷新</button>
+  <button id="updateClose" title="稍后再说">×</button>
+</div>
+
+<!-- ============ 底部面板 ============ -->
+<section id="bottomPanel" class="bottom collapsed">
+  <div class="bottom-tabs" id="bottomTabs">
+    <button class="btab active" data-tab="issues">问题 <span class="badge" id="issueBadge">0</span></button>
+    <button class="btab" data-tab="log">编译日志</button>
+    <button class="btab" data-tab="env">环境</button>
+    <span class="bottom-spacer"></span>
+    <button class="mini-btn" id="cleanBtn" title="清理 .aux/.log 等中间文件">清理辅助文件</button>
+    <button class="mini-btn" id="bottomToggle">▲ 展开</button>
+  </div>
+  <div class="bottom-body" id="bottomBody"></div>
+</section>
+
+<!-- ============ AI 抽屉 ============ -->
+<aside id="aiDrawer" class="ai-drawer">
+  <div class="ai-head">
+    <div><b>✦ AI 写作助手</b><span class="ai-source" id="aiSource">免费大模型 · 无需 Key</span></div>
+    <button class="ai-close" id="aiClose">×</button>
+  </div>
+  <div class="ai-model-bar">
+    <label for="aiModel">模型 / 通道</label>
+    <select id="aiModel" title="选择免费模型或传输通道；自动模式按实测响应速度选最快"></select>
+    <button id="aiBench" title="实测各免费通道的连接速度并重新排序">⚡ 测速选优</button>
+    <button id="aiSelfCheck" title="一键诊断免费通道连通性、限流与冷却状态">🔍 自检</button>
+  </div>
+  <div class="ai-model-note" id="aiModelNote">自动选择当前最快的免费通道</div>
+  <div class="ai-quick">
+    <button data-action="explain">解释选中</button>
+    <button data-action="polish">润色</button>
+    <button data-action="translate">中英互译</button>
+    <button data-action="generate">生成 LaTeX</button>
+    <button data-action="fix">修复编译错误</button>
+  </div>
+  <div class="ai-chat" id="aiChat"></div>
+  <div class="ai-input">
+    <textarea id="aiInput" rows="2" placeholder="问点什么…（⌘/Ctrl + / 打开，Enter 发送）"></textarea>
+    <button id="aiSend">发送</button>
+  </div>
+  <div class="ai-foot">AI 仅在你主动点击时发送选中的文字；断网或限流时立即给出内置助手答案，可一键重试在线大模型。</div>
+</aside>
+
+<!-- ============ 工具面板 ============ -->
+<aside id="toolPanel" class="tool-panel" aria-hidden="true">
+  <div class="tp-head">
+    <div class="tp-title">🧰 工具面板</div>
+    <div class="tp-head-right">
+      <span class="tp-hint" id="tpHint"></span>
+      <button class="tp-close" id="toolPanelClose" title="关闭工具面板">×</button>
+    </div>
+  </div>
+  <div class="tp-cats" id="tpCats"></div>
+  <div class="tp-body" id="tpBody">
+    <div class="tp-subcats hidden" id="tpSubcats"></div>
+    <div class="tp-dialog hidden" id="tpDialog"></div>
+    <div class="tp-grid" id="tpGrid"></div>
+  </div>
+  <div class="tp-foot">
+    点击插入到光标处；若已选中文字，带 <span class="tp-brace">{}</span> 占位符的命令会自动包裹选区。字体分类顶部有「字体对话框…」，表格分类有「插入表格…」。
+  </div>
+</aside>
+
+<!-- ============ 通用弹层 ============ -->
+<div id="modal" class="modal hidden">
+  <div class="modal-card" id="modalCard">
+    <div class="modal-head"><h2 id="modalTitle">标题</h2><button class="modal-close" id="modalClose">×</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ============ 拖入图片提示 ============ -->
+<div id="dropHint" class="drop-hint hidden">
+  <div class="drop-hint-ico">▣</div>
+  <b>松开即可插入图片</b>
+  <span>自动保存到项目目录 · 居中 figure 环境 · 带 caption 与 \label</span>
+</div>
+
+<!-- ============ 图片显示大小（插入后非阻塞浮层） ============ -->
+<div id="imgSizePanel" class="img-size hidden" aria-hidden="true">
+  <div class="img-size-head">
+    <b>▣ 图片显示大小</b>
+    <button id="imgSizeClose" title="关闭">×</button>
+  </div>
+  <div class="img-size-presets" id="imgSizePresets">
+    <button data-w="0.3">30%</button>
+    <button data-w="0.5">50%</button>
+    <button data-w="0.8" class="on">80%</button>
+    <button data-w="1">100%</button>
+    <button data-w="" title="不写 width 参数，按图片原始尺寸排版">原始</button>
+  </div>
+  <div class="img-size-custom">
+    <input id="imgSizeCustom" type="text" spellcheck="false"
+           placeholder="自定义：6cm / 0.6\linewidth / 240pt">
+    <button id="imgSizeApply">应用</button>
+  </div>
+  <div class="img-size-tip" id="imgSizeTip">改动会立即写入源码并重新编译</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ============ 公式编号 / 引用编号悬停预览卡片 ============ -->
+<div id="hoverCard" class="hover-card hidden" aria-hidden="true">
+  <div class="hv-head">
+    <span id="hvKind" class="hv-kind">公式</span>
+    <span id="hvNum" class="hv-num"></span>
+    <button id="hvClose" title="关闭">×</button>
+  </div>
+  <div class="hv-body" id="hvBody"></div>
+  <div class="hv-foot" id="hvFoot">点击卡片跳到源码</div>
+</div>
+
+<!-- ============ PDF 投影 / 自动播放 ============ -->
+<div id="presenter" class="presenter hidden" aria-hidden="true">
+  <div class="pres-stage" id="presStage">
+    <div class="pres-sheet" id="presSheet">
+      <canvas id="presCanvas"></canvas>
+      <canvas id="presInk" class="pres-ink"></canvas>
+    </div>
+    <div class="pres-laser hidden" id="presLaser"></div>
+    <div class="pres-blank hidden" id="presBlank"></div>
+  </div>
+  <div class="pres-bar" id="presBar">
+    <button id="presPrev" title="上一页 (← / PageUp)">‹</button>
+    <span id="presPage" class="pres-page">1 / 1</span>
+    <button id="presNext" title="下一页 (→ / 空格)">›</button>
+    <span class="pres-sep"></span>
+    <button id="presPlay" title="自动播放 / 暂停 (P)">▶ 自动播放</button>
+    <label class="pres-int">间隔 <input id="presInterval" type="number" min="1" max="60" value="5"> 秒</label>
+    <span class="pres-sep"></span>
+    <button id="presBlack" title="黑屏 (B)">■ 黑屏</button>
+    <button id="presWhite" title="白屏 (W)">□ 白屏</button>
+    <button id="presLaserBtn" title="激光笔 (L)">⊙ 激光笔</button>
+    <span class="pres-sep"></span>
+    <button id="presInkBtn" title="批注画笔：在幻灯片上写画，按页保留 (A)">✎ 批注</button>
+    <button id="presFullBtn" title="全屏 / 退出全屏 (F)">⛶ 全屏</button>
+    <div class="pres-ink-tools hidden" id="presInkTools">
+      <span class="pres-swatches" id="presSwatches">
+        <button class="pres-swatch on" data-color="#e63946" style="--sw:#e63946" title="红色 (1)"></button>
+        <button class="pres-swatch" data-color="#f59f00" style="--sw:#f59f00" title="橙色 (2)"></button>
+        <button class="pres-swatch" data-color="#2f9e44" style="--sw:#2f9e44" title="绿色 (3)"></button>
+        <button class="pres-swatch" data-color="#1c7ed6" style="--sw:#1c7ed6" title="蓝色 (4)"></button>
+        <button class="pres-swatch" data-color="#111827" style="--sw:#111827" title="黑色 (5)"></button>
+      </span>
+      <select id="presInkWidth" title="笔触粗细（[ 变细 / ] 变粗）">
+        <option value="0.0025">细</option>
+        <option value="0.0045" selected>中</option>
+        <option value="0.0075">粗</option>
+      </select>
+      <button id="presInkUndo" title="撤销当前页最后一笔 (U 或 ⌘/Ctrl+Z)">↶ 撤销</button>
+      <button id="presInkClear" title="清除当前页批注 (C)">⌫ 清除本页</button>
+      <button id="presInkSave" title="把当前页连同批注保存为 PNG">⤓ 存图</button>
+    </div>
+    <span class="pres-progress"><i id="presProgress"></i></span>
+    <button id="presExit" title="退出投影 (Esc)">✕ 退出</button>
+  </div>
+  <div class="pres-tip" id="presTip">← → / 空格 翻页 · 点击画面左右两侧翻页 · B 黑屏 · W 白屏 · P 播放/暂停 · L 激光笔 · A 批注 · F 全屏 · Esc 退出</div>
+</div>
+
+<!-- ============ \begin{ 环境联想（选中 / 手打闭合后随即补 \end{...}） ============ -->
+<div id="envHint" class="env-hint hidden" aria-hidden="true">
+  <div class="env-hint-head">
+    <b>环境联想</b>
+    <span id="envHintCount"></span>
+    <span class="env-hint-keys">↑↓ 选择 · Enter / Tab 确认 · Esc 取消</span>
+  </div>
+  <div class="env-hint-prefs" id="envHintPrefs">
+    <label title="手打完 \begin{xxx} 后自动补 \end{xxx}，含参数宽限期">
+      <input type="checkbox" id="prefAutoClose" checked> 自动补 \end{}</label>
+    <label title="cases / matrix / aligned 等环境自动用 \[…\] 包裹；equation / align 等自带数学模式的不包">
+      <input type="checkbox" id="prefMathWrap" checked> 数学模式包裹</label>
+    <label title="按「最近使用 / 常用 / 分类」分组显示；输入前缀时自动退回纯匹配">
+      <input type="checkbox" id="prefGroup" checked> 分组</label>
+    <span class="env-hint-prefs-tip">偏好随 YangTex 保存</span>
+  </div>
+  <div id="envHintList" class="env-hint-list"></div>
+  <div class="env-hint-tip" id="envHintTip"></div>
+  <div class="env-hint-foot">选中后自动补 \end{…}、所需宏包与 \newtheorem；⚠ 表示有前置条件</div>
+</div>
+
+<script src="/vendor/pdf.min.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

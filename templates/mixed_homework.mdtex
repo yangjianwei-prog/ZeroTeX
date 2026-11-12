@@ -1,0 +1,56 @@
+---
+title: 习题解答 · Sobolev 空间
+author: 杨建伟
+lang: zh
+---
+# 第一题
+
+设 $u\in H^1_0(\Omega)$，证明 Poincare 不等式 $\|u\|_{L^2}\le C_P\|\nabla u\|_{L^2}$。
+
+**证明思路**：用 Fourier 展开或反证法 + Rellich 紧嵌入。
+
+:::latex
+\begin{proof}
+设不然，则存在 $u_k \in H^1_0(\Omega)$ 满足
+$\|u_k\|_{L^2}=1$ 且 $\|\nabla u_k\|_{L^2} \to 0$。
+由 Rellich--Kondrachov 定理，可取子列仍记为 $u_k$，使得
+$u_k \to u$ 于 $L^2(\Omega)$，且 $\|u\|_{L^2}=1$。
+另一方面 $\nabla u_k \to 0$ 于 $L^2$，故 $\nabla u=0$，
+于是 $u$ 为常数；结合零迹条件得 $u\equiv 0$，与 $\|u\|_{L^2}=1$ 矛盾。
+\end{proof}
+:::
+
+# 第二题
+
+计算下面积分并说明 $\nu\to 0$ 时的行为：
+
+$$
+  I(\nu) = \int_0^T e^{-\nu\lambda_1 (T-s)}\|f(s)\|_{L^2}^2\,ds .
+$$
+
+:::latex
+\begin{align}
+  I(\nu)
+   &\le \int_0^T \|f(s)\|_{L^2}^2\,ds \notag\\
+   &= \|f\|_{L^2(0,T;L^2)}^2 ,
+\end{align}
+:::
+
+因此 $I(\nu)$ 关于 $\nu>0$ 一致有界，且当 $\nu\to0^+$ 时
+$I(\nu) \to \int_0^T\|f(s)\|^2\,ds$。
+
+# 第三题
+
+判断下列命题真伪，并简述理由：
+
+| 命题 | 真伪 | 依据 |
+| --- | --- | --- |
+| $H^1_0 \hookrightarrow L^6$（$n=3$） | 真 | Sobolev 嵌入 |
+| $L^\infty \subset L^2$（有界域） | 真 | Hölder 不等式 |
+| $C_c^\infty$ 在 $H^1$ 中稠密 | 真 | 磨光逼近 |
+
+> 提示：注意 $n=2$ 时 Sobolev 嵌入到任意 $L^q$（$q<\infty$）但不到 $L^\infty$。
+
+---
+
+习题解答由 YangTex 混排模板生成。

@@ -1,0 +1,91 @@
+% ==================================================================
+% YangTex · 编译产物，请勿直接编辑（改动会在下次保存时被覆盖）
+% 由 Markdown 源 main.md 自动生成
+% 请编辑同目录下的 main.md / main.mdtex：那才是主文档，
+% 用的是 Markdown 语法；本文件只交给 TeX 引擎编译。
+% ==================================================================
+\documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{corollary}[theorem]{推论}
+\title{文献精读卡}
+\author{杨建伟}
+\date{\today}
+\begin{document}
+\maketitle
+
+\section{文献信息}
+
+\begin{itemize}
+  \item \textbf{题目}：On the regularity of weak solutions to the Navier--Stokes equations
+  \item \textbf{作者 / 年份}：待填写
+  \item \textbf{期刊 / 卷页}：待填写
+\end{itemize}
+
+\subsection{一句话结论}
+
+本文在 $L^3$ 临界空间中给出了弱解的 \textbf{局部正则性} 判据。
+
+\subsection{主要假设}
+
+\begin{itemize}
+  \item 区域 $\Omega \subset \mathbb{R}^3$ 有界且边界光滑
+  \item $u_0 \in L^2_\sigma(\Omega)$
+  \item 外力 $f \in L^2(0,T;H^{-1})$
+\end{itemize}
+
+\subsection{核心估计}
+
+\[
+\|u(t)\|_{L^\infty} \le C t^{-1/2} \|u_0\|_{L^3}
+\]
+
+\begin{quote}
+关键技巧：把非线性项放进 \textit{Carleson 型} 估计，而非直接做能量估计。
+\end{quote}
+
+\subsection{我关心的问题}
+
+\begin{enumerate}
+  \item 条件中的 $C$ 是否依赖 $\nu$？
+  \item 结论能否推广到有界区域的 \textbf{Navier 滑移边界}？
+  \item 与 Serrin 条件 $2/p + 3/q \le 1$ 的关系
+\end{enumerate}
+
+\subsection{可复用的引理}
+
+\begin{center}
+\begin{tabular}{l|l|l}
+\hline
+引理 & 作用 & 是否需要改写 \\
+\hline
+Lemma 2.1 & 局部能量不等式 & 需要 \\
+Lemma 3.4 & 紧性 & 可直接引用 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{评价}
+
+\begin{itemize}
+  \item 证明结构清晰，但第 4 节缩放论证略简
+  \item 值得在自己的 PDE 笔记里重写一遍
+\end{itemize}
+
+\par\noindent\rule{\textwidth}{0.4pt}\par
+
+精读卡由 YangTex Markdown 模板生成。
+
+\end{document}

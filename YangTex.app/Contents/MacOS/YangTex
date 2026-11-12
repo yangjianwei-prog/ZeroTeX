@@ -1,0 +1,86 @@
+#!/bin/bash
+# YangTex macOS launcher
+# Double-click the .app: no Terminal window, no console.
+# Restarts the local service with the latest code and opens the workspace page.
+set -u
+
+LOG="$HOME/.yangtex-launch.log"
+HERE="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$HERE/../../.." && pwd)"
+MARK="$HERE/../Resources/.yangtex_home"
+
+log() {
+  printf '[%s] launcher: %s\n' "$(/bin/date '+%Y-%m-%d %H:%M:%S')" "$*" >> "$LOG" 2>/dev/null || true
+}
+
+alert() {
+  # Pass the text via argv so quotes and paths can never break the AppleScript.
+  /usr/bin/osascript \
+    -e 'on run argv' \
+    -e 'display alert "YangTex" message (item 1 of argv) buttons {"好"} default button "好" giving up after 25' \
+    -e 'end run' "$1" >/dev/null 2>&1 || true
+}
+
+# GUI-launched apps inherit a very short PATH; make TeX Live / Homebrew / Python visible.
+export PATH="/Library/TeX/texbin:/usr/local/texlive/2026/bin/universal-darwin:/opt/homebrew/bin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/Current/bin:${HOME}/.pyenv/shims:/usr/bin:/bin:/usr/sbin:/sbin:${PATH:-}"
+
+# --- locate the project root -------------------------------------------------
+# Works even if the .app alone is moved to /Applications or the Desktop.
+if [ -f "$ROOT/YangTex.py" ]; then
+  printf '%s' "$ROOT" > "$MARK" 2>/dev/null || true
+elif [ -f "$MARK" ]; then
+  ROOT="$(/bin/cat "$MARK" 2>/dev/null)"
+fi
+if [ ! -f "$ROOT/YangTex.py" ] && [ -x /usr/bin/mdfind ]; then
+  hit="$(/usr/bin/mdfind -onlyin "$HOME" 'kMDItemFSName == "YangTex.py"' 2>/dev/null | /usr/bin/grep -m1 '/YangTex/YangTex.py$' || true)"
+  [ -n "$hit" ] && ROOT="$(dirname "$hit")"
+fi
+if [ ! -f "$ROOT/YangTex.py" ]; then
+  log "ERROR: cannot locate YangTex.py (bundle=$HERE)"
+  alert "找不到 YangTex.py。请把 YangTex.app 与 YangTex.py 放在同一个 YangTex 文件夹内。"
+  exit 1
+fi
+
+# --- find a usable Python (>= 3.10) ----------------------------------------
+find_python() {
+  local p
+  for p in \
+    "${YANGTEX_PYTHON:-}" \
+    "$(command -v python3 2>/dev/null)" \
+    "/usr/local/bin/python3" \
+    "/opt/homebrew/bin/python3" \
+    "/Library/Frameworks/Python.framework/Versions/Current/bin/python3" \
+    "$HOME/.pyenv/shims/python3" \
+    "$HOME/miniconda3/bin/python3" \
+    "$HOME/anaconda3/bin/python3" \
+    "/usr/bin/python3"; do
+    if [ -n "$p" ] && [ -x "$p" ] && \
+       "$p" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1; then
+      echo "$p"
+      return 0
+    fi
+  done
+  return 1
+}
+
+PY="$(find_python)"
+if [ -z "$PY" ]; then
+  log "ERROR: Python >= 3.10 not found"
+  alert "未找到 Python 3.10 或更高版本。请安装 Python 3，或设置 YANGTEX_PYTHON 指向 python3。"
+  exit 1
+fi
+
+cd "$ROOT" || { log "ERROR: cd $ROOT failed"; alert "无法进入 YangTex 目录。"; exit 1; }
+log "root=$ROOT python=$PY"
+
+# Detach the service from the LaunchServices session, then let this .app exit.
+# A short-lived launcher matters: if the .app stayed resident, macOS would only
+# "activate" it on a second double-click and would never run us again.
+# --restart replaces an older instance, so every double-click loads the newest
+# backend code and opens the workspace page. A GUI app has no terminal, hence
+# all output goes to the log; Python itself reports fatal errors via a dialog.
+"$PY" "$ROOT/YangTex.py" --restart >> "$LOG" 2>&1 < /dev/null &
+svc_pid=$!
+disown 2>/dev/null || true
+log "service detached (pid $svc_pid); launcher exiting"
+exit 0

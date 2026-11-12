@@ -1,0 +1,47 @@
+% === 应用数学学报 (Acta Mathematicae Applicatae Sinica) === 中文数学期刊排版模板（YangTex 内置）
+% 引擎：xelatex + ctex；按期刊投稿规范整理，非期刊官方 .cls 文件。
+% 分类：中文数学期刊
+\documentclass[UTF8,fontset=fandol,11pt]{ctexart}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Om}{\Omega}
+\newcommand{\dd}{\,\mathrm{d}}
+\title{非局部椭圆问题有限元方法的最优收敛阶}
+\author{杨建伟}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+针对非局部椭圆算子构造协调有限元离散格式，在最低正则性假设下证明了能量范数下的最优阶误差估计，并用数值实验验证。
+\end{abstract}
+\paragraph{关键词} 有限元方法；非局部算子；先验误差估计；收敛阶
+
+\section{引言}
+在形状正则剖分 $\mathcal{T}_h$ 上用 Galerkin 方法离散积分算子 $(-\Delta)^s$。
+经典背景与相关结果可参见~\cite{Evans,Brezis}。
+
+\begin{theorem}
+设真解 $u\in H^{1+s}(\Om)$，则离散解满足 $\|u-u_h\|_{H^s}\le Ch^{1-s}|u|_{H^{1+s}}$。
+\end{theorem}
+
+\begin{proof}
+由 Galerkin 正交性、插值估计与离散双线性型的稳定性即得结论。
+\end{proof}
+
+\section{主要估计}
+\begin{equation}
+a(u_h,v_h)=\int_\Om f v_h\,\dd x\qquad\forall v_h\in V_h,
+\end{equation}
+均匀网格与分级网格上的数值结果均与理论阶一致。
+
+\section{结论}
+本文的结果可推广到更一般的区域与边界条件，相关讨论将在后续工作中给出。
+
+\begin{thebibliography}{9}
+\bibitem{Evans} 伍卓群、尹景学、王春朋，\emph{椭圆与抛物型方程引论}, 科学出版社, 2013.
+\bibitem{Brezis} H. Brezis, \emph{Functional Analysis, Sobolev Spaces and PDEs}, Springer, 2011.
+\end{thebibliography}
+\end{document}
